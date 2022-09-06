@@ -1,4 +1,5 @@
 import { Component } from "react"
+import Table from "../components/table"
 import { BsSearch } from "react-icons/bs"
 
 function Header() {
@@ -29,6 +30,7 @@ export default class App extends Component {
         <div className="mt-16">
           <div className="w-fit mx-auto bg-gray-50 p-3 rounded-md shadow-md">
             <SearchBar/>
+            <Table/>
           </div>
         </div>
       </>
