@@ -9,6 +9,10 @@ export default class Table extends Component {
     }
   }
 
+  formatDate(date) {
+    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+  }
+
   async mountData() {
     const data = await net.getProducts();
     let { _embedded: { List: extractedData } } = data;
