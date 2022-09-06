@@ -31,6 +31,11 @@ export default class Table extends Component {
       products: products
     })
   }
+
+  componentDidMount() {
+    this.mountData()
+  }
+
   render() {
       const rowsOfProducts = this.state.products.map((product, index) => {
         const items = [];
