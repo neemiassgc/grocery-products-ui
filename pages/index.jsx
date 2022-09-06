@@ -30,6 +30,10 @@ export default class App extends Component {
         <Head>
           <title>Saveg Local Market</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" 
+          />
         </Head>
         <Header/>
         <div className="mt-16">
