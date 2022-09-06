@@ -1,8 +1,17 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Component } from "react"
+import Table from "../components/table"
+import { BsSearch } from "react-icons/bs"
 
-class App extends Component {
+function Header() {
+  return (
+    <header className="w-full h-8 bg-blue-600 flex items-center justify-center">
+    </header>
+  )
+}
+
+export default class App extends Component {
   constructor(props) {
     super(props);
   }
@@ -19,5 +28,3 @@ class App extends Component {
     )
   }
 }
-
-export default App
