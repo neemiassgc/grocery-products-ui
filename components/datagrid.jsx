@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-export default class Table extends Component {
+export default class DataTable extends Component {
   constructor(props) {
     super(props)
     this.state = {
