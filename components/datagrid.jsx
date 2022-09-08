@@ -35,14 +35,16 @@ export default class DataTable extends Component {
     for (const product of extractedData) {
       const { _links: { prices: { href: link }}, barcode, sequenceCode, description} = product;
       const prices = await net.getPricesByLink(link);
+
       products.push({
         description,
         sequenceCode,
         barcode,
         currentPrice: prices[0].value,
-        currentPriceDate: this.formatDate(new Date(prices[0].instant)),
-        previousPrice: prices[1]?.value ?? "Nothing",
-        previousPriceDate: prices[1] ? this.formatDate(new Date(prices[1].instant)) : "Nothing"
+        currentPriceDate: new Date(prices[0].instant),
+        previousPrice: prices[1]?.value ?? 0,
+        previousPriceDate: prices[1] ? new Date(prices[1].instant) : null,
+        priceDifference: prices[1] ? (prices[1].value - prices[0].value).toFixed(2) : null
       })
     }
 
