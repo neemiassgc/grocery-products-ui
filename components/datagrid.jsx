@@ -57,16 +57,36 @@ export default class DataTable extends Component {
     this.mountData()
   }
 
-  render() {
-      const rowsOfProducts = this.state.products.map((product, index) => {
-        const items = [];
-        for (const item in product) {
-          items.push(<TableCell align="left">{product[item]}</TableCell>)
-        }  
-        return (
-          <TableRow key={++index}>{items}</TableRow>
-        )
-      })
+  buildCols() {
+    const dateFormatter = ({ value }) => value ? this.formatDate(value) : "nothing"
+    const priceFormatter = ({ value }) => value ? this.formatPrice(value) : "nothing"
+
+    return [
+      { field: "description", type: "string", headerName: "Description", width: 300 },
+      { field: "sequenceCode", type: "number", headerName: "Sequence Code", width: 150 },
+      { field: "barcode", type: "string", headerName: "Barcode", width: 150 },
+      {
+        field: "currentPrice", type: "number", headerName: "Current Price", width: 150,
+        valueFormatter: priceFormatter
+      },
+      {
+        field: "currentPriceDate", type: "string", headerName: "Current Price Date", width: 150,
+        valueFormatter: dateFormatter,
+      },
+      {
+        field: "previousPrice", type: "number", headerName: "Previous Price", width: 150,
+        valueFormatter: priceFormatter,
+      },
+      {
+        field: "previousPriceDate", type: "string", headerName: "Previous Price Date", width: 150,
+        valueFormatter: dateFormatter,
+      },
+      {
+        field: "priceDifference", type: "number", headerName: "Price difference", width: 150,
+        valueFormatter: priceFormatter,
+      },
+    ];
+  }
 
     return (
       <TableContainer>
