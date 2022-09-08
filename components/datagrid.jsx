@@ -1,12 +1,6 @@
 import { Component } from "react"
 import * as net from "./net"
-import TableGrid from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { DataGrid } from '@mui/x-data-grid';
 
 export default class DataTable extends Component {
   constructor(props) {
@@ -103,25 +97,13 @@ export default class DataTable extends Component {
       }
     });
   }
+
+  render() {
     return (
-      <TableContainer>
-        <TableGrid component={Paper}>
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">Description</TableCell>
-              <TableCell align="left">Sequence Code</TableCell>
-              <TableCell align="left">Barcode</TableCell>
-              <TableCell align="left">Current Price</TableCell>
-              <TableCell align="left">Current Price Date</TableCell>
-              <TableCell align="left">Previous Price</TableCell>
-              <TableCell align="left">Previous Price Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowsOfProducts}
-          </TableBody>
-        </TableGrid>
-      </TableContainer>
+      <DataGrid
+        columns={this.buildCols()}
+        rows={this.buildRows()}
+      />
     )
   }
 }
