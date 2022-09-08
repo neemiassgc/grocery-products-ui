@@ -88,6 +88,21 @@ export default class DataTable extends Component {
     ];
   }
 
+  buildRows() {
+    return this.state.products.map((value, index) => {
+      return {
+        id: index + 1,
+        description: value.description,
+        sequenceCode: value.sequenceCode,
+        barcode: value.barcode,
+        currentPrice: value.currentPrice,
+        currentPriceDate: value.currentPriceDate,
+        previousPrice: value.previousPrice,
+        previousPriceDate: value.previousPriceDate,
+        priceDifference: value.priceDifference,
+      }
+    });
+  }
     return (
       <TableContainer>
         <TableGrid component={Paper}>
