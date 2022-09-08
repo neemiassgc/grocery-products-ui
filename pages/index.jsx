@@ -36,8 +36,8 @@ export default class App extends Component {
           />
         </Head>
         <Header/>
-        <div className="mt-16">
-          <div className="w-fit mx-auto bg-gray-50 p-3 rounded-md shadow-md">
+        <div className="mt-0 sm:mt-8 flex justify-center">
+          <div className="basis-10/12 h-[37rem] p-3 rounded-md shadow-md">
             <SearchBar/>
             <DataGrid/>
           </div>
