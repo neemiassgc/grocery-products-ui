@@ -10,10 +10,6 @@ export default class DataTable extends Component {
     }
   }
 
-  formatDate(date) {
-    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-  }
-
   formatPrice(price) {
     let [integerPart, decimalPart] = (""+price).split(".");
     if (!decimalPart) decimalPart = "00"
