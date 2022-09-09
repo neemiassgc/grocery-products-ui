@@ -1,6 +1,7 @@
 import { Component } from "react"
 import * as net from "./net"
 import { DataGrid } from '@mui/x-data-grid';
+import * as utils from "./utils"
 
 export default class DataTable extends Component {
   constructor(props) {
@@ -39,8 +40,8 @@ export default class DataTable extends Component {
   }
 
   buildCols() {
-    const dateFormatter = ({ value }) => value ? this.formatDate(value) : "nothing"
-    const priceFormatter = ({ value }) => value ? this.formatPrice(value) : "nothing"
+    const dateFormatter = ({ value }) => value ? utils.formatDate(value) : "nothing"
+    const priceFormatter = ({ value }) => value ? utils.formatPrice(value) : "nothing"
 
     return [
       { field: "description", type: "string", headerName: "Description", width: 300 },
