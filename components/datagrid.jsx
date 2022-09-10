@@ -44,27 +44,29 @@ export default class DataTable extends Component {
     const priceFormatter = ({ value }) => value ? utils.formatPrice(value) : "nothing"
 
     return [
-      { field: "description", type: "string", headerName: "Description", width: 300 },
-      { field: "sequenceCode", type: "number", headerName: "Sequence Code", width: 150 },
-      { field: "barcode", type: "string", headerName: "Barcode", width: 150 },
       {
-        field: "currentPrice", type: "number", headerName: "Current Price", width: 150,
-        valueFormatter: priceFormatter
+        field: "description", type: "string", headerName: "Description", headerAlign: "left", align: "left", width: 300,
+      },
+      { field: "sequenceCode", type: "number", headerName: "Sequence Code", headerAlign: "left", align: "left", width: 150 },
+      { field: "barcode", type: "string", headerName: "Barcode", headerAlign: "left", align: "left", width: 150 },
+      {
+        field: "currentPrice", type: "number", headerName: "Current Price", headerAlign: "left", width: 150,
+        valueFormatter: priceFormatter, align: "left",
       },
       {
-        field: "currentPriceDate", type: "string", headerName: "Current Price Date", width: 150,
+        field: "currentPriceDate", type: "string", headerName: "Current Price Date", headerAlign: "left", align: "left", width: 150,
         valueFormatter: dateFormatter,
       },
       {
-        field: "previousPrice", type: "number", headerName: "Previous Price", width: 150,
+        field: "previousPrice", type: "number", headerName: "Previous Price", headerAlign: "left", align: "left", width: 150,
         valueFormatter: priceFormatter,
       },
       {
-        field: "previousPriceDate", type: "string", headerName: "Previous Price Date", width: 150,
+        field: "previousPriceDate", type: "string", headerName: "Previous Price Date", headerAlign: "left", align: "left", width: 150,
         valueFormatter: dateFormatter,
       },
       {
-        field: "priceDifference", type: "number", headerName: "Price difference", width: 150,
+        field: "priceDifference", type: "number", headerName: "Price difference", headerAlign: "left", align: "left", width: 150,
         valueFormatter: priceFormatter,
       },
     ];
