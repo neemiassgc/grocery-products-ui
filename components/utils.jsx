@@ -3,9 +3,12 @@ export function formatDate(date) {
 }
 
 export function formatPrice(price) {
+  const sign = price < 0 ? "-" : "+";
+  price *= 1;
+
   let [integerPart, decimalPart] = (""+price).split(".");
   if (!decimalPart) decimalPart = "00"
   else if (decimalPart.length === 1) decimalPart += 0
 
-  return `R$ ${integerPart},${decimalPart}`;
+  return `${sign} R$ ${integerPart},${decimalPart}`;
 }
