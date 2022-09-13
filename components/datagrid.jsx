@@ -127,7 +127,7 @@ export default class DataTable extends Component {
   }
 
   buildRows() {
-    return this.state.products.map((value, index) => {
+    return this.state.datagrid.products.map((value, index) => {
       return {
         id: index + 1,
         description: value.description,
