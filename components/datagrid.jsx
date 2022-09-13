@@ -142,6 +142,18 @@ export default class DataTable extends Component {
     });
   }
 
+  loadPage({ page = this.state.pagination.page, pageSize = this.state.pagination.pageSize}) {
+    this.setDatagridState({ isLoading: true })
+    this.setPaginationState({
+      page: page,
+      pageSize,
+    })
+    this.mountData({
+      page: page,
+      pageSize,
+    })
+  }
+
   render() {
     return (
       <DataGrid
