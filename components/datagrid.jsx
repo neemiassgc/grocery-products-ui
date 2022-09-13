@@ -146,6 +146,10 @@ export default class DataTable extends Component {
     this.loadPage({ page })
   }
 
+  handlePageSizeChange(pageSize) {
+    this.loadPage({ pageSize })
+  }
+  
   loadPage({ page = this.state.pagination.page, pageSize = this.state.pagination.pageSize}) {
     this.setDatagridState({ isLoading: true })
     this.setPaginationState({
