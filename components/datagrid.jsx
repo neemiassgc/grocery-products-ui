@@ -44,6 +44,53 @@ export default class DataTable extends Component {
       }
     })
   }
+
+  mountData(pagination = null) {
+    const buildStructure = async (data) => {
+      const {
+        _embedded: {
+          List: listOfExtractedProducts
+        }
+      } = data;
+
+      const listOfProducts = [];
+
+      for (const product of listOfExtractedProducts) {
+        const {
+          _links: {
+            prices: {
+              href: link
+            }
+          }, barcode, sequenceCode, description
+        } = product;
+
+        const prices = await net.getPricesByLink(link);
+
+        listOfProducts.push({
+          description,
+          sequenceCode,
+          barcode,
+          currentPrice: prices[0].value,
+          currentPriceDate: new Date(prices[0].instant),
+          previousPrice: prices[1]?.value ?? 0,
+          previousPriceDate: prices[1] ? new Date(prices[1].instant) : null,
+          priceDifference: prices[1] ? (prices[1].value - prices[0].value).toFixed(2) : null
+        })
+      }
+
+      this.setDatagridState({
+        products: listOfProducts,
+        isLoading: false,
+      })
+
+      this.setPaginationState({ rowCount: data.totalOfItems })
+    }
+
+    if (pagination)
+      net
+        .getPagedProducts(pagination.page, pagination.pageSize)
+        .then(buildStructure)
+    else net.getProducts().then(buildStructure)
   }
 
   buildCols() {
