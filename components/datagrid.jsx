@@ -23,31 +23,17 @@ export default class DataTable extends Component {
     this.loadPage(0, 5);
   }
 
-    let { _embedded: { List: extractedData } } = data;
-    const products = [];
-    for (const product of extractedData) {
-      const { _links: { prices: { href: link }}, barcode, sequenceCode, description} = product;
-      const prices = await net.getPricesByLink(link);
+  setDatagridState(datagridObj) {
+    this.setState(prevState => {
+      for (let element in datagridObj)
+        prevState.datagrid[element] = datagridObj[element]
 
-      products.push({
-        description,
-        sequenceCode,
-        barcode,
-        currentPrice: prices[0].value,
-        currentPriceDate: new Date(prices[0].instant),
-        previousPrice: prices[1]?.value ?? 0,
-        previousPriceDate: prices[1] ? new Date(prices[1].instant) : null,
-        priceDifference: prices[1] ? (prices[1].value - prices[0].value).toFixed(2) : null
-      })
-    }
-
-    this.setState({
-      products: products
+      return {
+        datagrid: prevState.datagrid
+      }
     })
   }
 
-  componentDidMount() {
-    this.mountData()
   }
 
   buildCols() {
