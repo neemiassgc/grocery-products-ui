@@ -147,6 +147,11 @@ export default class DataTable extends Component {
       <DataGrid
         columns={this.buildCols()}
         rows={this.buildRows()}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "description", sort: "asc" }]
+          }
+        }}
         rowsPerPageOptions={[5, 10, 15, 20, 30]}
         onPageChange={this.handlePageChange.bind(this)}
         onPageSizeChange={this.handlePageSizeChange.bind(this)}
