@@ -19,6 +19,9 @@ export default class DataTable extends Component {
     }
   }
 
+  componentDidMount() {
+    this.loadPage(0, 5);
+  }
 
     let { _embedded: { List: extractedData } } = data;
     const products = [];
