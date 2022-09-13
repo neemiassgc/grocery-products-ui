@@ -147,6 +147,16 @@ export default class DataTable extends Component {
       <DataGrid
         columns={this.buildCols()}
         rows={this.buildRows()}
+        rowsPerPageOptions={[5, 10, 15, 20, 30]}
+        onPageChange={this.handlePageChange.bind(this)}
+        onPageSizeChange={this.handlePageSizeChange.bind(this)}
+        page={this.state.pagination.page}
+        pageSize={this.state.pagination.pageSize}
+        pagination={true}
+        paginationMode="server"
+        rowCount={this.state.pagination.rowCount}
+        loading={this.state.datagrid.isLoading}
+        getRowClassName={_ => "hover:text-purple-700"}
       />
     )
   }
