@@ -34,6 +34,16 @@ export default class DataTable extends Component {
     })
   }
 
+  setPaginationState(paginationObj) {
+    this.setState(prevState => {
+      for (let element in paginationObj)
+        prevState.datagrid[element] = paginationObj[element]
+
+      return {
+        pagination: prevState.datagrid
+      }
+    })
+  }
   }
 
   buildCols() {
