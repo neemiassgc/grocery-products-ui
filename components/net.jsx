@@ -5,7 +5,7 @@ export async function getProducts() {
 }
 
 export async function getPricesByLink(link) {
-  return (await fetch(`${link}&limit=2`)).json()
+  return (await fetch(`${link}`)).json()
 }
 
 export async function getPagedProducts(page, numberOfElements) {
