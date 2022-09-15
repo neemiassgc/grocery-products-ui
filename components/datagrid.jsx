@@ -23,24 +23,14 @@ export default class DataTable extends Component {
     this.loadPage(0, 5);
   }
 
-  setDatagridState(datagridObj) {
-    this.setState(prevState => {
-      for (let element in datagridObj)
-        prevState.datagrid[element] = datagridObj[element]
-
-      return {
-        datagrid: prevState.datagrid
-      }
-    })
   }
 
-  setPaginationState(paginationObj) {
+  setObjectState(objectName, properties) {
     this.setState(prevState => {
-      for (let element in paginationObj)
-        prevState.datagrid[element] = paginationObj[element]
-
+      for (const key in properties)
+        prevState[objectName][key] = properties[key]
       return {
-        pagination: prevState.datagrid
+        [objectName]: prevState[objectName]
       }
     })
   }
