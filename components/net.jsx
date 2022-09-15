@@ -4,7 +4,7 @@ async function fetchProducts() {
   return (await fetch(URL)).json()
 }
 
-export async function getPricesByLink(link) {
+export async function fetchPricesByLink(link) {
   return (await fetch(`${link}`)).json()
 }
 
