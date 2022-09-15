@@ -45,4 +45,7 @@ async function cookData(rawData) {
 export function getProducts() {
   return cookData(getPagedProducts());
 }
+
+export function getPagedProducts(pagination) {
+  return cookData(fetchPagedProducts(pagination))
 }
