@@ -41,4 +41,8 @@ async function cookData(rawData) {
 
   return productListToReturn;
 }
+
+export function getProducts() {
+  return cookData(getPagedProducts());
+}
 }
