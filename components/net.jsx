@@ -11,4 +11,8 @@ export async function getPricesByLink(link) {
 export async function getPagedProducts(page, numberOfElements) {
   return (await fetch(`${URL}?pag=${page}-${numberOfElements}`)).json()
 }
+
+async function fetchPagedProducts({ page, pageSize }) {
+  return (await fetch(`${URL}?pag=${page}-${pageSize}`)).json()
+}
 }
