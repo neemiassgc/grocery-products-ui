@@ -38,10 +38,10 @@ async function cookData(rawData) {
   return productListToReturn;
 }
 
-export function getProducts() {
-  return cookData(getPagedProducts());
+export async function getProducts() {
+  return cookData(await getPagedProducts());
 }
 
-export function getPagedProducts(pagination) {
-  return cookData(fetchPagedProducts(pagination))
+export async function getPagedProducts(pagination) {
+  return cookData(await fetchPagedProducts(pagination))
 }
