@@ -44,7 +44,8 @@ export default class DataTable extends Component {
   }
 
   componentDidMount() {
-    this.loadPage(this.state.pagination.page, this.state.pagination.pageSize);
+    const { page, pageSize } = this.state.datagrid;
+    this.loadData({ page, pageSize });
   }
 
   setObjectState(objectName, properties) {
