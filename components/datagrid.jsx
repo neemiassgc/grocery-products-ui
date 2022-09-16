@@ -31,8 +31,10 @@ export default class DataTable extends Component {
     this.setObjectState("pagination", { rowCount })
   }
 
-  setPage(page) {
+  setPageAndLoadData(page) {
     this.setObjectState("pagination", { page })
+    this.setIsLoading(true)
+    this.loadData({ page })
   }
 
   setPageSize(pageSize) {
@@ -133,8 +135,8 @@ export default class DataTable extends Component {
           }
         }}
         rowsPerPageOptions={[5, 10, 15, 20, 30]}
-        onPageChange={this.handlePageChange.bind(this)}
         onPageSizeChange={this.handlePageSizeChange.bind(this)}
+        onPageChange={this.setPageAndLoadData.bind(this)}
         page={this.state.pagination.page}
         pageSize={this.state.pagination.pageSize}
         pagination={true}
