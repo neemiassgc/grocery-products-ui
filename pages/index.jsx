@@ -1,5 +1,5 @@
 import { Component } from "react"
-import DataGrid from "../components/datagrid"
+import DataTable from "../components/datatable"
 import { BsSearch } from "react-icons/bs"
 import Head from "next/head"
 
@@ -39,7 +39,7 @@ export default class App extends Component {
         <div className="mt-0 sm:mt-8 flex justify-center">
           <div className="basis-10/12 h-[37rem] p-3 rounded-md shadow-md">
             <SearchBar/>
-            <DataGrid/>
+            <DataTable/>
           </div>
         </div>
       </>

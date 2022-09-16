@@ -115,16 +115,19 @@ export default class DataTable extends Component {
     this.loadPage({ pageSize })
   }
   
-  loadPage({ page = this.state.pagination.page, pageSize = this.state.pagination.pageSize}) {
-    this.setDatagridState({ isLoading: true })
-    this.setPaginationState({
-      page: page,
-      pageSize,
-    })
-    this.mountData({
-      page: page,
-      pageSize,
-    })
+  loadData(pagination) {
+    const {
+      page = this.state.pagination.page,
+      pageSize = this.state.pagination.pageSize,
+    } = pagination
+
+    net.getPagedProducts({ page, pageSize })
+      .then(({ products, rowCount }) => {
+        this.setProducts(products);
+        this.setIsLoading(false);
+        this.setRowCount(rowCount)
+      })
+      .catch(console.error)
   }
 
   render() {
