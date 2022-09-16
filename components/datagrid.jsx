@@ -19,10 +19,28 @@ export default class DataTable extends Component {
     }
   }
 
-  componentDidMount() {
-    this.loadPage(0, 5);
+  setProducts(products) {
+    this.setObjectState("datagrid", { products })
   }
 
+  setIsLoading(isLoading) {
+    this.setObjectState("datagrid", { isLoading })
+  }
+
+  setRowCount(rowCount) {
+    this.setObjectState("pagination", { rowCount })
+  }
+
+  setPage(page) {
+    this.setObjectState("pagination", { page })
+  }
+
+  setPageSize(pageSize) {
+    this.setObjectState("pagination", { pageSize })
+  }
+
+  componentDidMount() {
+    this.loadPage(this.state.pagination.page, this.state.pagination.pageSize);
   }
 
   setObjectState(objectName, properties) {
