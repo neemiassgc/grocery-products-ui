@@ -45,6 +45,15 @@ async function cookProducts(rawProducts) {
   return productListToReturn;
 }
 
-export async function getPagedProducts(pagination) {
-  return cookData(await fetchPagedProducts(pagination))
+export function getPagedProducts(pagination) {
+  return new Promise((resolve, reject) => {
+    fetchPagedProducts(pagination)
+      .then(async jsonData => {
+        return resolve({
+          products: await cookProducts(jsonData),
+          rowCount: jsonData.totalOfItems,
+        })
+      })
+      .catch(reject)
+  })
 }
