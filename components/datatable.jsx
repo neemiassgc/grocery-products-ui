@@ -2,6 +2,9 @@ import { Component } from "react"
 import * as net from "./net"
 import { DataGrid } from '@mui/x-data-grid';
 import * as utils from "./utils"
+import Chip from "@mui/material/Chip"
+import { ImHappy } from "react-icons/im"
+import { ImSad } from "react-icons/im"
 
 export default class DataTable extends Component {
   constructor(props) {
