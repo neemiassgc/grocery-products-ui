@@ -33,13 +33,11 @@ export default class DataTable extends Component {
 
   setPageAndLoadData(page) {
     this.setObjectState("pagination", { page })
-    this.setIsLoading(true)
     this.loadData({ page })
   }
 
   setPageSizeAndLoadData(pageSize) {
     this.setObjectState("pagination", { pageSize })
-    this.setIsLoading(true)
     this.loadData({ pageSize })
   }
 
@@ -116,6 +114,8 @@ export default class DataTable extends Component {
   }
   
   loadData(pagination) {
+    this.setIsLoading(true)
+
     const {
       page = this.state.pagination.page,
       pageSize = this.state.pagination.pageSize,
