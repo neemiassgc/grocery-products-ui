@@ -60,36 +60,65 @@ export default class DataTable extends Component {
   }
 
   buildCols() {
-    const dateFormatter = ({ value }) => value ? utils.formatDate(value) : "nothing"
-    const priceFormatter = ({ value }) => value ? utils.formatPrice(value) : "nothing"
+    const valuePriceFormatter = ({ value }) => utils.priceFormatter(value);
+    const valueDateformatter = ({ value }) => utils.dateFormatter(value);
 
-    return [
+    const columns = [
       {
-        field: "description", type: "string", headerName: "Description", headerAlign: "left", align: "left", width: 300,
-      },
-      { field: "sequenceCode", type: "number", headerName: "Sequence Code", headerAlign: "left", align: "left", width: 150 },
-      { field: "barcode", type: "string", headerName: "Barcode", headerAlign: "left", align: "left", width: 150 },
-      {
-        field: "currentPrice", type: "number", headerName: "Current Price", headerAlign: "left", width: 150,
-        valueFormatter: priceFormatter, align: "left",
+        field: "description",
+        type: "string",
+        headerName: "Description",
       },
       {
-        field: "currentPriceDate", type: "string", headerName: "Current Price Date", headerAlign: "left", align: "left", width: 150,
-        valueFormatter: dateFormatter,
+        field: "sequenceCode",
+        type: "number",
+        headerName: "Sequence Code",
+        valueFormatter: null,
       },
       {
-        field: "previousPrice", type: "number", headerName: "Previous Price", headerAlign: "left", align: "left", width: 150,
-        valueFormatter: priceFormatter,
+        field: "barcode",
+        type: "string",
+        headerName: "Barcode",
       },
       {
-        field: "previousPriceDate", type: "string", headerName: "Previous Price Date", headerAlign: "left", align: "left", width: 150,
-        valueFormatter: dateFormatter,
+        field: "currentPrice",
+        type: "number",
+        headerName: "Current Price",
+        valueFormatter: valuePriceFormatter,
       },
       {
-        field: "priceDifference", type: "number", headerName: "Price difference", headerAlign: "left", align: "left", width: 150,
-        valueFormatter: priceFormatter,
+        field: "currentPriceDate",
+        type: "string",
+        headerName: "Current Price Date",
+        valueFormatter: valueDateformatter,
+      },
+      {
+        field: "previousPrice",
+        type: "number",
+        headerName: "Previous Price",
+        valueFormatter: valuePriceFormatter,
+      },
+      {
+        field: "previousPriceDate",
+        type: "string",
+        headerName: "Previous Price Date",
+        valueFormatter: valueDateformatter,
+      },
+      {
+        field: "priceDifference",
+        type: "number",
+        headerName: "Price difference",
+        valueFormatter: valuePriceFormatter,
       },
     ];
+
+    for (const col of columns) {
+      col.headerAlign = "left"
+      col.align = "left"
+      col.width = col.field === "description" ? 300 : 150
+    }
+
+    return columns;
   }
 
   buildRows() {
