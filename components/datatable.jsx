@@ -108,7 +108,22 @@ export default class DataTable extends Component {
         field: "priceDifference",
         type: "number",
         headerName: "Price difference",
-        valueFormatter: valuePriceFormatter,
+        renderCell: ({ value }) => {
+          if (!value) return null;
+
+          const settings = {
+            label:  utils.priceFormatter(value),
+            color:  "success",
+            icon:  <ImHappy className="text-xl"/>,
+          }
+
+          if (value > 0) {
+            settings.color = "error",
+            settings.icon = <ImSad className="text-xl"/> 
+          }
+    
+          return <Chip label={settings.label} variant="outlined" color={settings.color} icon={settings.icon}/>;
+        }
       },
     ];
 
