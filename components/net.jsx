@@ -38,7 +38,7 @@ async function cookProducts(rawProducts) {
       currentPriceDate: new Date(currentPriceDate),
       previousPrice: previousPrice ?? 0,
       previousPriceDate: previousPriceDate ? new Date(previousPriceDate) : null,
-      priceDifference: previousPrice ? (previousPrice - currentPrice).toFixed(2) : null
+      priceDifference: previousPrice ? (currentPrice - previousPrice).toFixed(2) : null
     })
   }
 
