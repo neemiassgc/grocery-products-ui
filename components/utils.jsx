@@ -9,4 +9,11 @@ function formatPrice(price) {
 
   return `R$ ${integerPart},${decimalPart}`;
 }
+
+export function dateFormatter(value) {
+  return value ? formatDate(value) : "";
+}
+
+export function priceFormatter(value) {
+  return value ? formatPrice(value) : "";
 }
