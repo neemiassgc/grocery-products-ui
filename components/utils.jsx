@@ -1,5 +1,12 @@
 function formatDate(date) {
-  return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+  if (!date) return null;
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return `${prependZeroIfLessThanTen(day)}/${prependZeroIfLessThanTen(month)}/${year}`
+}
 }
 
 function formatPrice(price) {
