@@ -1,5 +1,5 @@
 export function dateFormatter(value) {
-  return value ? formatDate(value) : "";
+  return isNotNullOrUndefined(value) ? formatDate(value) : "";
 }
 
 function formatDate(date) {
@@ -17,13 +17,18 @@ function prependZeroIfLessThanTen(number) {
 }
 
 export function priceFormatter(value) {
-  return value ? formatPrice(value) : "";
+  return isNotNullOrUndefined(value) ? formatPrice(value) : "";
 }
 
 function formatPrice(price) {
   let [integerPart, decimalPart] = (""+price).split(".");
-  if (!decimalPart) decimalPart = "00"
+  
+  if (isNotNullOrUndefined(decimalPart)) decimalPart = "00"
   else if (decimalPart.length === 1) decimalPart += 0
 
   return `R$ ${integerPart},${decimalPart}`;
+}
+
+export function isNotNullOrUndefined(obj) {
+  return obj ? true : false
 }
