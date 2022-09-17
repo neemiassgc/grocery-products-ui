@@ -36,3 +36,11 @@ export function isNotNullOrUndefined(obj) {
 export function isNullOrUndefined(obj) {
   return !obj ? true : false
 }
+
+export function isNegative(value) {
+  return value < 0
+}
+
+export function isPositive(value) {
+  return value > 0
+}
