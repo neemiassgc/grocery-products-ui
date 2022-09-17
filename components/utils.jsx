@@ -7,6 +7,9 @@ function formatDate(date) {
 
   return `${prependZeroIfLessThanTen(day)}/${prependZeroIfLessThanTen(month)}/${year}`
 }
+
+function prependZeroIfLessThanTen(number) {
+  return number < 10 ? "0"+number : number;
 }
 
 function formatPrice(price) {
