@@ -109,7 +109,7 @@ export default class DataTable extends Component {
         type: "number",
         headerName: "Price difference",
         renderCell: ({ value }) => {
-          if (!value) return null;
+          if (utils.isNullOrUndefined(value)) return null;
 
           const settings = {
             label:  utils.priceFormatter(value),
@@ -117,7 +117,7 @@ export default class DataTable extends Component {
             icon:  <ImHappy className="text-xl"/>,
           }
 
-          if (value > 0) {
+          if (utils.isPositive(value)) {
             settings.color = "error",
             settings.icon = <ImSad className="text-xl"/> 
           }
