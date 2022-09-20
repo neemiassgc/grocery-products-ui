@@ -85,6 +85,7 @@ export default class DataTable extends Component {
         type: "number",
         headerName: "Current Price",
         valueFormatter: valuePriceFormatter,
+        cellClassName: _ => "text-blue-700 font-bold"
       },
       {
         field: "currentPriceDate",
@@ -97,6 +98,7 @@ export default class DataTable extends Component {
         type: "number",
         headerName: "Previous Price",
         valueFormatter: valuePriceFormatter,
+        cellClassName: _ => "font-bold",
       },
       {
         field: "previousPriceDate",
@@ -123,7 +125,8 @@ export default class DataTable extends Component {
           }
     
           return <Chip label={settings.label} variant="outlined" color={settings.color} icon={settings.icon}/>;
-        }
+        },
+        cellClassName: _ => "font-bold",
       },
     ];
 
@@ -196,7 +199,6 @@ export default class DataTable extends Component {
         paginationMode="server"
         rowCount={this.state.pagination.rowCount}
         loading={this.state.datagrid.isLoading}
-        getRowClassName={_ => "hover:text-purple-700"}
       />
     )
   }
