@@ -5,6 +5,10 @@ import * as utils from "./utils"
 import Chip from "@mui/material/Chip"
 import { ImHappy } from "react-icons/im"
 import { ImSad } from "react-icons/im"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import FormGroup from "@mui/material/FormGroup"
+import Switch from "@mui/material/Switch"
+import Box from "@mui/material/Box"
 
 export default class DataTable extends Component {
   constructor(props) {
@@ -199,7 +203,25 @@ export default class DataTable extends Component {
         paginationMode="server"
         rowCount={this.state.pagination.rowCount}
         loading={this.state.datagrid.isLoading}
+        components={{
+          Toolbar: ServerSideSwitch
+        }}
       />
     )
   }
+}
+
+function ServerSideSwitch() {
+  return (
+    <Box className="p-1">
+      <FormGroup className="w-fit ml-3">
+        <FormControlLabel
+          label="Server side"
+          control={
+            <Switch />
+          }
+        />
+      </FormGroup>
+    </Box>
+  )
 }
