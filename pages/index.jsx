@@ -5,7 +5,7 @@ import Head from "next/head"
 
 function Header() {
   return (
-    <header className="w-full h-8 bg-blue-600 flex items-center justify-center">
+    <header className="w-full bg-blue-500 flex p-3">
     </header>
   )
 }
@@ -36,8 +36,8 @@ export default class App extends Component {
           />
         </Head>
         <Header/>
-        <div className="mt-0 sm:mt-8 flex justify-center">
-          <div className="basis-10/12 h-[37rem] p-3 rounded-md shadow-md">
+        <div className="mt-3 sm:mt-8 flex justify-center">
+          <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2">
             <SearchBar/>
             <DataTable/>
           </div>
