@@ -1,7 +1,10 @@
 import { Component } from "react"
 import DataTable from "../components/datatable"
-import { BsSearch } from "react-icons/bs"
+import TextField from "@mui/material/TextField"
 import Head from "next/head"
+import Box from "@mui/material/Box"
+import InputAdornment from '@mui/material/InputAdornment';
+import { BiBarcodeReader } from "react-icons/bi"
 
 function Header() {
   return (
@@ -12,10 +15,22 @@ function Header() {
 
 function SearchBar() {
   return (
-    <div className="h-10 flex border my-3 rounded-lg">
-      <BsSearch className="p-2 text-3xl text-dark bg-gray-100 h-10 w-10"/>
-      <input className="h-full outline-none p-2 text-dark flex-grow" placeholder="Search by keyword"/>
-    </div>
+    <Box>
+      <TextField
+        id="outlined-basic"
+        label="Search by barcode"
+        variant="outlined"
+        size="small"
+        className="w-full"
+        InputProps={{
+          endAdornment: <InputAdornment position="end">
+            <BiBarcodeReader
+              className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
+            />
+          </InputAdornment>
+        }}
+      />
+    </Box>
   )
 }
 
