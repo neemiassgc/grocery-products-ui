@@ -1,6 +1,6 @@
 const URL = "http://localhost:8080/api/products"
 
-export async function fetchPricesByLink(link) {
+async function fetchPricesByLink(link) {
   return (await fetch(`${link}`)).json()
 }
 
@@ -18,11 +18,11 @@ function cookPrices(rawPrices) {
 }
 
 async function cookProducts(rawProducts) {
-  const productList = rawProducts._embedded.List;
+  const productList = rawProducts.content;
   const productListToReturn = [];
 
   for (const product of productList) {
-    const linkToFetchPrices = product._links.prices.href;
+    const linkToFetchPrices = product.links[0].href;
     const { description, sequenceCode, barcode } = product
     const priceList = cookPrices(await fetchPricesByLink(linkToFetchPrices));
     const {
