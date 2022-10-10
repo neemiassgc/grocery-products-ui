@@ -6,6 +6,7 @@ import Box from "@mui/material/Box"
 import InputAdornment from '@mui/material/InputAdornment';
 import { BiBarcodeReader } from "react-icons/bi"
 import ModalView from "../components/viewmodal"
+import { getTypographyUtilityClass } from "@mui/material"
 
 function Header() {
   return (
@@ -23,6 +24,10 @@ class SearchBar extends Component {
     }
   }
 
+  handleTextField(e) {
+    this.setState({ textFieldValue: e.target.value })
+  }
+
   render() {
     return (
       <Box>
@@ -32,6 +37,8 @@ class SearchBar extends Component {
           variant="outlined"
           size="small"
           className="w-full"
+          value={this.state.textFieldValue}
+          onChange={this.handleTextField.bind(this)}
           InputProps={{
             endAdornment: <InputAdornment position="end">
               <BiBarcodeReader
