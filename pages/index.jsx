@@ -9,8 +9,8 @@ export default class App extends Component {
     super(props);
   }
 
-  handleOpenModal() {
-    this.actions.openModal()
+  handleSearchByBarcode(barcode) {
+    this.actions.searchByBarcode(barcode)
   }
 
   render() {
@@ -27,11 +27,11 @@ export default class App extends Component {
         <header className="w-full bg-blue-500 flex p-3" />
         <div className="mt-3 sm:mt-8 flex justify-center">
           <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2">
-            <SearchBar handleOpenModal={this.handleOpenModal.bind(this)}/>
+            <SearchBar searchByBarcode={this.handleSearchByBarcode.bind(this)}/>
             <DataTable/>
           </div>
         </div>
-        <ModalView modalActions={actions => this.actions = actions} />
+        <ModalView actions={actions => this.actions = actions} />
       </>
     )
   }
