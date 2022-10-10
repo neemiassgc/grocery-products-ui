@@ -1,8 +1,8 @@
 import { Component } from "react"
-import DataTable from "../components/datatable"
 import Head from "next/head"
-import ModalView from "../components/viewmodal"
-import SearchBar from "../components/searchbar"
+import DataTable from "../modules/components/datatable"
+import ModalView from "../modules/components/viewmodal"
+import SearchBar from "../modules/components/searchbar"
 
 function Header() {
   return (

@@ -1,7 +1,7 @@
 import { Component } from "react"
-import * as net from "./net"
+import * as net from "../net"
 import { DataGrid } from '@mui/x-data-grid';
-import * as utils from "./utils"
+import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
 import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
 
