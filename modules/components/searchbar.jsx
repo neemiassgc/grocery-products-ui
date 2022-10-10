@@ -12,7 +12,14 @@ class SearchBar extends Component {
   }
 
   handleTextField(e) {
-    this.setState({ textFieldValue: e.target.value })
+    if (e.target.value.length <= 13)
+      this.setState({ textFieldValue: e.target.value })
+  }
+
+  handleKeyUp({ key }) {
+    if (key === "Enter") {
+      this.props.searchByBarcode(this.state.textFieldValue)
+    }
   }
 
   render() {
@@ -26,11 +33,11 @@ class SearchBar extends Component {
           className="w-full"
           value={this.state.textFieldValue}
           onChange={this.handleTextField.bind(this)}
+          onKeyUp={this.handleKeyUp.bind(this)}
           InputProps={{
             endAdornment: <InputAdornment position="end">
               <BiBarcodeReader
                 className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
-                onClick={this.props.handleOpenModal}
               />
             </InputAdornment>
           }}
