@@ -1,56 +1,14 @@
 import { Component } from "react"
 import DataTable from "../components/datatable"
-import TextField from "@mui/material/TextField"
 import Head from "next/head"
-import Box from "@mui/material/Box"
-import InputAdornment from '@mui/material/InputAdornment';
-import { BiBarcodeReader } from "react-icons/bi"
 import ModalView from "../components/viewmodal"
-import { getTypographyUtilityClass } from "@mui/material"
+import SearchBar from "../components/searchbar"
 
 function Header() {
   return (
     <header className="w-full bg-blue-500 flex p-3">
     </header>
   )
-}
-
-class SearchBar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      textFieldValue: "",
-    }
-  }
-
-  handleTextField(e) {
-    this.setState({ textFieldValue: e.target.value })
-  }
-
-  render() {
-    return (
-      <Box>
-        <TextField
-          id="outlined-basic"
-          label="Search by barcode"
-          variant="outlined"
-          size="small"
-          className="w-full"
-          value={this.state.textFieldValue}
-          onChange={this.handleTextField.bind(this)}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">
-              <BiBarcodeReader
-                className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
-                onClick={this.props.handleOpenModal}
-              />
-            </InputAdornment>
-          }}
-        />
-      </Box>
-    )
-  }
 }
 
 export default class App extends Component {
