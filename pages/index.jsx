@@ -14,26 +14,36 @@ function Header() {
   )
 }
 
-function SearchBar(props) {
-  return (
-    <Box>
-      <TextField
-        id="outlined-basic"
-        label="Search by barcode"
-        variant="outlined"
-        size="small"
-        className="w-full"
-        InputProps={{
-          endAdornment: <InputAdornment position="end">
-            <BiBarcodeReader
-              className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
-              onClick={props.handleOpenModal}
-            />
-          </InputAdornment>
-        }}
-      />
-    </Box>
-  )
+class SearchBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      textFieldValue: "",
+    }
+  }
+
+  render() {
+    return (
+      <Box>
+        <TextField
+          id="outlined-basic"
+          label="Search by barcode"
+          variant="outlined"
+          size="small"
+          className="w-full"
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+              <BiBarcodeReader
+                className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
+                onClick={this.props.handleOpenModal}
+              />
+            </InputAdornment>
+          }}
+        />
+      </Box>
+    )
+  }
 }
 
 export default class App extends Component {
