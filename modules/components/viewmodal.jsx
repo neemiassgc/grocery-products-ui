@@ -36,6 +36,24 @@ class DialogView extends Component {
     this.setState({ open: false })
   }
 
+  chooseSeverityByStatus() {
+    return this.state.request.status === 200 ?
+      {
+        severity: "info",
+        msg: "Product is already exist!"
+      }
+      : this.state.request.status === 201 ?
+      {
+        severity: "success",
+        msg: "Product created!"
+      }
+      :
+      {
+        severity: "error",
+        msg: "Product not found!"
+      }
+  }
+
   render() {
     return (
       <>
