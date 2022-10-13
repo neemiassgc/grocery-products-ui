@@ -19,10 +19,6 @@ export default class App extends Component {
         <Head>
           <title>Saveg Local Market</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" 
-          />
         </Head>
         <header className="w-full bg-blue-500 flex p-3" />
         <div className="mt-3 sm:mt-8 flex justify-center">
