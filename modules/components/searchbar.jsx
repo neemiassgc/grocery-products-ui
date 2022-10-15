@@ -8,6 +8,8 @@ class SearchBar extends Component {
 
     this.state = {
       textFieldValue: "",
+      textFieldError: false,
+      textFieldErrorMsg: "",
     }
   }
 
