@@ -8,6 +8,10 @@ async function fetchPagedProducts({ page, pageSize }) {
   return (await fetch(`${URL}?pag=${page}-${pageSize}`)).json()
 }
 
+async function fetchByBarcode(barcode) {
+  return (await fetch(`${URL}/${barcode}`));
+}
+
 function cookPrices(rawPrices) {
   return {
     currentPrice: rawPrices[0].value,
