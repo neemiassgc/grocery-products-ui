@@ -34,6 +34,8 @@ class SearchBar extends Component {
   }
 
   handleTextField(e) {
+    this.setTextFieldErrorMsg("");
+    this.setTextFieldError(false)
     if (e.target.value.length <= 13)
       this.setState({ textFieldValue: e.target.value })
   }
