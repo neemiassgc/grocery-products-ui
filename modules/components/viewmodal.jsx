@@ -61,6 +61,18 @@ class DialogView extends Component {
       }
     })
   }
+
+  setContentStatus(status) {
+    this.setState(prev => {
+      return {
+        content: {
+          body: prev.content.body,
+          status,
+        }
+      }
+    })
+  }
+
   openModal() {
     this.setState({ open: true })
   }
