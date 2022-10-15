@@ -21,30 +21,32 @@ function cookPrices(rawPrices) {
   }
 }
 
+async function cookProduct(rawProduct) {
+  const linkToFetchPrices = rawProduct.links[0].href;
+  const { description, sequenceCode, barcode } = rawProduct
+  const priceList = cookPrices(await fetchPricesByLink(linkToFetchPrices));
+  const {
+    currentPrice, currentPriceDate,
+    previousPrice, previousPriceDate,
+  } = priceList;
+
+  return {
+    description,
+    sequenceCode,
+    barcode,
+    currentPrice,
+    currentPriceDate: new Date(currentPriceDate),
+    previousPrice: previousPrice ?? 0,
+    previousPriceDate: previousPriceDate ? new Date(previousPriceDate) : null,
+    priceDifference: previousPrice ? (currentPrice - previousPrice).toFixed(2) : null
+  }
+}
+
 async function cookProducts(rawProducts) {
-  const productList = rawProducts.content;
   const productListToReturn = [];
 
-  for (const product of productList) {
-    const linkToFetchPrices = product.links[0].href;
-    const { description, sequenceCode, barcode } = product
-    const priceList = cookPrices(await fetchPricesByLink(linkToFetchPrices));
-    const {
-      currentPrice, currentPriceDate,
-      previousPrice, previousPriceDate,
-    } = priceList;
-
-    productListToReturn.push({
-      description,
-      sequenceCode,
-      barcode,
-      currentPrice,
-      currentPriceDate: new Date(currentPriceDate),
-      previousPrice: previousPrice ?? 0,
-      previousPriceDate: previousPriceDate ? new Date(previousPriceDate) : null,
-      priceDifference: previousPrice ? (currentPrice - previousPrice).toFixed(2) : null
-    })
-  }
+  for (const product of rawProducts.content)
+    productListToReturn.push(await cookProduct(product));
 
   return productListToReturn;
 }
