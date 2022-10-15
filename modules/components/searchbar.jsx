@@ -51,6 +51,8 @@ class SearchBar extends Component {
           id="outlined-basic"
           label="Search by barcode"
           variant="outlined"
+          error={this.state.textFieldError}
+          helperText={this.state.textFieldErrorMsg}
           size="small"
           className="w-full"
           value={this.state.textFieldValue}
