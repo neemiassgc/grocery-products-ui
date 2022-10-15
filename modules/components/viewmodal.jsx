@@ -50,6 +50,17 @@ class DialogView extends Component {
   setIsLoading(flag) {
     this.setState({ isLoading: flag })
   }
+
+  setContentBody(body) {
+    this.setState(prev => {
+      return {
+        content: {
+          body,
+          status: prev.content.status,
+        }
+      }
+    })
+  }
   openModal() {
     this.setState({ open: true })
   }
