@@ -47,6 +47,9 @@ class DialogView extends Component {
       .catch(console.error)
   }
 
+  setIsLoading(flag) {
+    this.setState({ isLoading: flag })
+  }
   openModal() {
     this.setState({ open: true })
   }
