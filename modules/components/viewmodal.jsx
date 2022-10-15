@@ -83,21 +83,27 @@ class DialogView extends Component {
   }
 
   chooseSeverityByStatus() {
-    return this.state.request.status === 200 ?
-      {
-        severity: "info",
-        msg: "Product is already exist!"
-      }
-      : this.state.request.status === 201 ?
-      {
-        severity: "success",
-        msg: "Product created!"
-      }
-      :
-      {
-        severity: "error",
-        msg: "Product not found!"
-      }
+    let object;
+    switch (this.state.content.status) {
+      case 200:
+        object = {
+          severity: "info",
+          msg: "Product is already exist!"
+        }
+        break;
+      case 201:
+        object = {
+          severity: "success",
+          msg: "Product created!"
+        }
+        break;
+      default:
+        object = {
+          severity: "error",
+          msg: "Product not found!"
+        }
+    }
+    return object;
   }
 
   render() {
@@ -113,8 +119,8 @@ class DialogView extends Component {
           className="bg-transparent"
         >
           <DialogTitle>
-            <Alert severity="error" variant="filled">
-              <AlertTitle>Product is already exist!</AlertTitle>
+            <Alert severity={this.chooseSeverityByStatus().severity} variant="filled">
+              <AlertTitle>{this.chooseSeverityByStatus().msg}</AlertTitle>
             </Alert>
           </DialogTitle>
           <DialogContent dividers={true}>
