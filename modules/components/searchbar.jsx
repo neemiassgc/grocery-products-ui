@@ -12,6 +12,11 @@ class SearchBar extends Component {
       textFieldErrorMsg: "",
     }
 
+    this.props.actions({ 
+      showError: this.handleError.bind(this)
+    })
+  }
+
   setTextFieldError(flag) {
     this.setState({ textFieldError: flag })
   }
@@ -19,6 +24,13 @@ class SearchBar extends Component {
   setTextFieldErrorMsg(msg) {
     this.setState({ textFieldErrorMsg: msg })
   }
+
+  handleError(violations) {
+    const errorFeedback =
+      violations.map(violation => violation.violationMessage).join(" | ");
+
+    this.setTextFieldErrorMsg(errorFeedback);
+    this.setTextFieldError(true);
   }
 
   handleTextField(e) {
