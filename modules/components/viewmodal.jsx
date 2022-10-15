@@ -128,24 +128,25 @@ class DialogView extends Component {
               <ListItem className="flex gap-0">
                 <ListItemIcon className="shrink"><MdDescription className="text-2xl"/></ListItemIcon>
                 <ListItemText className="basis-1/2" primary="Description"/>
-                <ListItemText className="basis-1/2" primary="Something"/>
+                <ListItemText className="basis-1/2" primary={this.state.content.body?.description}/>
               </ListItem>
               <ListItem className="flex gap-0">
                 <ListItemIcon className="shrink"><AiOutlineBarcode className="text-2xl"/></ListItemIcon>
                 <ListItemText className="basis-1/2" primary="Barcode"/>
-                <ListItemText className="basis-1/2" primary="1872083740192"/>
+                <ListItemText className="basis-1/2" primary={this.state.content.body?.barcode}/>
               </ListItem>
               <ListItem className="flex gap-0">
                 <ListItemIcon className="shrink"><SiCoderwall className="text-2xl"/></ListItemIcon>
                 <ListItemText className="basis-1/2" primary="Sequence code"/>
-                <ListItemText className="basis-1/2" primary="1234"/>
+                <ListItemText className="basis-1/2" primary={this.state.content.body?.sequenceCode}/>
               </ListItem>
               <ListItem className="flex gap-0">
                 <ListItemIcon className="shrink"><GiPriceTag className="text-2xl"/></ListItemIcon>
                 <ListItemText className="basis-1/2" primary="Price"/>
-                <ListItemText className="basis-1/2" primary="R$ 16,45"/>
+                <ListItemText className="basis-1/2" primary={this.state.content.body?.currentPrice}/>
               </ListItem>
             </List>
+          }
           </DialogContent>
           <DialogActions>
             <Button className="float-right" onClick={this.closeModal.bind(this)}>Close</Button>
