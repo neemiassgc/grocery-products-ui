@@ -15,6 +15,10 @@ class SearchBar extends Component {
   setTextFieldError(flag) {
     this.setState({ textFieldError: flag })
   }
+
+  setTextFieldErrorMsg(msg) {
+    this.setState({ textFieldErrorMsg: msg })
+  }
   }
 
   handleTextField(e) {
