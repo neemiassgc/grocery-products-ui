@@ -51,11 +51,32 @@ async function cookProducts(rawProducts) {
   return productListToReturn;
 }
 
+export function getByBarcode(barcode) {
+  return new Promise((resolve, reject) => {
+    fetchByBarcode(barcode)
+      .then(async response => {
+        let body;
+        if (response.status === 201 || response.status === 200)
+          body = await cookProduct(await response.json());
+        else if (response.status === 400)
+          body = await response.json();
+        else if (response.status === 404)
+          body = await response.text();
+
+        resolve({
+          status: response.status,
+          body,
+        })
+      })
+      .catch(reject)
+  })
+}
+
 export function getPagedProducts(pagination) {
   return new Promise((resolve, reject) => {
     fetchPagedProducts(pagination)
       .then(async jsonData => {
-        return resolve({
+        resolve({
           products: await cookProducts(jsonData),
           rowCount: jsonData.totalOfItems,
         })
