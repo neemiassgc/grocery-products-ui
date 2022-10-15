@@ -10,6 +10,7 @@ import { SiCoderwall } from "react-icons/si"
 import { GiPriceTag } from "react-icons/gi"
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import { getByBarcode } from "../net"
 
 class DialogView extends Component {
 
@@ -25,12 +26,26 @@ class DialogView extends Component {
       }
     }
 
-    props.modalActions({
-      openModal: this.openModal.bind(this),
-      closeModal: this.closeModal.bind(this),
+    props.actions({
+      searchByBarcode: this.searchByBarcode.bind(this),
     })
   }
 
+  searchByBarcode(barcode) {
+    this.setIsLoading(true);
+    getByBarcode(barcode)
+      .then(({ body, status}) => {
+        this.setContentBody(body);
+        this.setContentStatus(status);
+
+        if (status === 400) {
+          this.setIsLoading(false);
+          this.props.showFieldError(body.violations)
+        }
+        else this.openModal();
+      })
+      .catch(console.error)
+  }
 
   openModal() {
     this.setState({ open: true })
