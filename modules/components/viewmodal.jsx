@@ -1,5 +1,5 @@
 import { Component } from "react"
-import { Dialog, DialogContent, DialogTitle, DialogActions, Button, Alert, AlertTitle } from "@mui/material"
+import { Dialog, DialogContent, DialogTitle, DialogActions, Button, Alert, AlertTitle, Box } from "@mui/material"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
@@ -11,6 +11,7 @@ import { GiPriceTag } from "react-icons/gi"
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { getByBarcode } from "../net"
+import { BiError } from "react-icons/bi"
 
 class DialogView extends Component {
 
@@ -123,7 +124,12 @@ class DialogView extends Component {
               <AlertTitle>{this.chooseSeverityByStatus().msg}</AlertTitle>
             </Alert>
           </DialogTitle>
-          <DialogContent dividers={true}>
+          <DialogContent dividers={this.state.content.status !== 404}>
+          {
+            this.state.content.status === 404 ?
+            <Box className="flex justify-center p-2">
+              <BiError className="text-9xl text-black"/>
+            </Box> :
             <List>
               <ListItem className="flex gap-0">
                 <ListItemIcon className="shrink"><MdDescription className="text-2xl"/></ListItemIcon>
