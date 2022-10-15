@@ -19,6 +19,10 @@ class DialogView extends Component {
     this.state = {
       isLoading: false,
       open: false,
+      content: {
+        body: null,
+        status: null,
+      }
     }
 
     props.modalActions({
