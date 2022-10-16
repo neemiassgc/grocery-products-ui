@@ -12,7 +12,8 @@ export default class App extends Component {
   }
 
   handleSearchByBarcode(barcode) {
-    this.actions.searchByBarcode(barcode)
+    this.actions.modalView.searchByBarcode(barcode)
+  }
   }
 
   render() {
@@ -25,8 +26,8 @@ export default class App extends Component {
         <header className="w-full bg-blue-500 flex p-3" />
         <div className="mt-3 sm:mt-8 flex justify-center">
           <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2">
-            <SearchBar searchByBarcode={this.handleSearchByBarcode.bind(this)}/>
             <SearchBar
+              searchByBarcode={this.handleSearchByBarcode.bind(this)}
               actions={actions => this.actions.searchBar = actions}
             />
             <DataTable/>
