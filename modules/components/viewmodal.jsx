@@ -1,17 +1,25 @@
 import { Component } from "react"
-import { Dialog, DialogContent, DialogTitle, DialogActions, Button, Alert, AlertTitle, Box } from "@mui/material"
+import Box from "@mui/material/Box"
+import Dialog from "@mui/material/Dialog"
+import DialogTitle from "@mui/material/DialogTitle"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import Button from "@mui/material/Button"
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import ListItemIcon from "@mui/material/ListItemIcon"
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 import { MdDescription } from "react-icons/md"
 import { AiOutlineBarcode } from "react-icons/ai"
 import { SiCoderwall } from "react-icons/si"
 import { GiPriceTag } from "react-icons/gi"
-import CircularProgress from '@mui/material/CircularProgress';
-import Backdrop from '@mui/material/Backdrop';
 import { getByBarcode } from "../net"
 import { BiError } from "react-icons/bi"
+import { status as statusChecker } from "../utils"
 
 class DialogView extends Component {
 
@@ -19,7 +27,7 @@ class DialogView extends Component {
     super(props)
 
     this.state = {
-      isLoading: false,
+      loading: false,
       open: false,
       content: {
         body: null,
@@ -33,14 +41,14 @@ class DialogView extends Component {
   }
 
   searchByBarcode(barcode) {
-    this.setIsLoading(true);
+    this.showLoading();
     getByBarcode(barcode)
-      .then(({ body, status}) => {
+      .then(({ body, status }) => {
         this.setContentBody(body);
         this.setContentStatus(status);
 
-        if (status === 400) {
-          this.setIsLoading(false);
+        if (statusChecker.isBadRequest(status)) {
+          this.suppressLoading();
           this.props.showFieldError(body.violations)
         }
         else this.openModal();
@@ -48,69 +56,66 @@ class DialogView extends Component {
       .catch(console.error)
   }
 
-  setIsLoading(flag) {
-    this.setState({ isLoading: flag })
+  showLoading() {
+    this.setState({ loading: true })
+  }
+
+  suppressLoading() {
+    this.setState({ loading: false })
   }
 
   setContentBody(body) {
-    this.setState(prev => {
-      return {
-        content: {
-          body,
-          status: prev.content.status,
-        }
-      }
-    })
+    this.setContentState({ body })
   }
 
   setContentStatus(status) {
-    this.setState(prev => {
+    this.setContentState({ status })
+  }
+
+  setContentState(property)  {
+    this.setState(prevState => {
+      const [ firstProp ] = Object.keys(property)
+      prevState.content[firstProp] = property[firstProp]
       return {
-        content: {
-          body: prev.content.body,
-          status,
-        }
+        content: prevState.content,
       }
     })
   }
 
   openModal() {
-    this.setIsLoading(false);
     this.setState({ open: true });
   }
 
-  closeModal() {
+  closeModalAndSuppressLoading() {
+    this.suppressLoading();
     this.setState({ open: false })
   }
 
   chooseSeverityByStatus() {
-    let object;
-    switch (this.state.content.status) {
-      case 200:
-        object = {
-          severity: "info",
-          msg: "Product is already exist!"
-        }
-        break;
-      case 201:
-        object = {
-          severity: "success",
-          msg: "Product created!"
-        }
-        break;
-      default:
-        object = {
-          severity: "error",
-          msg: "Product not found!"
-        }
+    const { status } = this.state.content;
+
+    if (statusChecker.isOk(status))
+      return  {
+        severity: "info",
+        msg: "Product is already exist!"
+      }
+
+    if (statusChecker.isCreated(status))
+      return {
+        severity: "success",
+        msg: "Product created!"
+      }
+
+    return {
+      severity: "error",
+      msg: "Product not found!"
     }
-    return object;
   }
 
   render() {
     return (
       <>
-        <Backdrop className="z-10" open={this.state.isLoading}>
+        <Backdrop className="z-10" open={this.state.loading}>
           <CircularProgress/>
         </Backdrop>
         <Dialog
@@ -155,7 +160,7 @@ class DialogView extends Component {
           }
           </DialogContent>
           <DialogActions>
-            <Button className="float-right" onClick={this.closeModal.bind(this)}>Close</Button>
+            <Button className="float-right" onClick={this.closeModalAndSuppressLoading.bind(this)}>Close</Button>
           </DialogActions>
         </Dialog>
       </>
