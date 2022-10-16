@@ -1,3 +1,7 @@
+import { status as statusChecker } from "./utils"
+
+const { isOk, isCreated, isBadRequest, isNotFound } = statusChecker
+
 const URL = "http://localhost:8080/api/products"
 
 async function fetchPricesByLink(link) {
@@ -54,17 +58,19 @@ async function cookProducts(rawProducts) {
 export function getByBarcode(barcode) {
   return new Promise((resolve, reject) => {
     fetchByBarcode(barcode)
-      .then(async response => {
+      .then(async response  => {
+        const { status } = response;
         let body;
-        if (response.status === 201 || response.status === 200)
+
+        if (isOk(status) || isCreated(status))
           body = await cookProduct(await response.json());
-        else if (response.status === 400)
+        else if (isBadRequest(status))
           body = await response.json();
-        else if (response.status === 404)
+        else if (isNotFound(status))
           body = await response.text();
 
         resolve({
-          status: response.status,
+          status,
           body,
         })
       })
