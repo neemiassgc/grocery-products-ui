@@ -33,10 +33,12 @@ class SearchBar extends Component {
   }
 
   handleTextField({ target: { value } }) {
-    this.setInputErrorContent("");
-    this.setInputError(false)
-    if (value.length <= 13)
-      this.setInputValue(value)
+    if (this.state.input.error) {
+      this.setInputErrorContent("");
+      this.setInputError(false)
+    }
+
+    if (value.length <= 13) this.setInputValue(value)
   }
 
   setInputError(error) {
@@ -61,8 +63,15 @@ class SearchBar extends Component {
   }
 
   handleKeyUp({ key }) {
-    if (key === "Enter")
+    if (key === "Enter") {
+      if (this.state.input.value.length === 0) {
+        this.handleError([{
+            violationMessage: "barcode cannot be empty"
+        }])
+        return;
+      }
       this.props.searchByBarcode(this.state.input.value)
+    }
   }
 
   render() {
