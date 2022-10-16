@@ -44,3 +44,13 @@ export function isNegative(value) {
 export function isPositive(value) {
   return value > 0
 }
+
+export const status = {
+    isOk: statusCode => statusCode === 200,
+    
+    isNotFound: statusCode => statusCode === 404,
+    
+    isBadRequest: statusCode => statusCode === 400,
+    
+    isCreated: statusCode => statusCode === 201,
+}
