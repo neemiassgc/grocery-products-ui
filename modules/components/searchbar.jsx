@@ -1,4 +1,8 @@
 import { Box, InputAdornment, TextField } from "@mui/material"
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
 import { Component } from "react"
 
@@ -26,8 +30,8 @@ class SearchBar extends Component {
   }
 
   handleError(violations) {
-    const errorFeedback =
-      violations.map(violation => violation.violationMessage).join(" | ");
+    const errorFeedback = violations
+      .map(violation => <p>{violation.violationMessage}</p>)
 
     this.setTextFieldErrorMsg(errorFeedback);
     this.setTextFieldError(true);
@@ -49,25 +53,34 @@ class SearchBar extends Component {
   render() {
     return (
       <Box>
-        <TextField
-          id="outlined-basic"
-          label="Search by barcode"
-          variant="outlined"
+        <FormControl
+          variant="outlined" className="w-full"
           error={this.state.textFieldError}
-          helperText={this.state.textFieldErrorMsg}
           size="small"
-          className="w-full"
-          value={this.state.textFieldValue}
-          onChange={this.handleTextField.bind(this)}
-          onKeyUp={this.handleKeyUp.bind(this)}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">
-              <BiBarcodeReader
-                className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
-              />
-            </InputAdornment>
-          }}
-        />
+        >
+          <InputLabel htmlFor="my-input">Search by barcode</InputLabel>
+          <OutlinedInput
+            id="my-input"
+            className="w-full"
+            label="Search by barcode"
+            endAdornment={
+              <InputAdornment position="end">
+                <BiBarcodeReader
+                  className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
+                />
+              </InputAdornment>
+            }
+            onKeyUp={this.handleKeyUp.bind(this)}
+            onChange={this.handleTextField.bind(this)}
+            value={this.state.textFieldValue}
+          />
+          {
+            this.state.textFieldError &&
+            <FormHelperText className="font-medium">
+              {this.state.textFieldErrorMsg}
+            </FormHelperText>
+          }
+        </FormControl>
       </Box>
     )
   }
