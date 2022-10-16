@@ -14,6 +14,9 @@ export default class App extends Component {
   handleSearchByBarcode(barcode) {
     this.actions.modalView.searchByBarcode(barcode)
   }
+
+  handleShowError(violations) {
+    this.actions.searchBar.showError(violations);
   }
 
   render() {
@@ -33,7 +36,7 @@ export default class App extends Component {
             <DataTable/>
           </div>
         </div>
-        <ModalView actions={actions => this.actions = actions} />
+        <ModalView showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.modalView = actions} />
       </>
     )
   }
