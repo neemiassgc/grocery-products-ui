@@ -12,9 +12,11 @@ class SearchBar extends Component {
     super(props);
 
     this.state = {
-      textFieldValue: "",
-      textFieldError: false,
-      textFieldErrorMsg: "",
+      input: {
+        error: false,
+        value: "",
+        errorContent: "",
+      }
     }
 
     this.props.actions({ 
@@ -22,33 +24,45 @@ class SearchBar extends Component {
     })
   }
 
-  setTextFieldError(flag) {
-    this.setState({ textFieldError: flag })
-  }
-
-  setTextFieldErrorMsg(msg) {
-    this.setState({ textFieldErrorMsg: msg })
-  }
-
   handleError(violations) {
     const errorFeedback = violations
       .map(violation => <p>{violation.violationMessage}</p>)
 
-    this.setTextFieldErrorMsg(errorFeedback);
-    this.setTextFieldError(true);
+    this.setInputErrorContent(errorFeedback);
+    this.setInputError(true);
   }
 
-  handleTextField(e) {
-    this.setTextFieldErrorMsg("");
-    this.setTextFieldError(false)
-    if (e.target.value.length <= 13)
-      this.setState({ textFieldValue: e.target.value })
+  handleTextField({ target: { value } }) {
+    this.setInputErrorContent("");
+    this.setInputError(false)
+    if (value.length <= 13)
+      this.setInputValue(value)
+  }
+
+  setInputError(error) {
+    this.setInputState("error", error);
+  }
+
+  setInputErrorContent(errorContent) {
+    this.setInputState("errorContent", errorContent);
+  }
+
+  setInputValue(value) {
+    this.setInputState("value", value);
+  }
+
+  setInputState(key, value) {
+    this.setState(prevState => {
+      prevState.input[key] = value
+      return {
+        input: prevState.input
+      }
+    })
   }
 
   handleKeyUp({ key }) {
-    if (key === "Enter") {
-      this.props.searchByBarcode(this.state.textFieldValue)
-    }
+    if (key === "Enter")
+      this.props.searchByBarcode(this.state.input.value)
   }
 
   render() {
@@ -56,7 +70,7 @@ class SearchBar extends Component {
       <Box>
         <FormControl
           variant="outlined" className="w-full"
-          error={this.state.textFieldError}
+          error={this.state.input.error}
           size="small"
         >
           <InputLabel htmlFor="my-input">Search by barcode</InputLabel>
@@ -73,12 +87,12 @@ class SearchBar extends Component {
             }
             onKeyUp={this.handleKeyUp.bind(this)}
             onChange={this.handleTextField.bind(this)}
-            value={this.state.textFieldValue}
+            value={this.state.input.value}
           />
           {
-            this.state.textFieldError &&
+            this.state.input.error &&
             <FormHelperText className="font-medium">
-              {this.state.textFieldErrorMsg}
+              {this.state.input.errorContent}
             </FormHelperText>
           }
         </FormControl>
