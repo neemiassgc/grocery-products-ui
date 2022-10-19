@@ -45,6 +45,10 @@ export function isPositive(value) {
   return value > 0
 }
 
+export function isANumber(number) {
+  return /^\d*$/.test(number+"");
+}
+
 export const status = {
     isOk: statusCode => statusCode === 200,
     
