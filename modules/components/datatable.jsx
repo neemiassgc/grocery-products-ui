@@ -70,6 +70,7 @@ export default class DataTable extends Component {
       },
       {
         field: "sequenceCode",
+        filterable: false,
         type: "number",
         headerName: "Sequence Code",
         valueFormatter: null,
@@ -81,6 +82,7 @@ export default class DataTable extends Component {
       },
       {
         field: "currentPrice",
+        filterable: false,
         type: "number",
         headerName: "Current Price",
         valueFormatter: valuePriceFormatter,
@@ -88,12 +90,14 @@ export default class DataTable extends Component {
       },
       {
         field: "currentPriceDate",
+        filterable: false,
         type: "string",
         headerName: "Current Price Date",
         valueFormatter: valueDateformatter,
       },
       {
         field: "previousPrice",
+        filterable: false,
         type: "number",
         headerName: "Previous Price",
         valueFormatter: valuePriceFormatter,
@@ -101,6 +105,7 @@ export default class DataTable extends Component {
       },
       {
         field: "previousPriceDate",
+        filterable: false,
         type: "string",
         headerName: "Previous Price Date",
         valueFormatter: valueDateformatter,
@@ -108,6 +113,7 @@ export default class DataTable extends Component {
       {
         field: "priceDifference",
         type: "number",
+        filterable: false,
         headerName: "Price difference",
         renderCell: ({ value }) => {
           if (utils.isNullOrUndefined(value)) return null;
