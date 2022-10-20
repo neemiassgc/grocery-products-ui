@@ -1,6 +1,6 @@
 import { Component } from "react"
 import * as net from "../net"
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, getGridStringOperators } from '@mui/x-data-grid';
 import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
 import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
@@ -67,6 +67,9 @@ export default class DataTable extends Component {
         field: "description",
         type: "string",
         headerName: "Description",
+        filterOperators: getGridStringOperators().filter(({ value }) =>
+          ["contains", "equals", "startsWith", "endsWith"].includes(value)
+        )
       },
       {
         field: "sequenceCode",
@@ -79,6 +82,9 @@ export default class DataTable extends Component {
         field: "barcode",
         type: "string",
         headerName: "Barcode",
+        filterOperators: getGridStringOperators().filter(
+          ({ value }) => value === "contains"
+        )
       },
       {
         field: "currentPrice",
@@ -185,6 +191,10 @@ export default class DataTable extends Component {
       .catch(console.error)
   }
 
+  handleFilterModalChange(filter) {
+    console.log(filter)
+  }
+
   render() {
     return (
       <DataGrid
@@ -198,6 +208,7 @@ export default class DataTable extends Component {
         rowsPerPageOptions={[5, 10, 15, 20, 30]}
         onPageChange={this.setPageAndLoadData.bind(this)}
         onPageSizeChange={this.setPageSizeAndLoadData.bind(this)}
+        onFilterModelChange={this.handleFilterModalChange.bind(this)}
         page={this.state.pagination.page}
         pageSize={this.state.pagination.pageSize}
         pagination={true}
