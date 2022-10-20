@@ -6,6 +6,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
 import { Component } from "react"
+import { isANumber } from '../utils'
 
 class SearchBar extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class SearchBar extends Component {
       this.setInputError(false)
     }
 
-    if (value.length <= 13) this.setInputValue(value)
+    if (value.length <= 13 && isANumber(value)) this.setInputValue(value)
   }
 
   setInputError(error) {
