@@ -10,7 +10,6 @@ import AlertTitle from "@mui/material/AlertTitle"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
-import ListItemIcon from "@mui/material/ListItemIcon"
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { MdDescription } from "react-icons/md"
@@ -136,25 +135,33 @@ class DialogView extends Component {
               <BiError className="text-9xl text-black"/>
             </Box> :
             <List>
-              <ListItem className="flex gap-0">
-                <ListItemIcon className="shrink"><MdDescription className="text-2xl"/></ListItemIcon>
-                <ListItemText className="basis-1/2" primary="Description"/>
-                <ListItemText className="basis-1/2" primary={this.state.content.body?.description}/>
+              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start">
+                <Box>
+                  <MdDescription className="text-2xl mr-3 inline-block align-middle"/>
+                  <ListItemText className="inline-block align-middle" primary="Description"/>
+                </Box>
+                <ListItemText primary={this.state.content.body?.description}></ListItemText>
               </ListItem>
-              <ListItem className="flex gap-0">
-                <ListItemIcon className="shrink"><AiOutlineBarcode className="text-2xl"/></ListItemIcon>
-                <ListItemText className="basis-1/2" primary="Barcode"/>
-                <ListItemText className="basis-1/2" primary={this.state.content.body?.barcode}/>
+              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
+                <Box>
+                  <AiOutlineBarcode className="text-2xl mr-3 inline-block align-middle"/>
+                  <ListItemText className="inline-block align-middle" primary="Barcode"/>
+                </Box>
+                <ListItemText primary={this.state.content.body?.barcode}></ListItemText>
               </ListItem>
-              <ListItem className="flex gap-0">
-                <ListItemIcon className="shrink"><SiCoderwall className="text-2xl"/></ListItemIcon>
-                <ListItemText className="basis-1/2" primary="Sequence code"/>
-                <ListItemText className="basis-1/2" primary={this.state.content.body?.sequenceCode}/>
+              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
+                <Box>
+                  <SiCoderwall className="text-2xl mr-3 inline-block align-middle"/>
+                  <ListItemText className="inline-block align-middle" primary="Sequence code"/>
+                </Box>
+                <ListItemText primary={this.state.content.body?.sequenceCode}></ListItemText>
               </ListItem>
-              <ListItem className="flex gap-0">
-                <ListItemIcon className="shrink"><GiPriceTag className="text-2xl"/></ListItemIcon>
-                <ListItemText className="basis-1/2" primary="Price"/>
-                <ListItemText className="basis-1/2" primary={this.state.content.body?.currentPrice}/>
+              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
+                <Box>
+                  <GiPriceTag className="text-2xl mr-3 inline-block align-middle"/>
+                  <ListItemText className="inline-block align-middle" primary="Current price"/>
+                </Box>
+                <ListItemText primary={this.state.content.body?.currentPrice}></ListItemText>
               </ListItem>
             </List>
           }
