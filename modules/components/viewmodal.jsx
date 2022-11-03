@@ -91,21 +91,18 @@ class DialogView extends Component {
   }
 
   chooseSeverityByStatus() {
-    const { status } = this.state.content;
-
-    if (statusChecker.isOk(status))
-      return  {
+    const options = {
+      200: {
         severity: "info",
         msg: "Product is already exist!"
-      }
-
-    if (statusChecker.isCreated(status))
-      return {
+      },
+      201:  {
         severity: "success",
         msg: "Product created!"
       }
+    }
 
-    return {
+    return options[this.state.content.status] ?? {
       severity: "error",
       msg: "Product not found!"
     }
