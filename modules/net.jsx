@@ -8,7 +8,7 @@ async function fetchPricesByLink(link) {
   return (await fetch(`${link}`)).json()
 }
 
-async function fetchPagedProducts({ page, pageSize }) {
+async function fetchProducts({ page, pageSize }) {
   return (await fetch(`${URL}?pag=${page}-${pageSize}`)).json()
 }
 
@@ -80,7 +80,7 @@ export function getByBarcode(barcode) {
 
 export function getPagedProducts(pagination) {
   return new Promise((resolve, reject) => {
-    fetchPagedProducts(pagination)
+    fetchProducts(pagination)
       .then(async jsonData => {
         resolve({
           products: await cookProducts(jsonData),
