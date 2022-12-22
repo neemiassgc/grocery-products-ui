@@ -8,20 +8,24 @@ async function fetchPricesByLink(link) {
   return (await fetch(`${link}`)).json()
 }
 
-async function fetchProducts({ page, pageSize }) {
-  return (await fetch(`${URL}?pag=${page}-${pageSize}`)).json()
+async function fetchProducts(pagination) {
+  return makeRequestQuery(pagination)
 }
 
-async function fetchProductsContaining({ page, pageSize }, contains) {
-  return (await fetch(`${URL}?pag=${page}-${pageSize}&contains=${contains}`)).json()
+async function fetchProductsContaining(pagination, contains) {
+  return makeRequestQuery(pagination, "&contains="+contains)
 }
 
-async function fetchProductsStartingWith({ page, pageSize }, startsWith) {
-  return (await fetch(`${URL}?pag=${page}-${pageSize}&starts-with=${startsWith}`)).json()
+async function fetchProductsStartingWith(pagination, startsWith) {
+  return makeRequestQuery(pagination, "&starts-with="+startsWith);
 }
 
-async function fetchProductsEndingWith({ page, pageSize }, endsWith) {
-  return (await fetch(`${URL}?pag=${page}-${pageSize}&ends-with=${endsWith}`)).json()
+async function fetchProductsEndingWith(pagination, endsWith) {
+  return makeRequestQuery(pagination, "&ends-with="+endsWith);
+}
+
+async function makeRequestQuery({ page, pageSize }, filterParam) {
+  return (await fetch(`${URL}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
 }
 
 async function fetchByBarcode(barcode) {
