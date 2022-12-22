@@ -12,6 +12,9 @@ async function fetchProducts({ page, pageSize }) {
   return (await fetch(`${URL}?pag=${page}-${pageSize}`)).json()
 }
 
+async function fetchProductsContaining({ page, pageSize }, contains) {
+  return (await fetch(`${URL}?pag=${page}-${pageSize}&contains=${contains}`)).json()
+}
 async function fetchByBarcode(barcode) {
   return (await fetch(`${URL}/${barcode}`));
 }
