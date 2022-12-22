@@ -78,15 +78,11 @@ export function getByBarcode(barcode) {
   })
 }
 
-export function getPagedProducts(pagination) {
-  return new Promise((resolve, reject) => {
-    fetchProducts(pagination)
-      .then(async jsonData => {
-        resolve({
-          products: await cookProducts(jsonData),
-          rowCount: jsonData.totalOfItems,
-        })
-      })
-      .catch(reject)
-  })
+export async function getProducts(pagination) {
+  const jsonData = await fetchProducts(pagination);
+
+  return {
+    products: await cookProducts(jsonData),
+    rowCount: jsonData.totalOfItems,
+  }
 }

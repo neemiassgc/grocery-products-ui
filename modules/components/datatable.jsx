@@ -182,7 +182,7 @@ export default class DataTable extends Component {
       pageSize = this.state.pagination.pageSize,
     } = pagination
 
-    net.getPagedProducts({ page, pageSize })
+    net.getProducts({ page, pageSize })
       .then(({ products, rowCount }) => {
         this.setProducts(products);
         this.setIsLoading(false);
