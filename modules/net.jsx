@@ -55,27 +55,23 @@ async function cookProducts(rawProducts) {
   return productListToReturn;
 }
 
-export function getByBarcode(barcode) {
-  return new Promise((resolve, reject) => {
-    fetchByBarcode(barcode)
-      .then(async response  => {
-        const { status } = response;
-        let body;
+export async function getByBarcode(barcode) {
+  const response = await fetchByBarcode(barcode);
 
-        if (isOk(status) || isCreated(status))
-          body = await cookProduct(await response.json());
-        else if (isBadRequest(status))
-          body = await response.json();
-        else if (isNotFound(status))
-          body = await response.text();
+  const { status } = response;
+  let body;
 
-        resolve({
-          status,
-          body,
-        })
-      })
-      .catch(reject)
-  })
+  if (isOk(status) || isCreated(status))
+    body = await cookProduct(await response.json());
+  else if (isBadRequest(status))
+    body = await response.json();
+  else if (isNotFound(status))
+    body = await response.text();
+
+  return {
+    status,
+    body
+  }
 }
 
 export async function getProducts(pagination) {
