@@ -94,6 +94,9 @@ export async function getAllProducts(pagination) {
   return getProducts(pagination, { type: "all" })
 }
 
+export async function getProductsContaining(pagination, contains) {
+  return getProducts(pagination, { type: "contains", value: contains })
+}
   return {
     products: await cookProducts(jsonData),
     rowCount: jsonData.totalOfItems,
