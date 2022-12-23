@@ -105,6 +105,17 @@ export async function getProductsStartingWith(pagination, startsWith) {
 export async function getProductsEndingWith(pagination, endsWith) {
   return getProducts(pagination, { type: "endsWith", value: endsWith })
 }
+
+async function getProducts(pagination, metaData) {
+  const promises = {
+    "all": async pagination => fetchProducts(pagination),
+    "contains": async (pagination, contains) => fetchProductsContaining(pagination, contains),
+    "startsWith": async (pagination, startsWith) => fetchProductsStartingWith(pagination, startsWith),
+    "endsWith": async (pagination, endsWith) => fetchProductsEndingWith(pagination, endsWith)
+  }
+
+  const jsonData = await promises[metaData.type](pagination, metaData?.value);
+
   return {
     products: await cookProducts(jsonData),
     rowCount: jsonData.totalOfItems,
