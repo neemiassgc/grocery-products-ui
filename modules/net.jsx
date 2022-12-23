@@ -97,6 +97,10 @@ export async function getAllProducts(pagination) {
 export async function getProductsContaining(pagination, contains) {
   return getProducts(pagination, { type: "contains", value: contains })
 }
+
+export async function getProductsStartingWith(pagination, startsWith) {
+  return getProducts(pagination, { type: "startsWith", value: startsWith })
+}
   return {
     products: await cookProducts(jsonData),
     rowCount: jsonData.totalOfItems,
