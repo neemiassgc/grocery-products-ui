@@ -90,8 +90,9 @@ export async function getByBarcode(barcode) {
   }
 }
 
-export async function getProducts(pagination) {
-  const jsonData = await fetchProducts(pagination);
+export async function getAllProducts(pagination) {
+  return getProducts(pagination, { type: "all" })
+}
 
   return {
     products: await cookProducts(jsonData),
