@@ -4,6 +4,7 @@ import { DataGrid, getGridStringOperators } from '@mui/x-data-grid';
 import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
 import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
+import { SiFiles } from "react-icons/si"
 
 export default class DataTable extends Component {
   constructor(props) {
@@ -216,11 +217,21 @@ export default class DataTable extends Component {
         rowCount={this.state.pagination.rowCount}
         loading={this.state.datagrid.isLoading}
         components={{
-          Toolbar: ServerSideSwitch
+          Toolbar: ServerSideSwitch,
+          NoRowsOverlay: NoRowOverlay
         }}
       />
     )
   }
+}
+
+function NoRowOverlay() {
+  return (
+    <Box className="w-full h-full flex flex-col justify-center items-center">
+      <SiFiles className="w-10 h-10 text-zinc-300"/>
+      <span>No items</span>
+    </Box>
+  )
 }
 
 function ServerSideSwitch() {
