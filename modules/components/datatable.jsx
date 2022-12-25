@@ -193,16 +193,24 @@ export default class DataTable extends Component {
     this.loadPage({ pageSize })
   }
   
-  loadData(pagination) {
+  loadData(properties) {
     this.setIsLoading(true)
 
     const {
       page = this.state.pagination.page,
       pageSize = this.state.pagination.pageSize,
-    } = pagination
+      filter = { operatorValue: "all" }
+    } = properties
+    const pagination = { page, pageSize };
 
-    net.getAllProducts({ page, pageSize })
-      .then(({ products, rowCount }) => {
+    const promises = {
+      all: () => net.getAllProducts(pagination),
+      contains: () => net.getProductsContaining(pagination, filter.value),
+      startsWith: () => net.getProductsStartingWith(pagination, filter.value),
+      endsWith: () => net.getProductsEndingWith(pagination, filter.value),
+    }
+
+    promises[filter.operatorValue]().then(({ products, rowCount }) => {
         this.setProducts(products);
         this.setIsLoading(false);
         this.setRowCount(rowCount)
