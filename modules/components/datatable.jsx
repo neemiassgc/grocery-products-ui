@@ -219,7 +219,9 @@ export default class DataTable extends Component {
   }
 
   handleFilterModalChange(filter) {
-    console.log(filter)
+    if (!this.state.filter.serverSide) return;
+    const [values = { operatorValue: "all", value: "" }] = filter.items
+    this.setFilterAndLoadData({ operatorValue: values.operatorValue, value: values.value ?? null });
   }
 
   render() {
@@ -236,6 +238,7 @@ export default class DataTable extends Component {
         onPageChange={this.setPageAndLoadData.bind(this)}
         onPageSizeChange={this.setPageSizeAndLoadData.bind(this)}
         onFilterModelChange={this.handleFilterModalChange.bind(this)}
+        filterMode={this.state.filter.serverSide ? "server" : "client"}
         page={this.state.pagination.page}
         pageSize={this.state.pagination.pageSize}
         pagination={true}
@@ -245,6 +248,9 @@ export default class DataTable extends Component {
         components={{
           Toolbar: ServerSideSwitch,
           NoRowsOverlay: NoRowOverlay
+        }}
+        componentsProps={{
+          toolbar: { changeServerSide: this.toggleFilterServerSide.bind(this) }
         }}
       />
     )
@@ -260,14 +266,14 @@ function NoRowOverlay() {
   )
 }
 
-function ServerSideSwitch() {
+function ServerSideSwitch(props) {
   return (
     <Box className="p-1">
       <FormGroup className="w-fit ml-3">
         <FormControlLabel
           label="Server side"
           control={
-            <Switch />
+            <Switch onChange={props.changeServerSide}/>
           }
         />
       </FormGroup>
