@@ -49,6 +49,11 @@ export default class DataTable extends Component {
     this.loadData({ pageSize })
   }
 
+  setFilterAndLoadData(filter) {
+    const { operatorValue, value } = filter
+    this.setObjectState("filter", { operatorValue, value });
+    this.loadData({ filter })
+  }
   componentDidMount() {
     const { page, pageSize } = this.state.datagrid;
     this.loadData({ page, pageSize });
