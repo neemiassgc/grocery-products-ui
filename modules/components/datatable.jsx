@@ -54,6 +54,14 @@ export default class DataTable extends Component {
     this.setObjectState("filter", { operatorValue, value });
     this.loadData({ filter })
   }
+
+  toggleFilterServerSide() {
+    this.setState(({ filter }) => {
+      const { serverSide } = filter;
+      return { filter: { serverSide: !serverSide } }
+    })
+  }
+
   componentDidMount() {
     const { page, pageSize } = this.state.datagrid;
     this.loadData({ page, pageSize });
