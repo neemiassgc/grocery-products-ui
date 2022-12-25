@@ -63,6 +63,8 @@ async function cookProduct(rawProduct) {
 }
 
 async function cookProducts(rawProducts) {
+  if (rawProducts.length == 0) return [];
+
   const productListToReturn = [];
 
   for (const product of rawProducts.content)
