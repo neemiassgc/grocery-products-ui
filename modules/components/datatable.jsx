@@ -18,6 +18,11 @@ export default class DataTable extends Component {
         rowCount: 0,
         page: 0,
         pageSize: 5,
+      },
+      filter: {
+        operatorValue: "all",
+        value: undefined,
+        serverSide: false
       }
     }
   }
