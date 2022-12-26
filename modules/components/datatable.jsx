@@ -87,7 +87,7 @@ export default class DataTable extends Component {
         type: "string",
         headerName: "Description",
         filterOperators: getGridStringOperators().filter(({ value }) =>
-          ["contains", "equals", "startsWith", "endsWith"].includes(value)
+          ["contains", "startsWith", "endsWith"].includes(value)
         )
       },
       {
