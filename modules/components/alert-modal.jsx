@@ -20,7 +20,7 @@ import { getByBarcode } from "../net"
 import { BiError } from "react-icons/bi"
 import { status as statusChecker } from "../utils"
 
-class DialogView extends Component {
+class AlertModal extends Component {
 
   constructor(props) {
     super(props)
@@ -172,4 +172,4 @@ class DialogView extends Component {
   }
 }
 
-export default DialogView
+export default AlertModal
