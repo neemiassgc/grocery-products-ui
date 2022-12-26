@@ -1,7 +1,7 @@
 import { Component } from "react"
 import Head from "next/head"
 import DataTable from "../modules/components/datatable"
-import ModalView from "../modules/components/viewmodal"
+import AlertModal from "../modules/components/alert-modal"
 import SearchBar from "../modules/components/searchbar"
 
 export default class App extends Component {
@@ -12,7 +12,7 @@ export default class App extends Component {
   }
 
   handleSearchByBarcode(barcode) {
-    this.actions.modalView.searchByBarcode(barcode)
+    this.actions.alertModal.searchByBarcode(barcode)
   }
 
   handleShowError(violations) {
@@ -36,7 +36,7 @@ export default class App extends Component {
             <DataTable/>
           </div>
         </div>
-        <ModalView showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.modalView = actions} />
+        <AlertModal showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.alertModal = actions} />
       </>
     )
   }
