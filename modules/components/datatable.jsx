@@ -101,9 +101,7 @@ export default class DataTable extends Component {
         field: "barcode",
         type: "string",
         headerName: "Barcode",
-        filterOperators: getGridStringOperators().filter(
-          ({ value }) => value === "contains"
-        )
+        filterable: false,
       },
       {
         field: "currentPrice",
