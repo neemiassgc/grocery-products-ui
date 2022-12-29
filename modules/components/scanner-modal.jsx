@@ -11,6 +11,10 @@ class ScannerModal extends Component {
     }
 
     this.videoPlayer = createRef();
+
+    this.props.actions({
+      openModal: this.openModal.bind(this)
+    })
   }
 
   render() {
