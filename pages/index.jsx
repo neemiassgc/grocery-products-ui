@@ -3,6 +3,7 @@ import Head from "next/head"
 import DataTable from "../modules/components/datatable"
 import AlertModal from "../modules/components/alert-modal"
 import SearchBar from "../modules/components/searchbar"
+import ScannerModal from "../modules/components/scanner-modal"
 
 export default class App extends Component {
   constructor(props) {
@@ -18,6 +19,10 @@ export default class App extends Component {
   handleShowError(violations) {
     this.actions.searchBar.showError(violations);
   }
+  
+  handleShowScannerModal() {
+    this.actions.openScannerModal();
+  }
 
   render() {
     return(
@@ -31,12 +36,14 @@ export default class App extends Component {
           <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2 bg-white">
             <SearchBar
               searchByBarcode={this.handleSearchByBarcode.bind(this)}
+              openScannerModal={this.handleShowScannerModal.bind(this)}
               actions={actions => this.actions.searchBar = actions}
             />
             <DataTable/>
           </div>
         </div>
         <AlertModal showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.alertModal = actions} />
+        <ScannerModal actions={({ openModal }) => this.actions.openScannerModal = openModal}/>
       </>
     )
   }
