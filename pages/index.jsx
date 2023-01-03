@@ -10,6 +10,31 @@ export default class App extends Component {
     super(props);
 
     this.actions = {}
+
+    this.state = {
+      scannerModalAvailable: false
+    }
+  }
+
+  componentDidMount() {
+    if (location.hostname !== "localhost" &&  location.protocol !== "https:") {
+      console.log("ScannerModal cannot be loaded because your page is not running in a safe context.")
+      return;
+    }
+    if (!("MediaStreamTrackProcessor" in window) || !("MediaStreamTrackGenerator" in window)) {
+      console.log("ScannerModal cannot be loaded because your browser lacks support for `MediaStreamTrackProcessor` and `MediaStreamTrackGenerator`.");
+      return;
+    }
+    if (!("BarcodeDetector" in window)) {
+      console.log("ScannerModal cannot be loaded because your browser lacks support for `BarcodeDetector`.");
+      return;
+    }
+
+    this.setScannerModalAvailable(true)
+  }
+
+  setScannerModalAvailable(bool) {
+    this.setState({ scannerModalAvailable: bool })
   }
 
   handleSearchByBarcode(barcode) {
@@ -43,7 +68,7 @@ export default class App extends Component {
           </div>
         </div>
         <AlertModal showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.alertModal = actions} />
-        <ScannerModal actions={({ openModal }) => this.actions.openScannerModal = openModal}/>
+        {this.state.scannerModalAvailable && <ScannerModal actions={({ openModal }) => this.actions.openScannerModal = openModal}/>}
       </>
     )
   }
