@@ -115,6 +115,7 @@ class ScannerModal extends Component {
         <Dialog
           fullWidth={true}
           maxWidth={"md"}
+          keepMounted={true}
           open={this.state.open}
           className="bg-transparent"
         >
