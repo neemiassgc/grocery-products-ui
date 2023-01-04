@@ -12,9 +12,9 @@ class ScannerModal extends Component {
 
     this.state = {
       open: false,
-      videoStream: undefined,
     }
 
+    this.videoStream = null;
     this.videoPlayer = createRef();
 
     this.props.actions({
