@@ -31,80 +31,42 @@ class ScannerModal extends Component {
     this.setState({ open: false })
   }
 
-  async recording() {
-    // check compatibility
 
-    // if (!isSecureContext) {
-    //   return (location.protocol = "https:");
-    // }
-  
-    // if (
-    //   !("MediaStreamTrackProcessor" in window) ||
-    //   !("MediaStreamTrackGenerator" in window)
-    // ) {
-    //   return alert("This demo is not supported on your browser. Your browser lacks support for `MediaStreamTrackProcessor` and `MediaStreamTrackGenerator`.");
-    // }
-    // if (!("BarcodeDetector" in window)) {
-    //   return alert("This demo is not supported on your browser. Your browser lacks support for `BarcodeDetector`.");
-    // }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "environment"
-        },
-        audio: false
-      });
-      
-      const videoTrack = stream.getVideoTracks()[0];
-      const barcodeDetector = this.detectBarcode.bind(this);
-      const transformer = new TransformStream({
-        async transform(videoFrame, controller) {
+  async startScanning() {
+    let baseMillis = Date.now();
+    const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
+    const transformer = new TransformStream({
+      async transform(videoFrame, controller) {
+        if (Date.now() - baseMillis >= 1000) {
           const bitmap = await createImageBitmap(videoFrame)
-          const [barcode] = await barcodeDetector(bitmap)
+          const [barcode] = await barcodeDetector.detect(bitmap)
           if (barcode) alert(barcode.rawValue);
-          
-          bitmap.close();
-          controller.enqueue(videoFrame)
-        },
-        flush(controller) {
-          controller.terminate();
+          baseMillis = Date.now();
         }
-      });
 
-      const trackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
-      const trackGenerator = new MediaStreamTrackGenerator({ kind: "video" });
-
-      trackProcessor.readable
-        .pipeThrough(transformer)
-        .pipeTo(trackGenerator.writable);
-
-      const processedStream = new MediaStream();
-      processedStream.addTrack(trackGenerator);
-
-      const currentVideoPlayer = this.videoPlayer.current;
-      currentVideoPlayer.addEventListener("loadedmetadata", () => {
-        currentVideoPlayer.play();
-      });
-      currentVideoPlayer.srcObject = processedStream
-
-      // setInterval(() => {
-      //   this.detectBarcode(currentVideoPlayer)
-      //   .then(([barcode]) => alert(barcode.rawValue))
-      // }, 1000)
-
-    }
-    catch (err) {
-      console.error(err.name, err.message);
-    }
-  }
-
-  detectBarcode(stream) {
-    const barcodeDetector = new BarcodeDetector({
-      formats: ["upc_a", "upc_e", "ean_8", "ean_13", "qr_code"],
+        controller.enqueue(videoFrame)
+      },
+      flush(controller) {
+        controller.terminate();
+      }
     });
 
-    return barcodeDetector.detect(stream)
+    const [videoTrack] = this.videoStream.getVideoTracks();
+    const trackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
+    const trackGenerator = new MediaStreamTrackGenerator({ kind: "video" });
+
+    trackProcessor.readable
+      .pipeThrough(transformer)
+      .pipeTo(trackGenerator.writable);
+
+    const processedStream = new MediaStream();
+    processedStream.addTrack(trackGenerator);
+
+    const currentVideoPlayer = this.videoPlayer.current;
+    currentVideoPlayer.addEventListener("loadedmetadata", () => {
+      currentVideoPlayer.play();
+    });
+    currentVideoPlayer.srcObject = processedStream
   }
   
 
