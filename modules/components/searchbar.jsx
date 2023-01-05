@@ -17,7 +17,8 @@ class SearchBar extends Component {
         error: false,
         value: "",
         errorContent: "",
-      }
+      },
+      scannerButtonAvailable: false,
     }
 
     this.props.actions({ 
@@ -61,6 +62,10 @@ class SearchBar extends Component {
         input: prevState.input
       }
     })
+  }
+
+  setScannerButtonAvailable(bool) {
+    this.setState({ scannerButtonAvailable: bool })
   }
 
   handleKeyUp({ key }) {
