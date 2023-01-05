@@ -38,6 +38,15 @@ class ScannerModal extends Component {
     this.setState({ open: false })
   }
 
+  async askForMediaStreams() {
+    const devices =  await navigator.mediaDevices.enumerateDevices()
+    const constraints = this.pickMediaDevice(devices);
+
+    return await navigator.mediaDevices.getUserMedia({
+      video: constraints,
+      audio: false
+    });
+  }
 
   async startScanning() {
     let baseMillis = Date.now();
