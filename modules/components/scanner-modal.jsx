@@ -3,7 +3,6 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import Button from "@mui/material/Button"
 import { Component, createRef } from "react";
-import { create } from "domain";
 
 class ScannerModal extends Component {
 
@@ -98,10 +97,8 @@ class ScannerModal extends Component {
     });
     currentVideoPlayer.srcObject = processedStream
   }
-  
 
   render() {
-
     return (
       <>
         <Dialog
