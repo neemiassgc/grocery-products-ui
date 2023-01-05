@@ -64,6 +64,11 @@ class SearchBar extends Component {
     })
   }
 
+  componentDidMount() {
+    if (isPossibleToScanForBarcodes())
+      this.setScannerButtonAvailable(true)
+  }
+
   setScannerButtonAvailable(bool) {
     this.setState({ scannerButtonAvailable: bool })
   }
