@@ -18,13 +18,19 @@ class ScannerModal extends Component {
     this.videoPlayer = createRef();
 
     this.props.actions({
-      openModal: this.openModal.bind(this)
+      openModal: this.openModalAndStartScanning.bind(this)
     })
   }
 
-  openModal() {
-    this.setState({ open: true })
-    this.recording()
+  async openModalAndStartScanning() {
+    try {
+      this.videoStream = await this.askForMediaStreams();
+      this.startScanning()
+      this.setState({ open: true })
+    }
+    catch (err) {
+      console.error(err)
+    }
   }
 
   closeModal() {
