@@ -33,7 +33,8 @@ class ScannerModal extends Component {
     }
   }
 
-  closeModal() {
+  closeModalAndStopScanning() {
+    this.stopScanning()
     this.setState({ open: false })
   }
 
@@ -91,7 +92,7 @@ class ScannerModal extends Component {
             <video autoPlay={true} className="w-full h-full -z-50" ref={this.videoPlayer}/>
           </DialogContent>
           <DialogActions>
-            <Button className="float-right" onClick={this.closeModal.bind(this)}>Close</Button>
+            <Button className="float-right" onClick={this.closeModalAndStopScanning.bind(this)}>Close</Button>
           </DialogActions>
         </Dialog>
       </>
