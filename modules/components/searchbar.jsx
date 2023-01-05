@@ -6,7 +6,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
 import { Component } from "react"
-import { isANumber } from '../utils'
+import { isANumber, isPossibleToScanForBarcodes } from '../utils'
 
 class SearchBar extends Component {
   constructor(props) {
