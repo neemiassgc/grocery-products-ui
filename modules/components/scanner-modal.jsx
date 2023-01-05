@@ -108,11 +108,11 @@ class ScannerModal extends Component {
           open={this.state.open}
           className="bg-transparent"
         >
-          <DialogContent>
-            <video autoPlay={true} className="w-full h-full -z-50" ref={this.videoPlayer}/>
+          <DialogContent className="p-0 m-0 md:flex md:justify-center">
+            <video autoPlay={true} className="w-full md:w-11/12" ref={this.videoPlayer}/>
           </DialogContent>
-          <DialogActions>
-            <Button className="float-right" onClick={this.closeModalAndStopScanning.bind(this)}>Close</Button>
+          <DialogActions className="p-0 mt-0 md:p-2">
+            <Button variant="outlined" className="float-right" onClick={this.closeModalAndStopScanning.bind(this)}>Close</Button>
           </DialogActions>
         </Dialog>
       </>
