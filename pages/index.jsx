@@ -4,6 +4,7 @@ import DataTable from "../modules/components/datatable"
 import AlertModal from "../modules/components/alert-modal"
 import SearchBar from "../modules/components/searchbar"
 import ScannerModal from "../modules/components/scanner-modal"
+import { isPossibleToScanForBarcodes } from "../modules/utils"
 
 export default class App extends Component {
   constructor(props) {
@@ -17,20 +18,8 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    if (location.hostname !== "localhost" &&  location.protocol !== "https:") {
-      console.log("ScannerModal cannot be loaded because your page is not running in a safe context.")
-      return;
-    }
-    if (!("MediaStreamTrackProcessor" in window) || !("MediaStreamTrackGenerator" in window)) {
-      console.log("ScannerModal cannot be loaded because your browser lacks support for `MediaStreamTrackProcessor` and `MediaStreamTrackGenerator`.");
-      return;
-    }
-    if (!("BarcodeDetector" in window)) {
-      console.log("ScannerModal cannot be loaded because your browser lacks support for `BarcodeDetector`.");
-      return;
-    }
-
-    this.setScannerModalAvailable(true)
+    if (isPossibleToScanForBarcodes)
+      this.setScannerModalAvailable(true)
   }
 
   setScannerModalAvailable(bool) {
