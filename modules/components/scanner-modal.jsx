@@ -48,6 +48,15 @@ class ScannerModal extends Component {
     });
   }
 
+  pickMediaDevice(mediaDevices) {
+    let constraints = {}
+    mediaDevices.forEach(device => {
+      if (device.kind === "videoinput" && device.label.includes("0")) {
+        constraints.deviceId = device.deviceId
+      }
+    })
+    return constraints
+  }
   async startScanning() {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
