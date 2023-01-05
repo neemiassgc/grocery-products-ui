@@ -57,6 +57,11 @@ class ScannerModal extends Component {
     })
     return constraints
   }
+
+  stopScanning() {
+    this.videoStream.getTracks().forEach(track => track.stop());
+  }
+
   async startScanning() {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
