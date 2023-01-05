@@ -92,6 +92,7 @@ class SearchBar extends Component {
               <InputAdornment position="end">
                 <BiBarcodeReader
                   className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
+                  onClick={this.props.openScannerModal}
                 />
               </InputAdornment>
             }
