@@ -99,6 +99,7 @@ class SearchBar extends Component {
             className="w-full"
             label="Search by barcode"
             endAdornment={
+              this.state.scannerButtonAvailable &&
               <InputAdornment position="end">
                 <BiBarcodeReader
                   className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
