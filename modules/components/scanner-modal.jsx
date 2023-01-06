@@ -64,12 +64,17 @@ class ScannerModal extends Component {
   async startScanning() {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
+    const closeModalAndStopScanning = this.closeModalAndStopScanning.bind(this);
+    const searchByBarcode = this.props.searchByBarcode
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
-        if (Date.now() - baseMillis >= 1000) {
+        if (Date.now() - baseMillis >= 500) {
           const bitmap = await createImageBitmap(videoFrame)
           const [barcode] = await barcodeDetector.detect(bitmap)
-          if (barcode) alert(barcode.rawValue);
+          if (barcode) {
+            closeModalAndStopScanning();
+            searchByBarcode(barcode.rawValue)
+          }
           baseMillis = Date.now();
         }
 
