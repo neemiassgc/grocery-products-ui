@@ -6,7 +6,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
 import { Component } from "react"
-import { isANumber, isPossibleToScanForBarcodes } from '../utils'
+import { isANumber, isPossibleToScanForBarcodes, isZero } from '../utils'
 
 class SearchBar extends Component {
   constructor(props) {
@@ -75,7 +75,7 @@ class SearchBar extends Component {
 
   handleKeyUp({ key }) {
     if (key === "Enter") {
-      if (this.state.input.value.length === 0) {
+      if (isZero(this.state.input.value.length)) {
         this.handleError([{
             violationMessage: "barcode cannot be empty"
         }])

@@ -45,6 +45,10 @@ export function isPositive(value) {
   return value > 0
 }
 
+export function isZero(value) {
+  return value === 0;
+}
+
 export function isANumber(number) {
   return /^\d*$/.test(number+"");
 }
