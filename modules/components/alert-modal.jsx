@@ -132,33 +132,41 @@ class AlertModal extends Component {
               <BiError className="text-9xl text-black"/>
             </Box> :
             <List>
-              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start">
-                <Box>
+              <ListItem className="flex flex-col md:flex-row justify-center gap-0 md:gap-5 mb-2">
+                <Box className="basis-1/3">
                   <MdDescription className="text-2xl mr-3 inline-block align-middle"/>
-                  <ListItemText className="inline-block align-middle" primary="Description"/>
+                  <ListItemText className="inline-block align-middle" primary="Description:"/>
                 </Box>
-                <ListItemText primary={this.state.content.body?.description}></ListItemText>
+                <Box className="basis-1/3">
+                  <ListItemText primary={this.state.content.body?.description}></ListItemText>
+                </Box>
               </ListItem>
-              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
-                <Box>
+              <ListItem className="flex flex-col md:flex-row justify-center gap-0 md:gap-5 mb-2">
+                <Box className="basis-1/3">
                   <AiOutlineBarcode className="text-2xl mr-3 inline-block align-middle"/>
                   <ListItemText className="inline-block align-middle" primary="Barcode"/>
                 </Box>
-                <ListItemText primary={this.state.content.body?.barcode}></ListItemText>
+                <Box className="basis-1/3">
+                  <ListItemText primary={this.state.content.body?.barcode}></ListItemText>
+                </Box>
               </ListItem>
-              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
-                <Box>
+              <ListItem className="flex flex-col md:flex-row justify-center gap-0 md:gap-5 mb-2">
+                <Box className="basis-1/3">
                   <SiCoderwall className="text-2xl mr-3 inline-block align-middle"/>
                   <ListItemText className="inline-block align-middle" primary="Sequence code"/>
                 </Box>
-                <ListItemText primary={this.state.content.body?.sequenceCode}></ListItemText>
+                <Box className="basis-1/3">
+                  <ListItemText primary={this.state.content.body?.sequenceCode}></ListItemText>
+                </Box>
               </ListItem>
-              <ListItem className="grid grid-cols-1 gap-0 md:grid-cols-2 text-center md:text-start mt-2 md:mt-0">
-                <Box>
+              <ListItem className="flex flex-col md:flex-row justify-center gap-0 md:gap-5">
+                <Box className="basis-1/3">
                   <GiPriceTag className="text-2xl mr-3 inline-block align-middle"/>
                   <ListItemText className="inline-block align-middle" primary="Current price"/>
                 </Box>
-                <ListItemText primary={this.state.content.body?.currentPrice}></ListItemText>
+                <Box className="basis-1/3">
+                  <ListItemText primary={this.state.content.body?.currentPrice}></ListItemText>
+                </Box>
               </ListItem>
             </List>
           }
