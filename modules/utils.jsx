@@ -45,6 +45,10 @@ export function isPositive(value) {
   return value > 0
 }
 
+export function isZero(value) {
+  return value === 0;
+}
+
 export function isANumber(number) {
   return /^\d*$/.test(number+"");
 }
@@ -57,4 +61,26 @@ export const status = {
     isBadRequest: statusCode => statusCode === 400,
     
     isCreated: statusCode => statusCode === 201,
+}
+
+
+export function isPossibleToScanForBarcodes() {
+  if (location.hostname !== "localhost" &&  location.protocol !== "https:") {
+    console.error("The page cannot scan for barcodes because it is not running in a safe context.")
+    return false;
+  }
+  if (!("mediaDevices" in navigator) || !("getUserMedia" in navigator.mediaDevices)) {
+    console.error("The page cannot scan for barcodes because your browser lacks support for `getUserMedia`.");
+    return false;
+  }
+  if (!("MediaStreamTrackProcessor" in window) || !("MediaStreamTrackGenerator" in window)) {
+    console.error("The page cannot scan for barcodes because your browser lacks support for `MediaStreamTrackProcessor` and `MediaStreamTrackGenerator`.");
+    return false;
+  }
+  if (!("BarcodeDetector" in window)) {
+    console.error("The page cannot scan for barcodes because your browser lacks support for `BarcodeDetector`.");
+    return false;
+  }
+
+  return true;
 }

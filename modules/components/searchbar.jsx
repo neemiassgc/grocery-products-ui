@@ -6,7 +6,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
 import { Component } from "react"
-import { isANumber } from '../utils'
+import { isANumber, isPossibleToScanForBarcodes, isZero } from '../utils'
 
 class SearchBar extends Component {
   constructor(props) {
@@ -17,7 +17,8 @@ class SearchBar extends Component {
         error: false,
         value: "",
         errorContent: "",
-      }
+      },
+      scannerButtonAvailable: false,
     }
 
     this.props.actions({ 
@@ -63,9 +64,18 @@ class SearchBar extends Component {
     })
   }
 
+  componentDidMount() {
+    if (isPossibleToScanForBarcodes())
+      this.setScannerButtonAvailable(true)
+  }
+
+  setScannerButtonAvailable(bool) {
+    this.setState({ scannerButtonAvailable: bool })
+  }
+
   handleKeyUp({ key }) {
     if (key === "Enter") {
-      if (this.state.input.value.length === 0) {
+      if (isZero(this.state.input.value.length)) {
         this.handleError([{
             violationMessage: "barcode cannot be empty"
         }])
@@ -89,9 +99,11 @@ class SearchBar extends Component {
             className="w-full"
             label="Search by barcode"
             endAdornment={
+              this.state.scannerButtonAvailable &&
               <InputAdornment position="end">
                 <BiBarcodeReader
                   className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
+                  onClick={this.props.openScannerModal}
                 />
               </InputAdornment>
             }
