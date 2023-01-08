@@ -57,7 +57,10 @@ export default class App extends Component {
           </div>
         </div>
         <AlertModal showFieldError={this.handleShowError.bind(this)} actions={actions => this.actions.alertModal = actions} />
-        {this.state.scannerModalAvailable && <ScannerModal actions={({ openModal }) => this.actions.openScannerModal = openModal}/>}
+        {
+          this.state.scannerModalAvailable &&
+          <ScannerModal searchByBarcode={this.handleSearchByBarcode.bind(this)} actions={({ openModal }) => this.actions.openScannerModal = openModal}/>
+        }
       </>
     )
   }
