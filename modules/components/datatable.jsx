@@ -52,14 +52,18 @@ export default class DataTable extends Component {
   setFilterAndLoadData(filter) {
     const { operatorValue, value } = filter
     this.setObjectState("filter", { operatorValue, value });
+    if (!this.state.filter.serverSide) return;
     this.loadData({ filter })
   }
 
-  toggleFilterServerSide() {
+  toggleFilterServerSideAndLoadData() {
     this.setState(({ filter }) => {
       const { serverSide } = filter;
       return { filter: { serverSide: !serverSide } }
     })
+
+    this.setFilterAndLoadData({ operatorValue: "all" })
+    if (!this.state.filter.serverSide) this.loadData({})
   }
 
   componentDidMount() {
@@ -197,7 +201,7 @@ export default class DataTable extends Component {
     const {
       page = this.state.pagination.page,
       pageSize = this.state.pagination.pageSize,
-      filter = { operatorValue: "all" }
+      filter = { operatorValue: this.state.filter.operatorValue, value: this.state.filter.value }
     } = properties
     const pagination = { page, pageSize };
 
@@ -217,9 +221,9 @@ export default class DataTable extends Component {
   }
 
   handleFilterModalChange(filter) {
-    if (!this.state.filter.serverSide) return;
-    const [values = { operatorValue: "all", value: "" }] = filter.items
-    this.setFilterAndLoadData({ operatorValue: values.operatorValue, value: values.value ?? null });
+    const [values = {}] = filter.items
+    console.log(values)
+    this.setFilterAndLoadData({ operatorValue: values.operatorValue ?? "all", value: values.value ?? "" });
   }
 
   render() {
@@ -248,7 +252,7 @@ export default class DataTable extends Component {
           NoRowsOverlay: NoRowOverlay
         }}
         componentsProps={{
-          toolbar: { changeServerSide: this.toggleFilterServerSide.bind(this) }
+          toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) }
         }}
       />
     )
