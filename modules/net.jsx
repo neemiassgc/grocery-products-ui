@@ -2,10 +2,23 @@ import { status as statusChecker } from "./utils"
 
 const { isOk, isCreated, isBadRequest, isNotFound } = statusChecker
 
-const URL = "http://localhost:8080/api/products"
+const URL = "http://microsoft.webhop.me:8080/api/products"
+
+async function fetchWithTimeout(resource, options = {}) {
+  const { timeout = 1000 } = options;
+  
+  const controller = new AbortController();
+  const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(setTimeoutId);
+  return response;
+}
 
 async function fetchPricesByLink(link) {
-  return (await fetch(`${link}`)).json()
+  return (await fetchWithTimeout(`${link}`)).json()
 }
 
 async function fetchProducts(pagination) {
@@ -25,11 +38,11 @@ async function fetchProductsEndingWith(pagination, endsWith) {
 }
 
 async function makeRequestQuery({ page, pageSize }, filterParam) {
-  return (await fetch(`${URL}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
+  return (await fetchWithTimeout(`${URL}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
 }
 
 async function fetchByBarcode(barcode) {
-  return (await fetch(`${URL}/${barcode}`));
+  return fetchWithTimeout(`${URL}/${barcode}`);
 }
 
 function cookPrices(rawPrices) {
