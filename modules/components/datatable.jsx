@@ -273,7 +273,7 @@ export default class DataTable extends Component {
         loading={this.state.datagrid.isLoading}
         components={{
           Toolbar: ServerSideSwitch,
-          NoRowsOverlay: NoRowOverlay
+          NoRowsOverlay: NoRowsOverlay
         }}
         componentsProps={{
           toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) },
@@ -284,7 +284,7 @@ export default class DataTable extends Component {
   }
 }
 
-function NoRowOverlay({ code }) {
+function NoRowsOverlay({ code }) {
     const errorMap = {
       "no-connection": [
         <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
