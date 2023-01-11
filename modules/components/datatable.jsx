@@ -223,7 +223,7 @@ export default class DataTable extends Component {
 
     promises[filter.operatorValue]().then(({ products, rowCount }) => {
         this.setProducts(products);
-        if (products.length === 0) this.setErrorCode("no-items")
+        if (utils.isEmtpy(products)) this.setErrorCode("no-items")
         this.setIsLoading(false);
         this.setRowCount(rowCount)
       })

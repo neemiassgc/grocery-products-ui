@@ -53,6 +53,10 @@ export function isANumber(number) {
   return /^\d*$/.test(number+"");
 }
 
+export function isEmtpy(array) {
+  return array.length === 0
+}
+
 export const status = {
     isOk: statusCode => statusCode === 200,
     
