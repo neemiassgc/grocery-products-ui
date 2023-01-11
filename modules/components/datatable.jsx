@@ -214,26 +214,34 @@ export default class DataTable extends Component {
     } = properties
     const pagination = { page, pageSize };
 
-    const promises = {
+    const fetchOptions = {
       all: () => net.getAllProducts(pagination),
       contains: () => net.getProductsContaining(pagination, filter.value),
       startsWith: () => net.getProductsStartingWith(pagination, filter.value),
       endsWith: () => net.getProductsEndingWith(pagination, filter.value),
     }
 
-    promises[filter.operatorValue]().then(({ products, rowCount }) => {
+    fetchOptions[filter.operatorValue]().then(({ products, rowCount }) => {
         this.setProducts(products);
-        if (utils.isEmtpy(products)) this.setErrorCode("no-items")
+        this.noItemsIfProductsIsEmpty(products);
         this.setIsLoading(false);
-        this.setRowCount(rowCount)
+        this.setRowCount(rowCount);
       })
       .catch(err => {
         this.setIsLoading(false);
-        if (err instanceof TypeError)
-          this.setErrorCode("no-connection")
-        else if (err instanceof DOMException)
-          this.setErrorCode("no-server")
+        this.treatError(err)
       })
+  }
+
+  noItemsIfProductsIsEmpty(products) {
+    if (utils.isEmtpy(products)) this.setErrorCode("no-items")
+  }
+
+  treatError(error) {
+    if (error instanceof TypeError)
+      this.setErrorCode("no-connection")
+    else if (error instanceof DOMException)
+      this.setErrorCode("no-server")
   }
 
   handleFilterModalChange(filter) {
