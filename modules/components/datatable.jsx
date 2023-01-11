@@ -5,6 +5,8 @@ import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
 import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
 import { SiFiles } from "react-icons/si"
+import { RiSignalWifiErrorFill } from "react-icons/ri"
+import { IoCloudOffline } from "react-icons/io5"
 
 export default class DataTable extends Component {
   constructor(props) {
@@ -23,8 +25,15 @@ export default class DataTable extends Component {
         operatorValue: "all",
         value: undefined,
         serverSide: false
+      },
+      error: {
+        code: "no-items"
       }
     }
+  }
+
+  setErrorCode(code) {
+    this.setObjectState("error", { code })
   }
 
   setProducts(products) {
@@ -214,10 +223,17 @@ export default class DataTable extends Component {
 
     promises[filter.operatorValue]().then(({ products, rowCount }) => {
         this.setProducts(products);
+        if (products.length === 0) this.setErrorCode("no-items")
         this.setIsLoading(false);
         this.setRowCount(rowCount)
       })
-      .catch(console.error)
+      .catch(err => {
+        this.setIsLoading(false);
+        if (err instanceof TypeError)
+          this.setErrorCode("no-connection")
+        else if (err instanceof DOMException)
+          this.setErrorCode("no-server")
+      })
   }
 
   handleFilterModalChange(filter) {
@@ -252,18 +268,34 @@ export default class DataTable extends Component {
           NoRowsOverlay: NoRowOverlay
         }}
         componentsProps={{
-          toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) }
+          toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) },
+          noRowsOverlay: { code: this.state.error.code }
         }}
       />
     )
   }
 }
 
-function NoRowOverlay() {
+function NoRowOverlay({ code }) {
+    const errorMap = {
+      "no-connection": [
+        <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
+        "No connection"
+      ],
+      "no-items": [
+        <SiFiles className="w-10 h-10 text-zinc-300"/>,
+        "No items"
+      ],
+      "no-server": [
+        <IoCloudOffline className="w-10 h-10 text-zinc-300"/>,
+        "Server is not responding"
+      ]
+    }
+
   return (
     <Box className="w-full h-full flex flex-col justify-center items-center">
-      <SiFiles className="w-10 h-10 text-zinc-300"/>
-      <span>No items</span>
+      { errorMap[code][0] }
+      <span>{ errorMap[code][1] }</span>
     </Box>
   )
 }
