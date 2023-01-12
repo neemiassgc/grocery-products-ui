@@ -75,6 +75,10 @@ export default class DataTable extends Component {
     if (!this.state.filter.serverSide) this.loadData({})
   }
 
+  fn() {
+    
+  }
+
   componentDidMount() {
     const { page, pageSize } = this.state.datagrid;
     this.loadData({ page, pageSize });
