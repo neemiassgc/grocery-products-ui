@@ -18,7 +18,7 @@ import { SiCoderwall } from "react-icons/si"
 import { GiPriceTag } from "react-icons/gi"
 import { getByBarcode } from "../net"
 import { BiError } from "react-icons/bi"
-import { status as statusChecker } from "../utils"
+import { status as statusChecker, priceFormatter } from "../utils"
 
 class AlertModal extends Component {
 
@@ -165,7 +165,7 @@ class AlertModal extends Component {
                   <ListItemText className="inline-block align-middle" primary="Current price"/>
                 </Box>
                 <Box className="basis-1/3">
-                  <ListItemText primary={this.state.content.body?.currentPrice}></ListItemText>
+                  <ListItemText primary={priceFormatter(this.state.content.body?.currentPrice)}></ListItemText>
                 </Box>
               </ListItem>
             </List>
