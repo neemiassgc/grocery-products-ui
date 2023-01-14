@@ -19,6 +19,8 @@ import { GiPriceTag } from "react-icons/gi"
 import { getByBarcode } from "../net"
 import { BiError } from "react-icons/bi"
 import { status as statusChecker, priceFormatter } from "../utils"
+import { RiSignalWifiErrorFill } from "react-icons/ri"
+import { IoCloudOffline } from "react-icons/io5"
 
 class AlertModal extends Component {
 
@@ -31,7 +33,8 @@ class AlertModal extends Component {
       content: {
         body: null,
         status: null,
-      }
+      },
+      netError: ""
     }
 
     props.actions({
@@ -45,14 +48,22 @@ class AlertModal extends Component {
       .then(({ body, status }) => {
         this.setContentBody(body);
         this.setContentStatus(status);
-
         if (statusChecker.isBadRequest(status)) {
           this.suppressLoading();
           this.props.showFieldError(body.violations)
+          return;
         }
-        else this.openModal();
+        this.setNetError("")
+        this.openModal();
       })
-      .catch(console.error)
+      .catch(error => {
+        if (error instanceof TypeError)
+          this.setNetError("no-connection")
+        else if (error instanceof DOMException)
+          this.setNetError("no-server")
+        this.suppressLoading();
+        this.openModal();
+      })
   }
 
   showLoading() {
@@ -79,6 +90,10 @@ class AlertModal extends Component {
         content: prevState.content,
       }
     })
+  }
+
+  setNetError(netError) {
+    this.setState({ netError })
   }
 
   openModal() {
@@ -120,18 +135,23 @@ class AlertModal extends Component {
           open={this.state.open}
           className="bg-transparent"
         >
-          <DialogTitle>
-            <Alert severity={this.chooseSeverityByStatus().severity} variant="filled">
-              <AlertTitle>{this.chooseSeverityByStatus().msg}</AlertTitle>
-            </Alert>
-          </DialogTitle>
+          {
+            !this.state.netError &&
+            <DialogTitle>
+              <Alert severity={this.chooseSeverityByStatus().severity} variant="filled">
+                <AlertTitle>{this.chooseSeverityByStatus().msg}</AlertTitle>
+              </Alert>
+            </DialogTitle>
+          }
           <DialogContent dividers={this.state.content.status !== 404}>
           {
-            this.state.content.status === 404 ?
-            <Box className="flex justify-center p-2">
-              <BiError className="text-9xl text-black"/>
-            </Box> : <ContentData body={this.state.content.body}/>
-            
+            this.state.netError
+              ? <ErrorBoard netError={this.state.netError}/>
+              : this.state.content.status === 404
+                ? <Box className="flex justify-center p-2">
+                    <BiError className="text-9xl text-black"/>
+                  </Box>
+                : <ContentData body={this.state.content.body}/>
           }
           </DialogContent>
           <DialogActions>
@@ -141,6 +161,28 @@ class AlertModal extends Component {
       </>
     )
   }
+}
+
+function ErrorBoard({ netError }) {
+  const alertOption = {
+    "no-connection": [
+      <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
+      "No connection"
+    ],
+    "no-server": [
+      <IoCloudOffline className="w-10 h-10 text-zinc-300"/>,
+      "Server is not responding"
+    ]
+  }
+
+  return (
+    <Box className="w-full h-full flex flex-col items-center">
+      { alertOption[netError][0] }
+      <span className="w-fit">
+        { alertOption[netError][1] }
+      </span>
+    </Box>
+  )
 }
 
 function ContentData(props) {
