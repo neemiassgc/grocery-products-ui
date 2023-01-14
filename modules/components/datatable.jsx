@@ -28,7 +28,8 @@ export default class DataTable extends Component {
       },
       error: {
         code: "no-items"
-      }
+      },
+      smallScreen: false
     }
   }
 
@@ -65,6 +66,10 @@ export default class DataTable extends Component {
     this.loadData({ filter })
   }
 
+  setSmallScreen(bool) {
+    this.setState({ smallScreen: bool })
+  }
+
   toggleFilterServerSideAndLoadData() {
     this.setState(({ filter }) => {
       const { serverSide } = filter;
@@ -75,13 +80,21 @@ export default class DataTable extends Component {
     if (!this.state.filter.serverSide) this.loadData({})
   }
 
-  fn() {
-    
-  }
-
   componentDidMount() {
     const { page, pageSize } = this.state.datagrid;
     this.loadData({ page, pageSize });
+
+    this.setSmallScreenDetection();
+  }
+
+  setSmallScreenDetection() {
+    window.matchMedia("(max-width: 768px)")
+      .addEventListener("change", e => {
+        if (e.matches && !this.state.smallScreen)
+          this.setSmallScreen(true)
+        else if (!e.matches && this.state.smallScreen)
+          this.setSmallScreen(false)
+      })
   }
 
   setObjectState(objectName, properties) {
@@ -264,6 +277,16 @@ export default class DataTable extends Component {
             sortModel: [{ field: "description", sort: "asc" }]
           }
         }}
+        columnVisibilityModel={
+          this.state.smallScreen ?
+          {
+            barcode: false,
+            previousPriceDate: false,
+            currentPriceDate: false,
+            sequenceCode: false
+          }
+          : {}
+        }
         rowsPerPageOptions={[5, 10, 15, 20, 30]}
         onPageChange={this.setPageAndLoadData.bind(this)}
         onPageSizeChange={this.setPageSizeAndLoadData.bind(this)}
