@@ -1,6 +1,12 @@
 import { Component } from "react"
 import * as net from "../net"
-import { DataGrid, getGridStringOperators } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  getGridStringOperators,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarColumnsButton
+} from '@mui/x-data-grid';
 import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
 import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
@@ -299,7 +305,7 @@ export default class DataTable extends Component {
         rowCount={this.state.pagination.rowCount}
         loading={this.state.datagrid.isLoading}
         components={{
-          Toolbar: ServerSideSwitch,
+          Toolbar: CustomToolBar,
           NoRowsOverlay: NoRowsOverlay
         }}
         componentsProps={{
@@ -333,6 +339,14 @@ function NoRowsOverlay({ code }) {
       <span>{ errorMap[code][1] }</span>
     </Box>
   )
+}
+
+function CustomToolBar(props) {
+  return <GridToolbarContainer>
+    <GridToolbarColumnsButton />
+    <GridToolbarFilterButton />
+    <ServerSideSwitch {...props}/>
+  </GridToolbarContainer>
 }
 
 function ServerSideSwitch(props) {
