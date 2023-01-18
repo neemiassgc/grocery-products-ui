@@ -5,7 +5,7 @@ import {
   getGridStringOperators,
   GridToolbarContainer,
   GridToolbarFilterButton,
-  GridToolbarColumnsButton
+  GridToolbarColumnsButton,
 } from '@mui/x-data-grid';
 import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
@@ -306,11 +306,12 @@ export default class DataTable extends Component {
         loading={this.state.datagrid.isLoading}
         components={{
           Toolbar: CustomToolBar,
-          NoRowsOverlay: NoRowsOverlay
+          NoRowsOverlay: NoRowsOverlay,
         }}
         componentsProps={{
           toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) },
-          noRowsOverlay: { code: this.state.error.code }
+          noRowsOverlay: { code: this.state.error.code },
+          filterPanel: { className: "w-96 sm:w-full" }
         }}
       />
     )
