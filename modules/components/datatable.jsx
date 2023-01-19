@@ -78,12 +78,12 @@ export default class DataTable extends Component {
 
   toggleFilterServerSideAndLoadData() {
     this.setState(({ filter }) => {
-      const { serverSide } = filter;
-      return { filter: { serverSide: !serverSide } }
+      filter.serverSide = !filter.serverSide;
+      return { filter }
+    }, () => {
+      if (this.state.filter.serverSide) this.loadData({})
+      else this.loadData({filter: { operatorValue: "all" }})
     })
-
-    this.setFilterAndLoadData({ operatorValue: "all" })
-    if (!this.state.filter.serverSide) this.loadData({})
   }
 
   componentDidMount() {
@@ -269,7 +269,6 @@ export default class DataTable extends Component {
 
   handleFilterModalChange(filter) {
     const [values = {}] = filter.items
-    console.log(values)
     this.setFilterAndLoadData({ operatorValue: values.operatorValue ?? "all", value: values.value ?? "" });
   }
 
