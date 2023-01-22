@@ -42,7 +42,7 @@ export default class App extends Component {
     return(
       <>
         <Head>
-          <title>Saveg Local Market</title>
+          <title>Grocery products ui</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
         </Head>
         <header className="w-full bg-blue-500 flex h-0 md:h-72"/>
