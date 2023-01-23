@@ -78,8 +78,12 @@ export default class DataTable extends Component {
 
   toggleFilterServerSideAndLoadData() {
     this.setState(({ filter }) => {
-      filter.serverSide = !filter.serverSide;
-      return { filter }
+      return {
+        filter: {
+          ...filter,
+          serverSide: !filter.serverSide,
+        }
+      }
     }, () => {
       if (this.state.filter.serverSide) this.loadData({})
       else this.loadData({filter: { operatorValue: "all" }})
@@ -117,10 +121,11 @@ export default class DataTable extends Component {
 
   setObjectState(objectName, properties) {
     this.setState(prevState => {
+      const newObject = {...prevState[objectName]}
       for (const key in properties)
-        prevState[objectName][key] = properties[key]
+        newObject[key] = properties[key]
       return {
-        [objectName]: prevState[objectName]
+        [objectName]: newObject
       }
     })
   }

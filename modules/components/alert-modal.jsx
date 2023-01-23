@@ -84,10 +84,12 @@ class AlertModal extends Component {
 
   setContentState(property)  {
     this.setState(prevState => {
-      const [ firstProp ] = Object.keys(property)
-      prevState.content[firstProp] = property[firstProp]
+      const [ key ] = Object.keys(property)
       return {
-        content: prevState.content,
+        content: {
+          ...prevState.content,
+          [key]: property[key],
+        }
       }
     })
   }

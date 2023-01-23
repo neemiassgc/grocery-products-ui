@@ -44,22 +44,25 @@ class SearchBar extends Component {
   }
 
   setInputError(error) {
-    this.setInputState("error", error);
+    this.setInputState({ error });
   }
 
   setInputErrorContent(errorContent) {
-    this.setInputState("errorContent", errorContent);
+    this.setInputState({ errorContent });
   }
 
   setInputValue(value) {
-    this.setInputState("value", value);
+    this.setInputState({ value });
   }
 
-  setInputState(key, value) {
+  setInputState(objectChunk) {
     this.setState(prevState => {
-      prevState.input[key] = value
+      const [key] = Object.keys(objectChunk)
       return {
-        input: prevState.input
+        input: {
+          ...prevState.input,
+          [key]: objectChunk[key]
+        }
       }
     })
   }
