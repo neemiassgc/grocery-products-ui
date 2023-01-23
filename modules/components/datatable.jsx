@@ -94,13 +94,18 @@ export default class DataTable extends Component {
   }
 
   setSmallScreenDetection() {
-    window.matchMedia("(max-width: 768px)")
-      .addEventListener("change", e => {
+    this.mediaQueryDetection = {
+      matchMedia: window.matchMedia("(max-width: 768px)"),
+      action: e => {
         if (e.matches && !this.state.smallScreen)
           this.setSmallScreen(true)
         else if (!e.matches && this.state.smallScreen)
           this.setSmallScreen(false)
-      })
+      }
+    }
+    const { matchMedia, action } = this.mediaQueryDetection
+    this.mediaQueryDetection.boundAction = action.bind(this);
+    matchMedia.addEventListener("change", this.mediaQueryDetection.boundAction)
   }
 
   setObjectState(objectName, properties) {
