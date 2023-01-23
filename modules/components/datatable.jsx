@@ -227,24 +227,10 @@ export default class DataTable extends Component {
     this.loadPage({ pageSize })
   }
   
-  loadData(properties) {
+  loadData(settings) {
     this.setIsLoading(true)
-
-    const {
-      page = this.state.pagination.page,
-      pageSize = this.state.pagination.pageSize,
-      filter = { operatorValue: this.state.filter.operatorValue, value: this.state.filter.value }
-    } = properties
-    const pagination = { page, pageSize };
-
-    const fetchOptions = {
-      all: () => net.getAllProducts(pagination),
-      contains: () => net.getProductsContaining(pagination, filter.value),
-      startsWith: () => net.getProductsStartingWith(pagination, filter.value),
-      endsWith: () => net.getProductsEndingWith(pagination, filter.value),
-    }
-
-    fetchOptions[filter.operatorValue]().then(({ products, rowCount }) => {
+    this.selectDataFetcher(settings)()
+      .then(({ products, rowCount }) => {
         this.setProducts(products);
         this.noItemsIfProductsIsEmpty(products);
         this.setIsLoading(false);
@@ -254,6 +240,25 @@ export default class DataTable extends Component {
         this.setIsLoading(false);
         this.treatError(err)
       })
+  }
+
+  selectDataFetcher(settings) {
+    const { operatorValue, value } = settings?.filter ?? {
+      operatorValue: this.state.filter.operatorValue,
+      value: this.state.filter.value
+    }
+    const {
+      page = this.state.pagination.page,
+      pageSize = this.state.pagination.pageSize,
+    } = settings
+    const pagination = { page, pageSize };
+
+    return {
+      all: () => net.getAllProducts(pagination),
+      contains: () => net.getProductsContaining(pagination, value),
+      startsWith: () => net.getProductsStartingWith(pagination, value),
+      endsWith: () => net.getProductsEndingWith(pagination, value),
+    }[operatorValue]
   }
 
   noItemsIfProductsIsEmpty(products) {
