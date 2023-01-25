@@ -4,23 +4,6 @@ const { isOk, isCreated, isBadRequest, isNotFound } = statusChecker
 
 const URL = "http://microsoft.webhop.me:8080/api/products"
 
-async function fetchWithTimeout(resource, options = {}) {
-  const { timeout = 1000 } = options;
-  
-  const controller = new AbortController();
-  const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
-  const response = fetch(resource, {
-    ...options,
-    signal: controller.signal  
-  });
-  clearTimeout(setTimeoutId);
-  return response;
-}
-
-async function fetchPricesByLink(link) {
-  return (await fetchWithTimeout(`${link}`)).json()
-}
-
 async function fetchProducts(pagination) {
   return makeRequestQuery(pagination)
 }
@@ -41,17 +24,25 @@ async function makeRequestQuery({ page, pageSize }, filterParam) {
   return (await fetchWithTimeout(`${URL}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
 }
 
+async function fetchPricesByLink(link) {
+  return (await fetchWithTimeout(`${link}`)).json()
+}
+
 async function fetchByBarcode(barcode) {
   return fetchWithTimeout(`${URL}/${barcode}`);
 }
 
-function cookPrices(rawPrices) {
-  return {
-    currentPrice: rawPrices[0].value,
-    currentPriceDate: rawPrices[0].instant,
-    previousPrice: rawPrices[1]?.value,
-    previousPriceDate: rawPrices[1]?.instant,
-  }
+async function fetchWithTimeout(resource, options = {}) {
+  const { timeout = 1000 } = options;
+  
+  const controller = new AbortController();
+  const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
+  const response = fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(setTimeoutId);
+  return response;
 }
 
 async function cookProduct(rawProduct) {
@@ -75,15 +66,13 @@ async function cookProduct(rawProduct) {
   }
 }
 
-async function cookProducts(rawProducts) {
-  if (rawProducts.length == 0) return [];
-
-  const productListToReturn = [];
-
-  for (const product of rawProducts.content)
-    productListToReturn.push(await cookProduct(product));
-
-  return productListToReturn;
+function cookPrices(rawPrices) {
+  return {
+    currentPrice: rawPrices[0].value,
+    currentPriceDate: rawPrices[0].instant,
+    previousPrice: rawPrices[1]?.value,
+    previousPriceDate: rawPrices[1]?.instant,
+  }
 }
 
 export async function getByBarcode(barcode) {
@@ -135,4 +124,15 @@ async function getProducts(pagination, metaData) {
     products: await cookProducts(jsonData),
     rowCount: jsonData.totalOfItems,
   }
+}
+
+async function cookProducts(rawProducts) {
+  if (rawProducts.length == 0) return [];
+
+  const productListToReturn = [];
+
+  for (const product of rawProducts.content)
+    productListToReturn.push(await cookProduct(product));
+
+  return productListToReturn;
 }
