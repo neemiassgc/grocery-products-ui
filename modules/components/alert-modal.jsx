@@ -36,10 +36,12 @@ class AlertModal extends Component {
       },
       netError: ""
     }
+  }
 
-    props.actions({
+  componentDidMount() {
+    this.props.actionRef.current = {
       searchByBarcode: this.searchByBarcode.bind(this),
-    })
+    }
   }
 
   searchByBarcode(barcode) {
