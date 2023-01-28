@@ -20,10 +20,15 @@ class SearchBar extends Component {
       },
       scannerButtonAvailable: false,
     }
+  }
 
-    this.props.actions({ 
+  componentDidMount() {
+    if (isPossibleToScanForBarcodes())
+      this.setScannerButtonAvailable(true)
+
+    this.props.actionRef.current = {
       showError: this.handleError.bind(this)
-    })
+    }
   }
 
   handleError(violations) {
@@ -65,11 +70,6 @@ class SearchBar extends Component {
         }
       }
     })
-  }
-
-  componentDidMount() {
-    if (isPossibleToScanForBarcodes())
-      this.setScannerButtonAvailable(true)
   }
 
   setScannerButtonAvailable(bool) {
