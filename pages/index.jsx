@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Head from "next/head"
 import DataTable from "../modules/components/datatable"
 import AlertModal from "../modules/components/alert-modal"
@@ -11,9 +11,11 @@ function App() {
 
   useEffect(() => {
     if (isPossibleToScanForBarcodes) setScannerModalAvailable(true)
-  })
+  }, [])
 
-  const [actions, setActions] = useState({})
+  const searchBarRef = useRef(null);
+  const alertModalRef = useRef(null);
+  const scannerModalRef = useRef(null);
 
   return <>
       <Head>
@@ -24,17 +26,17 @@ function App() {
       <div className=" mt-3 md:-mt-52 flex justify-center">
         <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2 bg-white">
           <SearchBar
-            searchByBarcode={actions?.alertModal?.searchByBarcode}
-            openScannerModal={actions?.openScannerModal}
-            actions={methods => setActions({...actions, ...methods})}
+            searchByBarcode={alertModalRef.current?.searchByBarcode}
+            openScannerModal={scannerModalRef.current?.openScannerModal}
+            actionRef={searchBarRef}
           />
           <DataTable/>
         </div>
       </div>
-      <AlertModal showFieldError={actions?.searchbar?.showError} actions={methods => setActions({...actions, ...methods})} />
+      <AlertModal showFieldError={searchBarRef.current?.showError} actionRef={alertModalRef} />
       {
         scannerModalAvailable &&
-        <ScannerModal searchByBarcode={actions?.alertModal?.searchByBarcode} actions={({ openModal }) => setActions({...actions, openModal})}/>
+        <ScannerModal searchByBarcode={alertModalRef.current?.searchByBarcode} actionRef={scannerModalRef}/>
       }
   </>
 }
