@@ -15,10 +15,12 @@ class ScannerModal extends Component {
 
     this.videoStream = null;
     this.videoPlayer = createRef();
+  }
 
-    this.props.actions({
-      openModal: this.openModalAndStartScanning.bind(this)
-    })
+  componentDidMount() {
+    this.props.actionRef.current = {
+      openScannerModal: this.openModalAndStartScanning.bind(this)
+    }
   }
 
   async openModalAndStartScanning() {
