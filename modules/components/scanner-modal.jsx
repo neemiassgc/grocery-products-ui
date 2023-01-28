@@ -32,11 +32,6 @@ class ScannerModal extends Component {
     }
   }
 
-  closeModalAndStopScanning() {
-    this.stopScanning()
-    this.setState({ open: false })
-  }
-
   async askForMediaStreams() {
     const devices =  await navigator.mediaDevices.enumerateDevices()
     const constraints = this.pickMediaDevice(devices);
@@ -55,10 +50,6 @@ class ScannerModal extends Component {
       }
     })
     return constraints
-  }
-
-  stopScanning() {
-    this.videoStream.getTracks().forEach(track => track.stop());
   }
 
   async startScanning() {
@@ -101,6 +92,15 @@ class ScannerModal extends Component {
       currentVideoPlayer.play();
     });
     currentVideoPlayer.srcObject = processedStream
+  }
+
+  closeModalAndStopScanning() {
+    this.stopScanning()
+    this.setState({ open: false })
+  }
+
+  stopScanning() {
+    this.videoStream.getTracks().forEach(track => track.stop());
   }
 
   render() {
