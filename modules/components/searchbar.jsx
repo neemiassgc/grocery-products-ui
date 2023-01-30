@@ -84,7 +84,7 @@ class SearchBar extends Component {
         }])
         return;
       }
-      this.props.searchByBarcode(this.state.input.value)
+      this.props.findByBarcodeAndOpenAlertModal(this.state.input.value)
     }
   }
 

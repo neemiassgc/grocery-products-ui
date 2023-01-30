@@ -40,11 +40,11 @@ class AlertModal extends Component {
 
   componentDidMount() {
     this.props.actionRef.current = {
-      searchByBarcode: this.searchByBarcode.bind(this),
+      findByBarcodeAndLoadData: this.findByBarcodeAndLoadData.bind(this),
     }
   }
 
-  searchByBarcode(barcode) {
+  findByBarcodeAndLoadData(barcode) {
     this.showLoading();
     getByBarcode(barcode)
       .then(({ body, status }) => {

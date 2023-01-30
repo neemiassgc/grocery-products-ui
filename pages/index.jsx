@@ -26,17 +26,17 @@ function App() {
       <div className=" mt-3 md:-mt-52 flex justify-center">
         <div className="basis-full md:basis-11/12 h-[38rem] shadow-none md:shadow-2xl p-3 md:p-5 border-0 md:border rounded-md flex flex-col gap-2 bg-white">
           <SearchBar
-            searchByBarcode={alertModalRef.current?.searchByBarcode}
+            findByBarcodeAndOpenAlertModal={alertModalRef.current?.findByBarcodeAndLoadData}
             openScannerModal={scannerModalRef.current?.openScannerModal}
             actionRef={searchBarRef}
           />
           <DataTable/>
         </div>
       </div>
-      <AlertModal showFieldError={searchBarRef.current?.showError} actionRef={alertModalRef} />
+      <AlertModal showErrorOnSearchbar={searchBarRef.current?.showError} actionRef={alertModalRef} />
       {
         scannerModalAvailable &&
-        <ScannerModal searchByBarcode={alertModalRef.current?.searchByBarcode} actionRef={scannerModalRef}/>
+        <ScannerModal findByBarcodeAndOpenAlertModal={alertModalRef.current?.findByBarcodeAndLoadData} actionRef={scannerModalRef}/>
       }
   </>
 }
