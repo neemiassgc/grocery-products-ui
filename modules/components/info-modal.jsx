@@ -16,9 +16,8 @@ import { MdDescription } from "react-icons/md"
 import { AiOutlineBarcode } from "react-icons/ai"
 import { SiCoderwall } from "react-icons/si"
 import { GiPriceTag } from "react-icons/gi"
-import { getByBarcode } from "../net"
 import { BiError } from "react-icons/bi"
-import { status as statusChecker, priceFormatter } from "../utils"
+import { priceFormatter } from "../utils"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
@@ -26,90 +25,9 @@ class InfoModal extends Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      loading: false,
-      open: false,
-      content: {
-        body: null,
-        status: null,
-      },
-      netError: ""
-    }
   }
 
-  componentDidMount() {
-    this.props.actionRef.current = {
-      findByBarcodeAndLoadData: this.findByBarcodeAndLoadData.bind(this),
-    }
-  }
-
-  findByBarcodeAndLoadData(barcode) {
-    this.showLoading();
-    getByBarcode(barcode)
-      .then(({ body, status }) => {
-        this.setContentBody(body);
-        this.setContentStatus(status);
-        if (statusChecker.isBadRequest(status)) {
-          this.suppressLoading();
-          this.props.showFieldError(body.violations)
-          return;
-        }
-        this.setNetError("")
-        this.openModal();
-      })
-      .catch(error => {
-        if (error instanceof TypeError)
-          this.setNetError("no-connection")
-        else if (error instanceof DOMException)
-          this.setNetError("no-server")
-        this.suppressLoading();
-        this.openModal();
-      })
-  }
-
-  showLoading() {
-    this.setState({ loading: true })
-  }
-
-  suppressLoading() {
-    this.setState({ loading: false })
-  }
-
-  setContentBody(body) {
-    this.setContentState({ body })
-  }
-
-  setContentStatus(status) {
-    this.setContentState({ status })
-  }
-
-  setContentState(property)  {
-    this.setState(prevState => {
-      const [ key ] = Object.keys(property)
-      return {
-        content: {
-          ...prevState.content,
-          [key]: property[key],
-        }
-      }
-    })
-  }
-
-  setNetError(netError) {
-    this.setState({ netError })
-  }
-
-  openModal() {
-    this.setState({ open: true });
-  }
-
-  closeModalAndSuppressLoading() {
-    this.suppressLoading();
-    this.setState({ open: false })
-  }
-
-  chooseSeverityByStatus() {
+  chooseSeverityByStatus(status) {
     const options = {
       200: {
         severity: "info",
@@ -120,8 +38,8 @@ class InfoModal extends Component {
         msg: "Product created!"
       }
     }
-
-    return options[this.state.content.status] ?? {
+  
+    return options[status] ?? {
       severity: "error",
       msg: "Product not found!"
     }
@@ -130,36 +48,36 @@ class InfoModal extends Component {
   render() {
     return (
       <>
-        <Backdrop className="z-10" open={this.state.loading}>
+        <Backdrop className="z-10" open={this.props.loading}>
           <CircularProgress/>
         </Backdrop>
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
-          open={this.state.open}
+          open={this.props.open}
           className="bg-transparent"
         >
           {
-            !this.state.netError &&
+            !this.props.netError &&
             <DialogTitle>
-              <Alert severity={this.chooseSeverityByStatus().severity} variant="filled">
-                <AlertTitle>{this.chooseSeverityByStatus().msg}</AlertTitle>
+              <Alert severity={this.chooseSeverityByStatus(this.props.content.status).severity} variant="filled">
+                <AlertTitle>{this.chooseSeverityByStatus(this.props.content.status).msg}</AlertTitle>
               </Alert>
             </DialogTitle>
           }
-          <DialogContent dividers={this.state.content.status !== 404}>
+          <DialogContent dividers={this.props.content.status !== 404}>
           {
-            this.state.netError
-              ? <ErrorBoard netError={this.state.netError}/>
-              : this.state.content.status === 404
+            this.props.netError
+              ? <ErrorBoard netError={this.props.netError}/>
+              : this.props.content.status === 404
                 ? <Box className="flex justify-center p-2">
                     <BiError className="text-9xl text-black"/>
                   </Box>
-                : <ContentData body={this.state.content.body}/>
+                : <ContentData body={this.props.content.body}/>
           }
           </DialogContent>
           <DialogActions>
-            <Button className="float-right" onClick={this.closeModalAndSuppressLoading.bind(this)}>Close</Button>
+            <Button className="float-right" onClick={this.props.onCloseClick}>Close</Button>
           </DialogActions>
         </Dialog>
       </>
