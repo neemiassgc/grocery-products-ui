@@ -1,4 +1,3 @@
-import { Component } from "react"
 import Box from "@mui/material/Box"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
@@ -21,13 +20,9 @@ import { priceFormatter } from "../utils"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
-class InfoModal extends Component {
+export default function InfoModal(props) {
 
-  constructor(props) {
-    super(props)
-  }
-
-  chooseSeverityByStatus(status) {
+  const chooseSeverityByStatus = () => {
     const options = {
       200: {
         severity: "info",
@@ -39,50 +34,48 @@ class InfoModal extends Component {
       }
     }
   
-    return options[status] ?? {
+    return options[props.content.status] ?? {
       severity: "error",
       msg: "Product not found!"
     }
   }
 
-  render() {
-    return (
-      <>
-        <Backdrop className="z-10" open={this.props.loading}>
-          <CircularProgress/>
-        </Backdrop>
-        <Dialog
-          fullWidth={true}
-          maxWidth={"sm"}
-          open={this.props.open}
-          className="bg-transparent"
-        >
-          {
-            !this.props.netError &&
-            <DialogTitle>
-              <Alert severity={this.chooseSeverityByStatus(this.props.content.status).severity} variant="filled">
-                <AlertTitle>{this.chooseSeverityByStatus(this.props.content.status).msg}</AlertTitle>
-              </Alert>
-            </DialogTitle>
-          }
-          <DialogContent dividers={this.props.content.status !== 404}>
-          {
-            this.props.netError
-              ? <ErrorBoard netError={this.props.netError}/>
-              : this.props.content.status === 404
-                ? <Box className="flex justify-center p-2">
-                    <BiError className="text-9xl text-black"/>
-                  </Box>
-                : <ContentData body={this.props.content.body}/>
-          }
-          </DialogContent>
-          <DialogActions>
-            <Button className="float-right" onClick={this.props.onCloseClick}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    )
-  }
+  return (
+    <>
+      <Backdrop className="z-10" open={props.loading}>
+        <CircularProgress/>
+      </Backdrop>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={props.open}
+        className="bg-transparent"
+      >
+        {
+          !props.netError &&
+          <DialogTitle>
+            <Alert severity={chooseSeverityByStatus().severity} variant="filled">
+              <AlertTitle>{chooseSeverityByStatus().msg}</AlertTitle>
+            </Alert>
+          </DialogTitle>
+        }
+        <DialogContent dividers={props.content.status !== 404}>
+        {
+          props.netError
+            ? <ErrorBoard netError={props.netError}/>
+            : props.content.status === 404
+              ? <Box className="flex justify-center p-2">
+                  <BiError className="text-9xl text-black"/>
+                </Box>
+              : <ContentData body={props.content.body}/>
+        }
+        </DialogContent>
+        <DialogActions>
+          <Button className="float-right" onClick={props.onCloseClick}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
 }
 
 function ErrorBoard({ netError }) {
@@ -132,5 +125,3 @@ function ListDataBlock({ Icon, value, name}) {
     </ListItem>
   )
 }
-
-export default InfoModal
