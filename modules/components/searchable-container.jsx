@@ -1,10 +1,10 @@
-import AlertModal from "./alert-modal"
+import InfoModal from "./info-modal"
 import SearchBar from "./searchbar"
 import ScannerModal from "./scanner-modal"
 import { isPossibleToScanForBarcodes, isANumber, isZero } from "../utils"
 import { useEffect, useState, useRef } from "react"
 
-function SearchableContainer() {
+export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
   const [searchBarState, setSearchBarState] = useState({
     value: "",
@@ -39,19 +39,19 @@ function SearchableContainer() {
         handleError([{ violationMessage: "barcode cannot be empty" }])
         return;
       }
-      // this.props.findByBarcodeAndOpenAlertModal(searchBarState.input.value)
+      // this.props.findByBarcodeAndOpenInfoModal(searchBarState.input.value)
     }
   }
 
   const searchBarRef = useRef(null);
-  const alertModalRef = useRef(null);
+  const infoModalRef = useRef(null);
   const scannerModalRef = useRef(null);
 
   return (<>
-    <AlertModal showErrorOnSearchbar={searchBarRef.current?.showError} actionRef={alertModalRef} />
+    <InfoModal showErrorOnSearchbar={searchBarRef.current?.showError} actionRef={infoModalRef} />
     {
       scannerModalAvailable &&
-      <ScannerModal findByBarcodeAndOpenAlertModal={alertModalRef.current?.findByBarcodeAndLoadData} actionRef={scannerModalRef}/>
+      <ScannerModal findByBarcodeAndOpenInfoModal={infoModalRef.current?.findByBarcodeAndLoadData} actionRef={scannerModalRef}/>
     }
     <SearchBar
       error={searchBarState.error}
@@ -65,5 +65,3 @@ function SearchableContainer() {
     />
   </>)
 }
-
-export default SearchableContainer;

@@ -22,7 +22,7 @@ import { status as statusChecker, priceFormatter } from "../utils"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
-class AlertModal extends Component {
+class InfoModal extends Component {
 
   constructor(props) {
     super(props)
@@ -215,4 +215,4 @@ function ListDataBlock({ Icon, value, name}) {
   )
 }
 
-export default AlertModal
+export default InfoModal
