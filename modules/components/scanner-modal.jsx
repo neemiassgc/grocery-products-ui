@@ -2,34 +2,27 @@ import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import Button from "@mui/material/Button"
-import { Component, createRef } from "react";
+import { createRef, useEffect } from "react";
 
-class ScannerModal extends Component {
 
-  constructor(props) {
-    super(props)
+export default function ScannerModal(props) {
+  let videoStream = null;
 
-    this.videoStream = null;
-    this.videoPlayer = createRef();
-  }
-
-  async componentDidMount() {
+  useEffect(async () => {
     try {
-      this.videoStream = await this.askForMediaStreams();
-      this.startScanning()
+      videoStream = await askForMediaStreams();
+      startScanning()
     }
     catch (err) {
       console.error(err)
     }
-  }
+    return () => closeModalAndStopScanning();
+  })
 
-  componentWillUnmount() {
-    this.closeModalAndStopScanning();
-  }
 
-  async askForMediaStreams() {
+  const askForMediaStreams = async () => {
     const devices =  await navigator.mediaDevices.enumerateDevices()
-    const constraints = this.pickMediaDevice(devices);
+    const constraints = pickMediaDevice(devices);
 
     return await navigator.mediaDevices.getUserMedia({
       video: constraints,
@@ -37,7 +30,7 @@ class ScannerModal extends Component {
     });
   }
 
-  pickMediaDevice(mediaDevices) {
+  const pickMediaDevice = mediaDevices => {
     let constraints = {}
     mediaDevices.forEach(device => {
       if (device.kind === "videoinput" && device.label.includes("0")) {
@@ -47,11 +40,11 @@ class ScannerModal extends Component {
     return constraints
   }
 
-  async startScanning() {
+  const startScanning = async () => {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
-    const close = this.props.onCloseClick
-    const findProductAndOpenInfoModal = this.props.findProductAndOpenInfoModal
+    const close = props.onCloseClick
+    const findProductAndOpenInfoModal = props.findProductAndOpenInfoModal
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
         if (Date.now() - baseMillis >= 500) {
@@ -71,7 +64,7 @@ class ScannerModal extends Component {
       }
     });
 
-    const [videoTrack] = this.videoStream.getVideoTracks();
+    const [videoTrack] = videoStream.getVideoTracks();
     const trackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
     const trackGenerator = new MediaStreamTrackGenerator({ kind: "video" });
 
@@ -82,42 +75,35 @@ class ScannerModal extends Component {
     const processedStream = new MediaStream();
     processedStream.addTrack(trackGenerator);
 
-    const currentVideoPlayer = this.videoPlayer.current;
+    const videoPlayer = createRef();
+    const currentVideoPlayer = videoPlayer.current;
     currentVideoPlayer.addEventListener("loadedmetadata", () => {
       currentVideoPlayer.play();
     });
     currentVideoPlayer.srcObject = processedStream
   }
 
-  closeModalAndStopScanning() {
-    this.stopScanning()
-    this.props.onCloseClick();
+  const closeModalAndStopScanning = () => {
+    videoStream.getTracks().forEach(track => track.stop())
+    props.onCloseClick();
   }
 
-  stopScanning() {
-    this.videoStream.getTracks().forEach(track => track.stop());
-  }
-
-  render() {
-    return (
-      <>
-        <Dialog
-          fullWidth={true}
-          maxWidth={"md"}
-          keepMounted={true}
-          open={this.props.open}
-          className="bg-transparent"
-        >
-          <DialogContent className="p-0 m-0 md:flex md:justify-center">
-            <video autoPlay={true} className="w-full md:w-11/12" ref={this.videoPlayer}/>
-          </DialogContent>
-          <DialogActions className="p-0 mt-0 md:p-2">
-            <Button variant="outlined" className="float-right" onClick={this.props.onCloseClick}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    )
-  }
+  return (
+    <>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"md"}
+        keepMounted={true}
+        open={props.open}
+        className="bg-transparent"
+      >
+        <DialogContent className="p-0 m-0 md:flex md:justify-center">
+          <video autoPlay={true} className="w-full md:w-11/12" ref={videoPlayer}/>
+        </DialogContent>
+        <DialogActions className="p-0 mt-0 md:p-2">
+          <Button variant="outlined" className="float-right" onClick={props.onCloseClick}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
 }
-
-export default ScannerModal;
