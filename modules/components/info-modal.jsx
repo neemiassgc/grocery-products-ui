@@ -46,6 +46,7 @@ export default function InfoModal(props) {
         <CircularProgress/>
       </Backdrop>
       <Dialog
+        keepMounted={true}
         fullWidth={true}
         maxWidth={"sm"}
         open={props.open}

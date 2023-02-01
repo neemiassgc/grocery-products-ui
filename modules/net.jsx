@@ -2,7 +2,7 @@ import { status as statusChecker } from "./utils"
 
 const { isOk, isCreated, isBadRequest, isNotFound } = statusChecker
 
-const URL = "http://microsoft.webhop.me:8080/api/products"
+const URL = "https://microsoft.webhop.me:8080/api/products"
 
 async function fetchProducts(pagination) {
   return makeRequestQuery(pagination)

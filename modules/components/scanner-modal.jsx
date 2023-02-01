@@ -9,29 +9,22 @@ class ScannerModal extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      open: false,
-    }
-
     this.videoStream = null;
     this.videoPlayer = createRef();
   }
 
-  componentDidMount() {
-    this.props.actionRef.current = {
-      openScannerModal: this.openModalAndStartScanning.bind(this)
-    }
-  }
-
-  async openModalAndStartScanning() {
+  async componentDidMount() {
     try {
       this.videoStream = await this.askForMediaStreams();
       this.startScanning()
-      this.setState({ open: true })
     }
     catch (err) {
       console.error(err)
     }
+  }
+
+  componentWillUnmount() {
+    this.closeModalAndStopScanning();
   }
 
   async askForMediaStreams() {
@@ -57,16 +50,16 @@ class ScannerModal extends Component {
   async startScanning() {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
-    const closeModalAndStopScanning = this.closeModalAndStopScanning.bind(this);
-    const findByBarcodeAndOpenAlertModal = this.props.findByBarcodeAndOpenAlertModal
+    const close = this.props.onCloseClick
+    const findProductAndOpenInfoModal = this.props.findProductAndOpenInfoModal
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
         if (Date.now() - baseMillis >= 500) {
           const bitmap = await createImageBitmap(videoFrame)
           const [barcode] = await barcodeDetector.detect(bitmap)
           if (barcode) {
-            closeModalAndStopScanning();
-            findByBarcodeAndOpenAlertModal(barcode.rawValue)
+            close();
+            findProductAndOpenInfoModal(barcode.rawValue)
           }
           baseMillis = Date.now();
         }
@@ -98,7 +91,7 @@ class ScannerModal extends Component {
 
   closeModalAndStopScanning() {
     this.stopScanning()
-    this.setState({ open: false })
+    this.props.onCloseClick();
   }
 
   stopScanning() {
@@ -112,14 +105,14 @@ class ScannerModal extends Component {
           fullWidth={true}
           maxWidth={"md"}
           keepMounted={true}
-          open={this.state.open}
+          open={this.props.open}
           className="bg-transparent"
         >
           <DialogContent className="p-0 m-0 md:flex md:justify-center">
             <video autoPlay={true} className="w-full md:w-11/12" ref={this.videoPlayer}/>
           </DialogContent>
           <DialogActions className="p-0 mt-0 md:p-2">
-            <Button variant="outlined" className="float-right" onClick={this.closeModalAndStopScanning.bind(this)}>Close</Button>
+            <Button variant="outlined" className="float-right" onClick={this.props.onCloseClick}>Close</Button>
           </DialogActions>
         </Dialog>
       </>

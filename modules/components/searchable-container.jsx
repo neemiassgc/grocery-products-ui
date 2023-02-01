@@ -3,7 +3,7 @@ import SearchBar from "./searchbar"
 import ScannerModal from "./scanner-modal"
 import { getByBarcode } from "../net"
 import { isPossibleToScanForBarcodes, isANumber, isZero, status as statusChecker } from "../utils"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
@@ -21,6 +21,7 @@ export default function SearchableContainer() {
     },
     netError: ""
   });
+  const [openScannerModal, setOpenScannerModal] = useState(false);
 
   useEffect(() => {
     if (isPossibleToScanForBarcodes()) setScannerModalAvailable(true)
@@ -53,34 +54,29 @@ export default function SearchableContainer() {
     }
   }
 
-  const findProductAndOpenInfoModal = async barcode => {
+  const findProductAndOpenInfoModal = barcode => {
     setInfoModalState({...infoModalState, loading: true});
-    try {
-      const { body, status } = await getByBarcode(barcode);
+    getByBarcode(barcode).then(({ body, status }) => {
       if (statusChecker.isBadRequest(status)) {
         setInfoModalState({...infoModalState, loading: false});
         handleError(body.violations)
         return;
       }
       setInfoModalState({...infoModalState, netError: "", open: true, content: { body, status }});
-    }
-    catch (error) {
+    })
+    .catch(error => {
       if (error instanceof TypeError)
         setInfoModalState({...infoModalState, netError: "no-connection"});
       else if (error instanceof DOMException)
         setInfoModalState({...infoModalState, netError: "no-server"});
 
       setInfoModalState({...infoModalState, loading: false, open: true});
-    }
+    })
   }
 
   function closeInfoModalAndSuppressLoading() {
     setInfoModalState({...infoModalState, loading: false, open: false});
   }
-
-  const searchBarRef = useRef(null);
-  const infoModalRef = useRef(null);
-  const scannerModalRef = useRef(null);
 
   return (<>
     <InfoModal
@@ -92,7 +88,11 @@ export default function SearchableContainer() {
     />
     {
       scannerModalAvailable &&
-      <ScannerModal findByBarcodeAndOpenInfoModal={infoModalRef.current?.findByBarcodeAndLoadData} actionRef={scannerModalRef}/>
+      <ScannerModal
+        open={openScannerModal}
+        onCloseClick={() => setOpenScannerModal(false)}
+        findProductAndOpenInfoModal={findProductAndOpenInfoModal}
+      />
     }
     <SearchBar
       error={searchBarState.error}
@@ -101,8 +101,7 @@ export default function SearchableContainer() {
       scannerButtonAvailable={scannerModalAvailable}
       onKeyUp={handleKeyUp}
       onChange={handleChange}
-      // openScannerModal={scannerModalRef.current?.openScannerModal}
-      actionRef={searchBarRef}
+      openScannerModal={() => setOpenScannerModal(true)}
     />
   </>)
 }

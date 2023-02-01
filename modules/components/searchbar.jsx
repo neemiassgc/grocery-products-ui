@@ -24,7 +24,7 @@ export default function SearchBar(props) {
             <InputAdornment position="end">
               <BiBarcodeReader
                 className="text-2xl hover:text-black active:text-red-600 hover:cursor-pointer active:cursor-default"
-                // onClick={props.openScannerModal}
+                onClick={props.openScannerModal}
               />
             </InputAdornment>
           }
