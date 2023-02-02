@@ -105,19 +105,27 @@ function ContentData(props) {
   const iconStyleClasses = "text-2xl mr-3 inline-block align-middle";
   return (
     <List>
-      <ListDataBlock value={props.body?.description} name="Description:" Icon={() => <MdDescription className={iconStyleClasses}/>}/>
-      <ListDataBlock value={props.body?.barcode} name="Barcode" Icon={() => <AiOutlineBarcode className={iconStyleClasses}/>}/>
-      <ListDataBlock value={props.body?.sequenceCode} name="Sequence Code" Icon={() => <SiCoderwall className={iconStyleClasses}/>}/>
-      <ListDataBlock value={priceFormatter(props.body?.currentPrice)} name="Current Price" Icon={() => <GiPriceTag className={iconStyleClasses}/>}/>
+      <ListDataBlock value={props.body?.description} name="Description:">
+        <MdDescription className={iconStyleClasses}/>
+      </ListDataBlock>
+      <ListDataBlock value={props.body?.barcode} name="Barcode">
+        <AiOutlineBarcode className={iconStyleClasses}/>
+      </ListDataBlock>
+      <ListDataBlock value={props.body?.sequenceCode} name="Sequence Code">
+        <SiCoderwall className={iconStyleClasses}/>
+      </ListDataBlock>
+      <ListDataBlock value={priceFormatter(props.body?.currentPrice)} name="Current Price">
+        <GiPriceTag className={iconStyleClasses}/>
+      </ListDataBlock>
     </List>
   )
 }
 
-function ListDataBlock({ Icon, value, name}) {
+function ListDataBlock({ children: icon, value, name}) {
   return (
     <ListItem className="flex flex-col md:flex-row justify-center gap-0 md:gap-5 mb-2">
       <Box className="basis-1/3">
-        <Icon/>
+        {icon}
         <ListItemText className="inline-block align-middle" primary={name}/>
       </Box>
       <Box className="basis-1/3">
