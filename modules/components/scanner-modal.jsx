@@ -6,6 +6,7 @@ import { createRef, useEffect } from "react";
 
 
 export default function ScannerModal(props) {
+  const videoPlayer = createRef();
   let videoStream = null;
 
   useEffect(async () => {
@@ -17,7 +18,7 @@ export default function ScannerModal(props) {
       console.error(err)
     }
     return () => closeModalAndStopScanning();
-  })
+  }, [])
 
 
   const askForMediaStreams = async () => {
@@ -75,7 +76,6 @@ export default function ScannerModal(props) {
     const processedStream = new MediaStream();
     processedStream.addTrack(trackGenerator);
 
-    const videoPlayer = createRef();
     const currentVideoPlayer = videoPlayer.current;
     currentVideoPlayer.addEventListener("loadedmetadata", () => {
       currentVideoPlayer.play();
