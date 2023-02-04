@@ -2,14 +2,13 @@ import InfoModal from "./info-modal"
 import SearchBar from "./searchbar"
 import ScannerModal from "./scanner-modal"
 import { getByBarcode } from "../net"
-import { isPossibleToScanForBarcodes, isANumber, isZero, status as statusChecker } from "../utils"
+import { isPossibleToScanForBarcodes, status as statusChecker } from "../utils"
 import { useEffect, useState } from "react"
 
 export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
   const [searchBarState, setSearchBarState] = useState({
-    value: "",
-    error: false,
+    violation: false,
     helperTextContent: ""
   })
   const [infoModalState, setInfoModalState] = useState({
@@ -27,31 +26,13 @@ export default function SearchableContainer() {
     if (isPossibleToScanForBarcodes()) setScannerModalAvailable(true)
   }, [])
 
-  const handleError = violations => {
-    const errorFeedback = violations
+  const showViolationWarning = violations => {
+    const violationFeedback = violations
       .map(violation => <p>{violation.violationMessage}</p>)
 
     setSearchBarState({
-      ...searchBarState, helperTextContent: errorFeedback, error: true,
+      ...searchBarState, helperTextContent: violationFeedback, violation: true,
     });
-  }
-
-  const handleChange = ({ target: { value } }) => {
-    if (searchBarState.error)
-      setSearchBarState({...searchBarState, error: false, helperTextContent: ""})
-
-    if (value.length <= 13 && isANumber(value))
-      setSearchBarState({...searchBarState, value});
-  }
-
-  const handleKeyUp = ({ key }) => {
-    if (key === "Enter") {
-      if (isZero(searchBarState.value.length)) {
-        handleError([{ violationMessage: "barcode cannot be empty" }])
-        return;
-      }
-      findProductAndOpenInfoModal(searchBarState.value)
-    }
   }
 
   const findProductAndOpenInfoModal = barcode => {
@@ -59,7 +40,7 @@ export default function SearchableContainer() {
     getByBarcode(barcode).then(({ body, status }) => {
       if (statusChecker.isBadRequest(status)) {
         setInfoModalState({...infoModalState, loading: false});
-        handleError(body.violations)
+        showViolationWarning(body.violations)
         return;
       }
       setInfoModalState({...infoModalState, netError: "", open: true, content: { body, status }});
@@ -95,13 +76,15 @@ export default function SearchableContainer() {
       />
     }
     <SearchBar
-      error={searchBarState.error}
-      value={searchBarState.value}
+      violation={searchBarState.violation}
       helperTextContent={searchBarState.helperTextContent}
       scannerButtonAvailable={scannerModalAvailable}
-      onKeyUp={handleKeyUp}
-      onChange={handleChange}
       openScannerModal={() => setOpenScannerModal(true)}
+      showViolationWarning={showViolationWarning}
+      findProductAndOpenInfoModal={findProductAndOpenInfoModal}
+      hideViolationWarning={
+        () => setSearchBarState({...searchBarState, violation: false, helperTextContent: ""})
+      }
     />
   </>)
 }
