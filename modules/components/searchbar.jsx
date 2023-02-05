@@ -5,11 +5,15 @@ import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 import { BiBarcodeReader } from "react-icons/bi"
-import { isZero, isANumber } from "../utils"
+import { isZero, isANumber, isEmpty } from "../utils"
 import { useState } from "react"
 
 export default function SearchBar(props) {
   const [value, setValue] = useState("");
+
+  const hasViolation = () => {
+    return !isEmpty(props.helperTextContent)
+  }
 
   const handleKeyUp = ({ key }) => {
     if (key === "Enter") {
@@ -32,7 +36,7 @@ export default function SearchBar(props) {
     <Box>
       <FormControl
         variant="outlined" className="w-full"
-        error={props.violation}
+        error={hasViolation()}
         size="small"
       >
         <InputLabel htmlFor="my-input">Search by barcode</InputLabel>
@@ -54,7 +58,7 @@ export default function SearchBar(props) {
           value={value}
         />
         {
-          props.violation &&
+          hasViolation() &&
           <FormHelperText className="font-medium">
             {props.helperTextContent}
           </FormHelperText>

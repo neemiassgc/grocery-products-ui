@@ -8,7 +8,6 @@ import { useEffect, useState } from "react"
 export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
   const [searchBarState, setSearchBarState] = useState({
-    violation: false,
     helperTextContent: ""
   })
   const [infoModalState, setInfoModalState] = useState({
@@ -31,7 +30,7 @@ export default function SearchableContainer() {
       .map(violation => <p>{violation.violationMessage}</p>)
 
     setSearchBarState({
-      ...searchBarState, helperTextContent: violationFeedback, violation: true,
+      ...searchBarState, helperTextContent: violationFeedback,
     });
   }
 
@@ -76,14 +75,13 @@ export default function SearchableContainer() {
       />
     }
     <SearchBar
-      violation={searchBarState.violation}
       helperTextContent={searchBarState.helperTextContent}
       scannerButtonAvailable={scannerModalAvailable}
       openScannerModal={() => setOpenScannerModal(true)}
       showViolationWarning={showViolationWarning}
       findProductAndOpenInfoModal={findProductAndOpenInfoModal}
       hideViolationWarning={
-        () => setSearchBarState({...searchBarState, violation: false, helperTextContent: ""})
+        () => setSearchBarState({...searchBarState, helperTextContent: ""})
       }
     />
   </>)
