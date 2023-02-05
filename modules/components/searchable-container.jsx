@@ -7,9 +7,7 @@ import { useEffect, useState } from "react"
 
 export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
-  const [searchBarState, setSearchBarState] = useState({
-    helperTextContent: ""
-  })
+  const [searchBarViolations, setSearchBarViolations] = useState([])
   const [infoModalState, setInfoModalState] = useState({
     loading: false,
     open: false,
@@ -25,21 +23,12 @@ export default function SearchableContainer() {
     if (isPossibleToScanForBarcodes()) setScannerModalAvailable(true)
   }, [])
 
-  const showViolationWarning = violations => {
-    const violationFeedback = violations
-      .map(violation => <p>{violation.violationMessage}</p>)
-
-    setSearchBarState({
-      ...searchBarState, helperTextContent: violationFeedback,
-    });
-  }
-
   const findProductAndOpenInfoModal = barcode => {
     setInfoModalState({...infoModalState, loading: true});
     getByBarcode(barcode).then(({ body, status }) => {
       if (statusChecker.isBadRequest(status)) {
         setInfoModalState({...infoModalState, loading: false});
-        showViolationWarning(body.violations)
+        setSearchBarViolations(body.violations)
         return;
       }
       setInfoModalState({...infoModalState, netError: "", open: true, content: { body, status }});
@@ -75,14 +64,11 @@ export default function SearchableContainer() {
       />
     }
     <SearchBar
-      helperTextContent={searchBarState.helperTextContent}
+      violations={searchBarViolations}
       scannerButtonAvailable={scannerModalAvailable}
       openScannerModal={() => setOpenScannerModal(true)}
-      showViolationWarning={showViolationWarning}
       findProductAndOpenInfoModal={findProductAndOpenInfoModal}
-      hideViolationWarning={
-        () => setSearchBarState({...searchBarState, helperTextContent: ""})
-      }
+      setViolations={setSearchBarViolations}
     />
   </>)
 }

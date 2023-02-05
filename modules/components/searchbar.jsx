@@ -12,13 +12,13 @@ export default function SearchBar(props) {
   const [value, setValue] = useState("");
 
   const hasViolation = () => {
-    return !isEmpty(props.helperTextContent)
+    return !isEmpty(props.violations)
   }
 
   const handleKeyUp = ({ key }) => {
     if (key === "Enter") {
       if (isZero(value.length)) {
-        props.showViolationWarning([{ violationMessage: "barcode cannot be empty" }])
+        props.setViolations([{ violationMessage: "barcode cannot be empty" }])
         return;
       }
       props.findProductAndOpenInfoModal(value)
@@ -26,7 +26,7 @@ export default function SearchBar(props) {
   }
 
   const handleChange = ({ target: { value: freshValue } }) => {
-    if (props.violation) props.hideViolationWarning()
+    if (hasViolation()) props.setViolations([])
 
     if (freshValue.length <= 13 && isANumber(freshValue))
       setValue(freshValue);
@@ -60,7 +60,7 @@ export default function SearchBar(props) {
         {
           hasViolation() &&
           <FormHelperText className="font-medium">
-            {props.helperTextContent}
+            {props.violations.map(it => <p>{it.violationMessage}</p>)}
           </FormHelperText>
         }
       </FormControl>
