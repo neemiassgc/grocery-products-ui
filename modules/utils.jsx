@@ -53,7 +53,7 @@ export function isANumber(number) {
   return /^\d*$/.test(number+"");
 }
 
-export function isEmtpy(array) {
+export function isEmpty(array) {
   return array.length === 0
 }
 
