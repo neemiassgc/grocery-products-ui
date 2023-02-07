@@ -22,53 +22,29 @@ import { IoCloudOffline } from "react-icons/io5"
 
 export default function InfoModal(props) {
 
-  const chooseSeverityByStatus = () => {
-    const options = {
-      200: {
-        severity: "info",
-        msg: "Product is already exist!"
-      },
-      201:  {
-        severity: "success",
-        msg: "Product created!"
-      }
-    }
-  
-    return options[props.content.status] ?? {
-      severity: "error",
-      msg: "Product not found!"
-    }
-  }
-
   return (
     <>
-      <Backdrop className="z-10" open={props.loading}>
+      <Backdrop className="z-10" open={props.status === "loading"}>
         <CircularProgress/>
       </Backdrop>
       <Dialog
-        keepMounted={true}
         fullWidth={true}
         maxWidth={"sm"}
-        open={props.open}
+        open={props.status !== "idle" && props.status !== "loading" && props.status !== "bad_request"}
         className="bg-transparent"
       >
         {
-          !props.netError &&
-          <DialogTitle>
-            <Alert severity={chooseSeverityByStatus().severity} variant="filled">
-              <AlertTitle>{chooseSeverityByStatus().msg}</AlertTitle>
-            </Alert>
-          </DialogTitle>
+          <DialogHeader status={props.status}/>
         }
-        <DialogContent dividers={props.content.status !== 404}>
+        <DialogContent dividers={props.status !== "not_found"}>
         {
-          props.netError
-            ? <ErrorBoard netError={props.netError}/>
-            : props.content.status === 404
+          props.status === "no_connection" || props.status === "no_server"
+            ? <ErrorBoard netError={props.status}/>
+            : props.status === "not_found"
               ? <Box className="flex justify-center p-2">
                   <BiError className="text-9xl text-black"/>
                 </Box>
-              : <ContentData body={props.content.body}/>
+              : <ContentData body={props.content}/>
         }
         </DialogContent>
         <DialogActions>
@@ -79,13 +55,41 @@ export default function InfoModal(props) {
   )
 }
 
+function DialogHeader({ status }) {
+  if (!(status === "existing" || status === "created" || status === "not_found"))
+    return  null;
+
+  const options = {
+    "created": {
+      severity: "success",
+      msg: "Product created!"
+    },
+    "existing":  {
+      severity: "info",
+      msg: "Product is already exist!"
+    },
+    "not_found": {
+      severity: "error",
+      msg: "Product not found!"
+    }
+  }
+
+  return (
+    <DialogTitle>
+      <Alert severity={options[status].severity} variant="filled">
+        <AlertTitle>{options[status].msg}</AlertTitle>
+      </Alert>
+    </DialogTitle>
+  );
+}
+
 function ErrorBoard({ netError }) {
   const alertOption = {
-    "no-connection": [
+    "no_connection": [
       <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
       "No connection"
     ],
-    "no-server": [
+    "no_server": [
       <IoCloudOffline className="w-10 h-10 text-zinc-300"/>,
       "Server is not responding"
     ]

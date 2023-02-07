@@ -9,13 +9,8 @@ export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
   const [searchBarViolations, setSearchBarViolations] = useState([])
   const [infoModalState, setInfoModalState] = useState({
-    loading: false,
-    open: false,
-    content: {
-      body: null,
-      status: null,
-    },
-    netError: ""
+    status: "idle",
+    content: {}
   });
   const [openScannerModal, setOpenScannerModal] = useState(false);
 
@@ -23,51 +18,50 @@ export default function SearchableContainer() {
     if (isPossibleToScanForBarcodes()) setScannerModalAvailable(true)
   }, [])
 
-  const findProductAndOpenInfoModal = barcode => {
-    setInfoModalState({...infoModalState, loading: true});
-    getByBarcode(barcode).then(({ body, status }) => {
-      if (statusChecker.isBadRequest(status)) {
-        setInfoModalState({...infoModalState, loading: false});
-        setSearchBarViolations(body.violations)
-        return;
-      }
-      setInfoModalState({...infoModalState, netError: "", open: true, content: { body, status }});
-    })
-    .catch(error => {
-      if (error instanceof TypeError)
-        setInfoModalState({...infoModalState, netError: "no-connection"});
-      else if (error instanceof DOMException)
-        setInfoModalState({...infoModalState, netError: "no-server"});
-
-      setInfoModalState({...infoModalState, loading: false, open: true});
-    })
+  const setStatus = (newStatus) => {
+    setInfoModalState({...infoModalState, status: newStatus})
   }
 
-  function closeInfoModalAndSuppressLoading() {
-    setInfoModalState({...infoModalState, loading: false, open: false});
+  const findProduct = barcode => {
+    setStatus("loading")
+
+    getByBarcode(barcode).then(({ body, status: statusCode}) => {
+      const actions = {
+        200: () => setInfoModalState({ status: "existing", content: body }),
+        201: () => setInfoModalState({ status: "created", content: body }),
+        400: () => {
+          setStatus("bad_request")
+          setSearchBarViolations(body.violations)
+        },
+        404: () => setInfoModalState({ status: "not_found", content: body })
+      };
+      actions[statusCode]()
+    })
+    .catch(error => {
+      if (error instanceof TypeError) setStatus("no_connnection")
+      else if (error instanceof DOMException) setStatus("no_server")
+    })
   }
 
   return (<>
     <InfoModal
-      open={infoModalState.open}
-      loading={infoModalState.loading}
+      status={infoModalState.status}
       content={infoModalState.content}
-      netError={infoModalState.netError}
-      onCloseClick={closeInfoModalAndSuppressLoading}
+      onCloseClick={() => setStatus("idle")}
     />
     {
       scannerModalAvailable &&
       <ScannerModal
         open={openScannerModal}
         onCloseClick={() => setOpenScannerModal(false)}
-        findProductAndOpenInfoModal={findProductAndOpenInfoModal}
+        findProduct={findProduct}
       />
     }
     <SearchBar
       violations={searchBarViolations}
       scannerButtonAvailable={scannerModalAvailable}
       openScannerModal={() => setOpenScannerModal(true)}
-      findProductAndOpenInfoModal={findProductAndOpenInfoModal}
+      findProduct={findProduct}
       setViolations={setSearchBarViolations}
     />
   </>)

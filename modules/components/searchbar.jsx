@@ -21,7 +21,7 @@ export default function SearchBar(props) {
         props.setViolations([{ violationMessage: "barcode cannot be empty" }])
         return;
       }
-      props.findProductAndOpenInfoModal(value)
+      props.findProduct(value)
     }
   }
 
