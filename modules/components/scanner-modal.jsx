@@ -10,6 +10,7 @@ export default function ScannerModal(props) {
   let videoStream = null;
 
   useEffect(async () => {
+    console.log("mounted")
     try {
       videoStream = await askForMediaStreams();
       startScanning()
@@ -17,7 +18,7 @@ export default function ScannerModal(props) {
     catch (err) {
       console.error(err)
     }
-    return () => closeModalAndStopScanning();
+    return () => { closeModalAndStopScanning(); console.log("unmounted")};
   }, [])
 
 
@@ -45,7 +46,7 @@ export default function ScannerModal(props) {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
     const close = props.onCloseClick
-    const findProductAndOpenInfoModal = props.findProductAndOpenInfoModal
+    const findProduct = props.findProduct
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
         if (Date.now() - baseMillis >= 500) {
@@ -53,7 +54,7 @@ export default function ScannerModal(props) {
           const [barcode] = await barcodeDetector.detect(bitmap)
           if (barcode) {
             close();
-            findProductAndOpenInfoModal(barcode.rawValue)
+            findProduct(barcode.rawValue)
           }
           baseMillis = Date.now();
         }
@@ -84,6 +85,8 @@ export default function ScannerModal(props) {
   }
 
   const closeModalAndStopScanning = () => {
+    videoPlayer.current.pause();
+    videoPlayer.current.srcObject = null;
     videoStream.getTracks().forEach(track => track.stop())
     props.onCloseClick();
   }
@@ -93,8 +96,7 @@ export default function ScannerModal(props) {
       <Dialog
         fullWidth={true}
         maxWidth={"md"}
-        keepMounted={true}
-        open={props.open}
+        open={true}
         className="bg-transparent"
       >
         <DialogContent className="p-0 m-0 md:flex md:justify-center">

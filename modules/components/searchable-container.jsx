@@ -50,9 +50,8 @@ export default function SearchableContainer() {
       onCloseClick={() => setStatus("idle")}
     />
     {
-      scannerModalAvailable &&
+      scannerModalAvailable && openScannerModal &&
       <ScannerModal
-        open={openScannerModal}
         onCloseClick={() => setOpenScannerModal(false)}
         findProduct={findProduct}
       />
