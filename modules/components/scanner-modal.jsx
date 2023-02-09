@@ -6,19 +6,16 @@ import { createRef, useEffect } from "react";
 
 
 export default function ScannerModal(props) {
-  const videoPlayer = createRef();
+  const videoPlayer = createRef(null);
   let videoStream = null;
 
-  useEffect(async () => {
-    console.log("mounted")
-    try {
-      videoStream = await askForMediaStreams();
-      startScanning()
-    }
-    catch (err) {
-      console.error(err)
-    }
-    return () => { closeModalAndStopScanning(); console.log("unmounted")};
+  useEffect(() => {
+    askForMediaStreams()
+      .then(stream => {
+        videoStream = stream;
+        startScanning();
+      })
+      .catch(console.error)
   }, [])
 
 
@@ -45,16 +42,14 @@ export default function ScannerModal(props) {
   const startScanning = async () => {
     let baseMillis = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
-    const close = props.onCloseClick
-    const findProduct = props.findProduct
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
         if (Date.now() - baseMillis >= 500) {
           const bitmap = await createImageBitmap(videoFrame)
           const [barcode] = await barcodeDetector.detect(bitmap)
           if (barcode) {
-            close();
-            findProduct(barcode.rawValue)
+            disposeResources();
+            props.findProduct(barcode.rawValue);
           }
           baseMillis = Date.now();
         }
@@ -78,13 +73,10 @@ export default function ScannerModal(props) {
     processedStream.addTrack(trackGenerator);
 
     const currentVideoPlayer = videoPlayer.current;
-    currentVideoPlayer.addEventListener("loadedmetadata", () => {
-      currentVideoPlayer.play();
-    });
     currentVideoPlayer.srcObject = processedStream
   }
 
-  const closeModalAndStopScanning = () => {
+  const disposeResources = () => {
     videoPlayer.current.pause();
     videoPlayer.current.srcObject = null;
     videoStream.getTracks().forEach(track => track.stop())
@@ -103,7 +95,7 @@ export default function ScannerModal(props) {
           <video autoPlay={true} className="w-full md:w-11/12" ref={videoPlayer}/>
         </DialogContent>
         <DialogActions className="p-0 mt-0 md:p-2">
-          <Button variant="outlined" className="float-right" onClick={props.onCloseClick}>Close</Button>
+          <Button variant="outlined" className="float-right" onClick={disposeResources}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

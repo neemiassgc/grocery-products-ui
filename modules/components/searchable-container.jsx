@@ -44,21 +44,21 @@ export default function SearchableContainer() {
   }
 
   return (<>
-    <InfoModal
-      status={infoModalState.status}
-      content={infoModalState.content}
-      onCloseClick={() => setStatus("idle")}
-    />
-    {
-      scannerModalAvailable && openScannerModal &&
-      <ScannerModal
-        onCloseClick={() => setOpenScannerModal(false)}
-        findProduct={findProduct}
+      <InfoModal
+        status={infoModalState.status}
+        content={infoModalState.content}
+        onCloseClick={() => setStatus("idle")}
       />
-    }
-    <SearchBar
-      violations={searchBarViolations}
-      scannerButtonAvailable={scannerModalAvailable}
+      {
+        scannerModalAvailable && openScannerModal &&
+        <ScannerModal
+          onCloseClick={() => setOpenScannerModal(false)}
+          findProduct={findProduct}
+        /> || null
+      }
+      <SearchBar
+        violations={searchBarViolations}
+        scannerButtonAvailable={scannerModalAvailable}
       openScannerModal={() => setOpenScannerModal(true)}
       findProduct={findProduct}
       setViolations={setSearchBarViolations}
