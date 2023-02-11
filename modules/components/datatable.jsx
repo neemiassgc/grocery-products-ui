@@ -1,4 +1,4 @@
-import { Component } from "react"
+import { useState, useRef, useEffect } from "react"
 import * as net from "../net"
 import {
   DataGrid,
@@ -14,123 +14,76 @@ import { SiFiles } from "react-icons/si"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
-export default class DataTable extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      datagrid: {
-        products: [],
-        isLoading: false,
-      },
-      pagination: {
-        rowCount: 0,
-        page: 0,
-        pageSize: 5,
-      },
-      filter: {
-        operatorValue: "all",
-        value: undefined,
-        serverSide: false
-      },
-      error: {
-        code: "no-items"
-      },
-      smallScreen: false
+export default function DataTable(props) {
+  const [pagination, setPagination] = useState({
+    rowCount: 0,
+    page: 0,
+    pageSize: 5
+  })
+  const [filter, setFilter] = useState({
+    operatorValue: "all",
+    value: undefined,
+    serverSide: false
+  })
+  const [error, setError] = useState({ code: "noItems" });
+  const [smallScreen, setSmallScreen] = useState(false);
+
+  const setRowCount = rowCount => setPagination({...pagination, rowCount});
+  const setPage = page => setPagination({...pagination, page});
+  const setPageSize = pageSize => setPagination({...pagination, pageSize});
+  const setOperatorValue = operatorValue => setFilter({...filter, operatorValue});
+  const setValue = value => setFilter({...filter, value});
+  const setServerSide = serverSide => setFilter({...filter, serverSide});
+  const setErrorCode = errorCode => setError({...error, code: errorCode});
+
+  let mediaQueryDetection = null;
+  useEffect(() => {
+    setSmallScreenDetection();
+
+    return () => {
+      if (mediaQueryDetection) {
+        const { matchMedia, action } = mediaQueryDetection;
+        matchMedia.removeEventListener("change", action)
+      }
     }
-  }
+  }, [smallScreen]);
 
-  setErrorCode(code) {
-    this.setObjectState("error", { code })
-  }
+  const productData = {};
+  useEffect(() => {
+    selectDataFetcher()
+      .then(({ products, rowCount }) => {
+        productData.products = products;
+        productData.rowCount = rowCount;
+        noItemsIfProductsIsEmpty(products);
+      })
+      .catch(err => {
+        // treatError(err)
+      })
 
-  setProducts(products) {
-    this.setObjectState("datagrid", { products })
-  }
-
-  setIsLoading(isLoading) {
-    this.setObjectState("datagrid", { isLoading })
-  }
-
-  setRowCount(rowCount) {
-    this.setObjectState("pagination", { rowCount })
-  }
-
-  setPageAndLoadData(page) {
-    this.setObjectState("pagination", { page })
-    this.loadData({ page })
-  }
-
-  setPageSizeAndLoadData(pageSize) {
-    this.setObjectState("pagination", { pageSize })
-    this.loadData({ pageSize })
-  }
-
-  setFilterAndLoadData(filter) {
-    const { operatorValue, value } = filter
-    this.setObjectState("filter", { operatorValue, value });
-    if (!this.state.filter.serverSide) return;
-    this.loadData({ filter })
-  }
-
-  setSmallScreen(bool) {
-    this.setState({ smallScreen: bool })
-  }
-
-  toggleFilterServerSideAndLoadData() {
-    this.setState(({ filter }) => {
+    const selectDataFetcher = () => {
+      const { operatorValue, value } = filter
+  
       return {
-        filter: {
-          ...filter,
-          serverSide: !filter.serverSide,
-        }
-      }
-    }, () => {
-      if (this.state.filter.serverSide) this.loadData({})
-      else this.loadData({filter: { operatorValue: "all" }})
-    })
-  }
+        all: () => net.getAllProducts(pagination),
+        contains: () => net.getProductsContaining(pagination, value),
+        startsWith: () => net.getProductsStartingWith(pagination, value),
+        endsWith: () => net.getProductsEndingWith(pagination, value),
+      }[operatorValue]
+    };
+  
+    // const noItemsIfProductsIsEmpty = products => {
+    //   if (utils.isEmpty(products)) setErrorCode("no-items")
+    // }
+  
+    // const treatError = error => {
+    //   if (error instanceof TypeError)
+    //     setErrorCode("no-connection")
+    //   else if (error instanceof DOMException)
+    //     setErrorCode("no-server")
+    // }
+  }, [ pagination, filter]);
 
-  componentDidMount() {
-    const { page, pageSize } = this.state.datagrid;
-    this.loadData({ page, pageSize });
-
-    this.setSmallScreenDetection();
-  }
-
-  componentWillUnmount() {
-    if (this.mediaQueryDetection) {
-      const { matchMedia, boundAction } = this.mediaQueryDetection;
-      matchMedia.removeEventListener("change", boundAction)
-    }
-  }
-
-  setSmallScreenDetection() {
-    this.mediaQueryDetection = {
-      matchMedia: window.matchMedia("(max-width: 768px)"),
-      action: e => {
-        if (e.matches && !this.state.smallScreen)
-          this.setSmallScreen(true)
-        else if (!e.matches && this.state.smallScreen)
-          this.setSmallScreen(false)
-      }
-    }
-    const { matchMedia, action } = this.mediaQueryDetection
-    this.mediaQueryDetection.boundAction = action.bind(this);
-    matchMedia.addEventListener("change", this.mediaQueryDetection.boundAction)
-  }
-
-  setObjectState(objectName, properties) {
-    this.setState(prevState => {
-      const newObject = {...prevState[objectName]}
-      for (const key in properties)
-        newObject[key] = properties[key]
-      return {
-        [objectName]: newObject
-      }
-    })
-  }
-
-  buildCols() {
+  const buildCols = () => {
     const valuePriceFormatter = ({ value }) => utils.priceFormatter(value);
     const valueDateformatter = ({ value }) => utils.dateFormatter(value);
 
@@ -220,8 +173,8 @@ export default class DataTable extends Component {
     return columns;
   }
 
-  buildRows() {
-    return this.state.datagrid.products.map((value, index) => {
+  const buildRows = () => {
+    return productData?.products.map((value, index) => {
       return {
         id: index + 1,
         description: value.description,
@@ -236,107 +189,67 @@ export default class DataTable extends Component {
     });
   }
 
-  handlePageChange(page) {
-    this.loadPage({ page })
-  }
-
-  handlePageSizeChange(pageSize) {
-    this.loadPage({ pageSize })
-  }
-  
-  loadData(settings) {
-    this.setIsLoading(true)
-    this.selectDataFetcher(settings)()
-      .then(({ products, rowCount }) => {
-        this.setProducts(products);
-        this.noItemsIfProductsIsEmpty(products);
-        this.setIsLoading(false);
-        this.setRowCount(rowCount);
-      })
-      .catch(err => {
-        this.setIsLoading(false);
-        this.treatError(err)
-      })
-  }
-
-  selectDataFetcher(settings) {
-    const { operatorValue, value } = settings?.filter ?? {
-      operatorValue: this.state.filter.operatorValue,
-      value: this.state.filter.value
+  const setSmallScreenDetection = () => {
+    mediaQueryDetection = {
+      matchMedia: window.matchMedia("(max-width: 768px)"),
+      action: e => {
+        if (e.matches && !smallScreen)
+          setSmallScreen(true)
+        else if (!e.matches && smallScreen)
+          setSmallScreen(false)
+      }
     }
-    const {
-      page = this.state.pagination.page,
-      pageSize = this.state.pagination.pageSize,
-    } = settings
-    const pagination = { page, pageSize };
-
-    return {
-      all: () => net.getAllProducts(pagination),
-      contains: () => net.getProductsContaining(pagination, value),
-      startsWith: () => net.getProductsStartingWith(pagination, value),
-      endsWith: () => net.getProductsEndingWith(pagination, value),
-    }[operatorValue]
+    const { matchMedia, action } = mediaQueryDetection
+    matchMedia.addEventListener("change", action)
   }
 
-  noItemsIfProductsIsEmpty(products) {
-    if (utils.isEmtpy(products)) this.setErrorCode("no-items")
-  }
-
-  treatError(error) {
-    if (error instanceof TypeError)
-      this.setErrorCode("no-connection")
-    else if (error instanceof DOMException)
-      this.setErrorCode("no-server")
-  }
-
-  handleFilterModalChange(filter) {
+  const handleFilterModalChange = filter => {
     const [values = {}] = filter.items
-    this.setFilterAndLoadData({ operatorValue: values.operatorValue ?? "all", value: values.value ?? "" });
+    setOperatorValue(values.operatorValue ?? "all");
+    setValue(values.value ?? "");
   }
 
-  render() {
-    return (
-      <DataGrid
-        columns={this.buildCols()}
-        rows={this.buildRows()}
-        initialState={{
-          sorting: {
-            sortModel: [{ field: "description", sort: "asc" }]
-          }
-        }}
-        columnVisibilityModel={
-          this.state.smallScreen ?
-          {
-            barcode: false,
-            previousPriceDate: false,
-            currentPriceDate: false,
-            sequenceCode: false
-          }
-          : {}
+  return (
+    <DataGrid
+      columns={buildCols()}
+      rows={buildRows()}
+      initialState={{
+        sorting: {
+          sortModel: [{ field: "description", sort: "asc" }]
         }
-        rowsPerPageOptions={[5, 10, 15, 20, 30]}
-        onPageChange={this.setPageAndLoadData.bind(this)}
-        onPageSizeChange={this.setPageSizeAndLoadData.bind(this)}
-        onFilterModelChange={this.handleFilterModalChange.bind(this)}
-        filterMode={this.state.filter.serverSide ? "server" : "client"}
-        page={this.state.pagination.page}
-        pageSize={this.state.pagination.pageSize}
-        pagination={true}
-        paginationMode="server"
-        rowCount={this.state.pagination.rowCount}
-        loading={this.state.datagrid.isLoading}
-        components={{
-          Toolbar: CustomToolBar,
-          NoRowsOverlay: NoRowsOverlay,
-        }}
-        componentsProps={{
-          toolbar: { changeServerSide: this.toggleFilterServerSideAndLoadData.bind(this) },
-          noRowsOverlay: { code: this.state.error.code },
-          filterPanel: { className: "w-96 sm:w-full" }
-        }}
-      />
-    )
-  }
+      }}
+      columnVisibilityModel={
+        smallScreen ?
+        {
+          barcode: false,
+          previousPriceDate: false,
+          currentPriceDate: false,
+          sequenceCode: false
+        }
+        : {}
+      }
+      rowsPerPageOptions={[5, 10, 15, 20, 30]}
+      onPageChange={setPage}
+      onPageSizeChange={setPageSize}
+      onFilterModelChange={handleFilterModalChange}
+      filterMode={filter.serverSide ? "server" : "client"}
+      page={pagination.page}
+      pageSize={pagination.pageSize}
+      pagination={true}
+      paginationMode="server"
+      rowCount={productData.rowCount}
+      loading={products === null}
+      components={{
+        Toolbar: CustomToolBar,
+        NoRowsOverlay: NoRowsOverlay,
+      }}
+      componentsProps={{
+        toolbar: { changeServerSide: setServerSide },
+        noRowsOverlay: { code: error.errorCode },
+        filterPanel: { className: "w-96 sm:w-full" }
+      }}
+    />
+  )
 }
 
 function NoRowsOverlay({ code }) {
