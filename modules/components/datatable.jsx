@@ -29,8 +29,13 @@ export default function DataTable(props) {
     value: undefined,
     serverSide: false
   })
-  const [error, setError] = useState({ code: "noItems" });
+  const [error, setError] = useState("noItems");
   const [smallScreen, setSmallScreen] = useState(false);
+
+  const mustShowError = error => {
+    setError(error);
+    setProductData({...productData, mustLoad: false});
+  }
 
   let mediaQueryDetection = null;
   useEffect(() => {
@@ -58,17 +63,15 @@ export default function DataTable(props) {
       }[operatorValue]()
     };
 
-    const setErrorCode = errorCode => setError({...error, code: errorCode});
-
     const noItemsIfProductsIsEmpty = products => {
-      if (utils.isEmpty(products)) setErrorCode("noItems")
+      if (utils.isEmpty(products)) mustShowError("noItems")
     }
   
     const treatError = error => {
       if (error instanceof TypeError)
-        setErrorCode("noConnection")
+        mustShowError("noConnection")
       else if (error instanceof DOMException)
-        setErrorCode("noServer")
+        mustShowError("noServer")
     }
 
     selectDataFetcher()
@@ -183,7 +186,7 @@ export default function DataTable(props) {
     matchMedia.addEventListener("change", action)
   }
 
-  const mustLoadProducts = () => setProductData({...productData, products: [], mustLoad: true});
+  const mustLoadProducts = () => setProductData({...productData, products: null, mustLoad: true});
 
   const handleFilterModalChange = filterChanges => {
     const [values = {}] = filterChanges.items
@@ -236,7 +239,8 @@ export default function DataTable(props) {
       loading={productData.mustLoad}
       components={{
         Toolbar: CustomToolBar,
-        NoRowsOverlay: NoRowsOverlay,
+        NoRowsOverlay: ErrorOverlay,
+        NoResultsOverlay: ErrorOverlay,
       }}
       componentsProps={{
         toolbar: {
@@ -245,14 +249,15 @@ export default function DataTable(props) {
             mustLoadProducts();
           }
         },
-        noRowsOverlay: { code: error.code },
+        noRowsOverlay: { code: error },
+        noResultsOverlay: { code: error },
         filterPanel: { className: "w-96 sm:w-full" }
       }}
     />
   )
 }
 
-function NoRowsOverlay({ code }) {
+function ErrorOverlay({ code }) {
     const errorMap = {
       "noConnection": [
         <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
