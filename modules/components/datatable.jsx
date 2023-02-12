@@ -18,7 +18,7 @@ export default function DataTable(props) {
   const [productData, setProductData] = useState({
     products: null,
     rowCount: 0,
-    isLoading: true,
+    mustLoad: true,
   })
   const [pagination, setPagination] = useState({
     page: 0,
@@ -45,7 +45,7 @@ export default function DataTable(props) {
   }, [smallScreen]);
 
   useEffect(() => {
-    if (!productData.isLoading) return;
+    if (!productData.mustLoad) return;
 
     const selectDataFetcher = () => {
       const { operatorValue, value } = filter
@@ -73,7 +73,7 @@ export default function DataTable(props) {
 
     selectDataFetcher()
       .then(({ products, rowCount }) => {
-        setProductData({products, rowCount, isLoading: false});
+        setProductData({products, rowCount, mustLoad: false});
         noItemsIfProductsIsEmpty(products);
       })
       .catch(treatError);
@@ -183,7 +183,7 @@ export default function DataTable(props) {
     matchMedia.addEventListener("change", action)
   }
 
-  const setIsLoadingToTrue = () => setProductData({...productData, isLoading: true});
+  const mustLoadProducts = () => setProductData({...productData, products: [], mustLoad: true});
 
   const handleFilterModalChange = filterChanges => {
     const [values = {}] = filterChanges.items
@@ -192,16 +192,16 @@ export default function DataTable(props) {
       operatorValue: values.operatorValue ?? "all",
       value: values.value ?? ""
     })
-    if (filter.serverSide) setIsLoadingToTrue();
+    if (filter.serverSide) mustLoadProducts();
   }
 
   const handlePageChange = page => {
     setPagination({...pagination, page});
-    setIsLoadingToTrue();
+    mustLoadProducts();
   }
   const handlePageSizeChange = pageSize => {
     setPagination({...pagination, pageSize});
-    setIsLoadingToTrue();
+    mustLoadProducts();
   }
 
   return (
@@ -233,7 +233,7 @@ export default function DataTable(props) {
       pagination={true}
       paginationMode="server"
       rowCount={productData.rowCount}
-      loading={productData.isLoading}
+      loading={productData.mustLoad}
       components={{
         Toolbar: CustomToolBar,
         NoRowsOverlay: NoRowsOverlay,
@@ -242,7 +242,7 @@ export default function DataTable(props) {
         toolbar: {
           changeServerSide: () => {
             setFilter({...filter, serverSide: !filter.serverSide})
-            setIsLoadingToTrue();
+            mustLoadProducts();
           }
         },
         noRowsOverlay: { code: error.code },
