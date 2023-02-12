@@ -169,22 +169,6 @@ export default function DataTable(props) {
     return columns;
   }
 
-  const buildRows = () => {
-    return productData?.products?.map((value, index) => {
-      return {
-        id: index + 1,
-        description: value.description,
-        sequenceCode: value.sequenceCode,
-        barcode: value.barcode,
-        currentPrice: value.currentPrice,
-        currentPriceDate: value.currentPriceDate,
-        previousPrice: value.previousPrice,
-        previousPriceDate: value.previousPriceDate,
-        priceDifference: value.priceDifference,
-      }
-    }) ?? [];
-  }
-
   const setSmallScreenDetection = () => {
     mediaQueryDetection = {
       matchMedia: window.matchMedia("(max-width: 768px)"),
@@ -223,7 +207,7 @@ export default function DataTable(props) {
   return (
     <DataGrid
       columns={buildCols()}
-      rows={buildRows()}
+      rows={productData?.products?.map((product, idx) => ({...product, id: idx + 1})) ?? []}
       initialState={{
         sorting: {
           sortModel: [{ field: "description", sort: "asc" }]
