@@ -15,8 +15,12 @@ import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
 export default function DataTable(props) {
-  const [pagination, setPagination] = useState({
+  const [productData, setProductData] = useState({
+    products: null,
     rowCount: 0,
+    isLoading: true,
+  })
+  const [pagination, setPagination] = useState({
     page: 0,
     pageSize: 5
   })
@@ -27,14 +31,6 @@ export default function DataTable(props) {
   })
   const [error, setError] = useState({ code: "noItems" });
   const [smallScreen, setSmallScreen] = useState(false);
-
-  const setRowCount = rowCount => setPagination({...pagination, rowCount});
-  const setPage = page => setPagination({...pagination, page});
-  const setPageSize = pageSize => setPagination({...pagination, pageSize});
-  const setOperatorValue = operatorValue => setFilter({...filter, operatorValue});
-  const setValue = value => setFilter({...filter, value});
-  const setServerSide = serverSide => setFilter({...filter, serverSide});
-  const setErrorCode = errorCode => setError({...error, code: errorCode});
 
   let mediaQueryDetection = null;
   useEffect(() => {
@@ -48,17 +44,8 @@ export default function DataTable(props) {
     }
   }, [smallScreen]);
 
-  const productData = {};
   useEffect(() => {
-    selectDataFetcher()
-      .then(({ products, rowCount }) => {
-        productData.products = products;
-        productData.rowCount = rowCount;
-        noItemsIfProductsIsEmpty(products);
-      })
-      .catch(err => {
-        // treatError(err)
-      })
+    if (!productData.isLoading) return;
 
     const selectDataFetcher = () => {
       const { operatorValue, value } = filter
@@ -68,20 +55,29 @@ export default function DataTable(props) {
         contains: () => net.getProductsContaining(pagination, value),
         startsWith: () => net.getProductsStartingWith(pagination, value),
         endsWith: () => net.getProductsEndingWith(pagination, value),
-      }[operatorValue]
+      }[operatorValue]()
     };
+
+    const setErrorCode = errorCode => setError({...error, code: errorCode});
+
+    const noItemsIfProductsIsEmpty = products => {
+      if (utils.isEmpty(products)) setErrorCode("noItems")
+    }
   
-    // const noItemsIfProductsIsEmpty = products => {
-    //   if (utils.isEmpty(products)) setErrorCode("no-items")
-    // }
-  
-    // const treatError = error => {
-    //   if (error instanceof TypeError)
-    //     setErrorCode("no-connection")
-    //   else if (error instanceof DOMException)
-    //     setErrorCode("no-server")
-    // }
-  }, [ pagination, filter]);
+    const treatError = error => {
+      if (error instanceof TypeError)
+        setErrorCode("noConnection")
+      else if (error instanceof DOMException)
+        setErrorCode("noServer")
+    }
+
+    selectDataFetcher()
+      .then(({ products, rowCount }) => {
+        setProductData({products, rowCount, isLoading: false});
+        noItemsIfProductsIsEmpty(products);
+      })
+      .catch(treatError);
+  }, [pagination, filter, productData]);
 
   const buildCols = () => {
     const valuePriceFormatter = ({ value }) => utils.priceFormatter(value);
@@ -174,7 +170,7 @@ export default function DataTable(props) {
   }
 
   const buildRows = () => {
-    return productData?.products.map((value, index) => {
+    return productData?.products?.map((value, index) => {
       return {
         id: index + 1,
         description: value.description,
@@ -186,7 +182,7 @@ export default function DataTable(props) {
         previousPriceDate: value.previousPriceDate,
         priceDifference: value.priceDifference,
       }
-    });
+    }) ?? [];
   }
 
   const setSmallScreenDetection = () => {
@@ -203,10 +199,25 @@ export default function DataTable(props) {
     matchMedia.addEventListener("change", action)
   }
 
-  const handleFilterModalChange = filter => {
-    const [values = {}] = filter.items
-    setOperatorValue(values.operatorValue ?? "all");
-    setValue(values.value ?? "");
+  const setIsLoadingToTrue = () => setProductData({...productData, isLoading: true});
+
+  const handleFilterModalChange = filterChanges => {
+    const [values = {}] = filterChanges.items
+    setFilter({
+      ...filter,
+      operatorValue: values.operatorValue ?? "all",
+      value: values.value ?? ""
+    })
+    if (filter.serverSide) setIsLoadingToTrue();
+  }
+
+  const handlePageChange = page => {
+    setPagination({...pagination, page});
+    setIsLoadingToTrue();
+  }
+  const handlePageSizeChange = pageSize => {
+    setPagination({...pagination, pageSize});
+    setIsLoadingToTrue();
   }
 
   return (
@@ -229,8 +240,8 @@ export default function DataTable(props) {
         : {}
       }
       rowsPerPageOptions={[5, 10, 15, 20, 30]}
-      onPageChange={setPage}
-      onPageSizeChange={setPageSize}
+      onPageChange={(handlePageChange)}
+      onPageSizeChange={handlePageSizeChange}
       onFilterModelChange={handleFilterModalChange}
       filterMode={filter.serverSide ? "server" : "client"}
       page={pagination.page}
@@ -238,14 +249,19 @@ export default function DataTable(props) {
       pagination={true}
       paginationMode="server"
       rowCount={productData.rowCount}
-      loading={products === null}
+      loading={productData.isLoading}
       components={{
         Toolbar: CustomToolBar,
         NoRowsOverlay: NoRowsOverlay,
       }}
       componentsProps={{
-        toolbar: { changeServerSide: setServerSide },
-        noRowsOverlay: { code: error.errorCode },
+        toolbar: {
+          changeServerSide: () => {
+            setFilter({...filter, serverSide: !filter.serverSide})
+            setIsLoadingToTrue();
+          }
+        },
+        noRowsOverlay: { code: error.code },
         filterPanel: { className: "w-96 sm:w-full" }
       }}
     />
@@ -254,15 +270,15 @@ export default function DataTable(props) {
 
 function NoRowsOverlay({ code }) {
     const errorMap = {
-      "no-connection": [
+      "noConnection": [
         <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
         "No connection"
       ],
-      "no-items": [
+      "noItems": [
         <SiFiles className="w-10 h-10 text-zinc-300"/>,
         "No items"
       ],
-      "no-server": [
+      "noServer": [
         <IoCloudOffline className="w-10 h-10 text-zinc-300"/>,
         "Server is not responding"
       ]
