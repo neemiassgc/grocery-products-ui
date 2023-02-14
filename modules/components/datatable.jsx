@@ -14,7 +14,7 @@ import { SiFiles } from "react-icons/si"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
-export default function DataTable(props) {
+export default function DataTable() {
   const [productData, setProductData] = useState({
     products: null,
     rowCount: 0,
@@ -30,24 +30,13 @@ export default function DataTable(props) {
     serverSide: false
   })
   const [error, setError] = useState("noItems");
-  const [smallScreen, setSmallScreen] = useState(false);
+
+  const smallScreen = useSmallScreenMediaQuery();
 
   const mustShowError = error => {
     setError(error);
     setProductData({...productData, mustLoad: false});
   }
-
-  let mediaQueryDetection = null;
-  useEffect(() => {
-    setSmallScreenDetection();
-
-    return () => {
-      if (mediaQueryDetection) {
-        const { matchMedia, action } = mediaQueryDetection;
-        matchMedia.removeEventListener("change", action)
-      }
-    }
-  }, [smallScreen]);
 
   useEffect(() => {
     if (!productData.mustLoad) return;
@@ -172,20 +161,6 @@ export default function DataTable(props) {
     return columns;
   }
 
-  const setSmallScreenDetection = () => {
-    mediaQueryDetection = {
-      matchMedia: window.matchMedia("(max-width: 768px)"),
-      action: e => {
-        if (e.matches && !smallScreen)
-          setSmallScreen(true)
-        else if (!e.matches && smallScreen)
-          setSmallScreen(false)
-      }
-    }
-    const { matchMedia, action } = mediaQueryDetection
-    matchMedia.addEventListener("change", action)
-  }
-
   const mustLoadProducts = () => setProductData({...productData, products: null, mustLoad: true});
 
   const handleFilterModalChange = filterChanges => {
@@ -302,4 +277,36 @@ function ServerSideSwitch(props) {
       </FormGroup>
     </Box>
   )
+}
+
+function useSmallScreenMediaQuery() {
+  const [smallScreen, setSmallScreen] = useState(false);
+
+  let mediaQueryDetection = null;
+  useEffect(() => {
+    setSmallScreenDetection();
+
+    return () => {
+      if (mediaQueryDetection) {
+        const { matchMedia, action } = mediaQueryDetection;
+        matchMedia.removeEventListener("change", action)
+      }
+    }
+  }, [smallScreen]);
+
+  const setSmallScreenDetection = () => {
+    mediaQueryDetection = {
+      matchMedia: window.matchMedia("(max-width: 768px)"),
+      action: e => {
+        if (e.matches && !smallScreen)
+          setSmallScreen(true)
+        else if (!e.matches && smallScreen)
+          setSmallScreen(false)
+      }
+    }
+    const { matchMedia, action } = mediaQueryDetection
+    matchMedia.addEventListener("change", action)
+  }
+
+  return smallScreen;
 }
