@@ -38,13 +38,7 @@ export default function InfoModal(props) {
         }
         <DialogContent dividers={props.status !== "not_found"}>
         {
-          ["no_connection", "no_server"].includes(props.status)
-            ? <ErrorBoard netError={props.status}/>
-            : props.status === "not_found"
-              ? <Box className="flex justify-center p-2">
-                  <BiError className="text-9xl text-black"/>
-                </Box>
-              : <ContentData body={props.content}/>
+          <MainContent {...props} />
         }
         </DialogContent>
         <DialogActions>
@@ -53,6 +47,20 @@ export default function InfoModal(props) {
       </Dialog>
     </>
   )
+}
+
+function MainContent({ status, content }) {
+  return {
+    "no_connection": <ErrorBoard message={"No internet connection"}>
+      <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>
+    </ErrorBoard>,
+    "no_server": <ErrorBoard message={"Server is not responding"}>
+      <IoCloudOffline className="w-10 h-10 text-zinc-300"/>
+    </ErrorBoard>,
+    "not_found": <Box className="flex justify-center p-2">
+      <BiError className="text-9xl text-black"/>
+    </Box>,
+  }[status] || <ContentData body={content}/>
 }
 
 function DialogHeader({ status }) {
@@ -82,23 +90,12 @@ function DialogHeader({ status }) {
   );
 }
 
-function ErrorBoard({ netError }) {
-  const alertOption = {
-    "no_connection": [
-      <RiSignalWifiErrorFill className="w-10 h-10 text-zinc-300"/>,
-      "No connection"
-    ],
-    "no_server": [
-      <IoCloudOffline className="w-10 h-10 text-zinc-300"/>,
-      "Server is not responding"
-    ]
-  }
-
+function ErrorBoard({ children: icon, message }) {
   return (
     <Box className="w-full h-full flex flex-col items-center">
-      { alertOption[netError][0] }
+      { icon }
       <span className="w-fit">
-        { alertOption[netError][1] }
+        { message }
       </span>
     </Box>
   )
