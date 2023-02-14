@@ -38,7 +38,7 @@ export default function SearchableContainer() {
       actions[statusCode]()
     })
     .catch(error => {
-      if (error instanceof TypeError) setStatus("no_connnection")
+      if (error instanceof TypeError) setStatus("no_connection")
       else if (error instanceof DOMException) setStatus("no_server")
     })
   }
@@ -59,9 +59,9 @@ export default function SearchableContainer() {
       <SearchBar
         violations={searchBarViolations}
         scannerButtonAvailable={scannerModalAvailable}
-      openScannerModal={() => setOpenScannerModal(true)}
-      findProduct={findProduct}
-      setViolations={setSearchBarViolations}
+        openScannerModal={() => setOpenScannerModal(true)}
+        findProduct={findProduct}
+        setViolations={setSearchBarViolations}
     />
   </>)
 }
