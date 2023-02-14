@@ -44,11 +44,14 @@ export default function SearchableContainer() {
   }
 
   return (<>
-      <InfoModal
-        status={infoModalState.status}
-        content={infoModalState.content}
-        onCloseClick={() => setStatus("idle")}
-      />
+      {
+        !["idle", "bad_request"].includes(infoModalState.status) &&
+        <InfoModal
+          status={infoModalState.status}
+          content={infoModalState.content}
+          onCloseClick={() => setStatus("idle")}
+        />
+      }
       {
         scannerModalAvailable && openScannerModal &&
         <ScannerModal

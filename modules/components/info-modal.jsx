@@ -30,7 +30,7 @@ export default function InfoModal(props) {
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}
-        open={props.status !== "idle" && props.status !== "loading" && props.status !== "bad_request"}
+        open={props.status !== "loading"}
         className="bg-transparent"
       >
         {
@@ -38,7 +38,7 @@ export default function InfoModal(props) {
         }
         <DialogContent dividers={props.status !== "not_found"}>
         {
-          props.status === "no_connection" || props.status === "no_server"
+          ["no_connection", "no_server"].includes(props.status)
             ? <ErrorBoard netError={props.status}/>
             : props.status === "not_found"
               ? <Box className="flex justify-center p-2">
