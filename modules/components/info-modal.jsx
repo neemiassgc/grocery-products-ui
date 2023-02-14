@@ -56,8 +56,7 @@ export default function InfoModal(props) {
 }
 
 function DialogHeader({ status }) {
-  if (!(status === "existing" || status === "created" || status === "not_found"))
-    return  null;
+  if (!["created", "existing", "not_found"].includes(status)) return  null;
 
   const options = {
     "created": {
