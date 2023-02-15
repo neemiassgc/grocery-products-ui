@@ -7,8 +7,7 @@ import { useEffect, useState } from "react"
 
 export default function SearchableContainer() {
   const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
-  const [searchBarViolations, setSearchBarViolations] = useState([])
-  const [infoModalState, setInfoModalState] = useState({
+  const [data, setData] = useState({
     status: "idle",
     content: {}
   });
@@ -19,7 +18,7 @@ export default function SearchableContainer() {
   }, [])
 
   const setStatus = (newStatus) => {
-    setInfoModalState({...infoModalState, status: newStatus})
+    setData({...data, status: newStatus})
   }
 
   const findProduct = barcode => {
@@ -27,13 +26,10 @@ export default function SearchableContainer() {
 
     getByBarcode(barcode).then(({ body, status: statusCode}) => {
       const actions = {
-        200: () => setInfoModalState({ status: "existing", content: body }),
-        201: () => setInfoModalState({ status: "created", content: body }),
-        400: () => {
-          setStatus("bad_request")
-          setSearchBarViolations(body.violations)
-        },
-        404: () => setInfoModalState({ status: "not_found", content: body })
+        200: () => setData({ status: "existing", content: body }),
+        201: () => setData({ status: "created", content: body }),
+        400: () => setData({ status: "bad_request", content: body.violations }),
+        404: () => setData({ status: "not_found", content: body })
       };
       actions[statusCode]()
     })
@@ -45,10 +41,10 @@ export default function SearchableContainer() {
 
   return (<>
       {
-        !["idle", "bad_request"].includes(infoModalState.status) &&
+        !["idle", "bad_request"].includes(data.status) &&
         <InfoModal
-          status={infoModalState.status}
-          content={infoModalState.content}
+          status={data.status}
+          content={data.content}
           onCloseClick={() => setStatus("idle")}
         />
       }
@@ -60,11 +56,11 @@ export default function SearchableContainer() {
         /> || null
       }
       <SearchBar
-        violations={searchBarViolations}
+        violations={data.status === "bad_request" ? data.content : []}
         scannerButtonAvailable={scannerModalAvailable}
         openScannerModal={() => setOpenScannerModal(true)}
         findProduct={findProduct}
-        setViolations={setSearchBarViolations}
+        setViolations={violations => setData({status: "bad_request", content: violations})}
     />
   </>)
 }
