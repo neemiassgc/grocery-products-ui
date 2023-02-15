@@ -282,34 +282,24 @@ function ServerSideSwitch(props) {
 function useSmallScreenMediaQuery() {
   const [smallScreen, setSmallScreen] = useState(false);
 
-  let mediaQueryDetection = null;
   useEffect(() => {
-    setSmallScreenDetection();
-
-    return () => {
-      if (mediaQueryDetection) {
-        const { matchMedia, action } = mediaQueryDetection;
-        matchMedia.removeEventListener("change", action)
-      }
-    }
-  }, [smallScreen]);
-
-  const setSmallScreenDetection = () => {
     if (!smallScreen && window.innerWidth <= 768)
       setSmallScreen(true);
 
-    mediaQueryDetection = {
-      matchMedia: window.matchMedia("(max-width: 768px)"),
-      action: e => {
-        if (e.matches && !smallScreen)
-          setSmallScreen(true)
-        else if (!e.matches && smallScreen)
-          setSmallScreen(false)
-      }
+    const updateSize = e => {
+      if (e.matches && !smallScreen)
+        setSmallScreen(true)
+      else if (!e.matches && smallScreen)
+        setSmallScreen(false)
+    };
+    let mediaQueryDetection = window.matchMedia("(max-width: 768px)");
+    mediaQueryDetection.addEventListener("change", updateSize)
+
+    return () => {
+      if (mediaQueryDetection)
+        mediaQueryDetection.removeEventListener("change", updateSize)
     }
-    const { matchMedia, action } = mediaQueryDetection
-    matchMedia.addEventListener("change", action)
-  }
+  }, [smallScreen]);
 
   return smallScreen;
 }
