@@ -6,16 +6,11 @@ import { isPossibleToScanForBarcodes, status as statusChecker } from "../utils"
 import { useEffect, useState } from "react"
 
 export default function SearchableContainer() {
-  const [scannerModalAvailable, setScannerModalAvailable] = useState(false);
   const [data, setData] = useState({
     status: "idle",
     content: {}
   });
   const [openScannerModal, setOpenScannerModal] = useState(false);
-
-  useEffect(() => {
-    if (isPossibleToScanForBarcodes()) setScannerModalAvailable(true)
-  }, [])
 
   const setStatus = (newStatus) => {
     setData({...data, status: newStatus})
@@ -39,6 +34,7 @@ export default function SearchableContainer() {
     })
   }
 
+  const scannerModalAvailable = isPossibleToScanForBarcodes();
   return (<>
       {
         !["idle", "bad_request"].includes(data.status) &&
