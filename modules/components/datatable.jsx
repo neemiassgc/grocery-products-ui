@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import * as net from "../net"
 import {
   DataGrid,
@@ -295,6 +295,9 @@ function useSmallScreenMediaQuery() {
   }, [smallScreen]);
 
   const setSmallScreenDetection = () => {
+    if (!smallScreen && window.innerWidth <= 768)
+      setSmallScreen(true);
+
     mediaQueryDetection = {
       matchMedia: window.matchMedia("(max-width: 768px)"),
       action: e => {
