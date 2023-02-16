@@ -69,6 +69,8 @@ export const status = {
 
 
 export function isPossibleToScanForBarcodes() {
+  if (typeof window === "undefined") return false;
+
   if (location.hostname !== "localhost" &&  location.protocol !== "https:") {
     console.error("The page cannot scan for barcodes because it is not running in a safe context.")
     return false;
