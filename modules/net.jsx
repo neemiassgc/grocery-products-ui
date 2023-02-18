@@ -77,20 +77,17 @@ function cookPrices(rawPrices) {
 
 export async function getByBarcode(barcode) {
   const response = await fetchByBarcode(barcode);
-
   const { status } = response;
-  let body;
-
-  if (isOk(status) || isCreated(status))
-    body = await cookProduct(await response.json());
-  else if (isBadRequest(status))
-    body = await response.json();
-  else if (isNotFound(status))
-    body = await response.text();
-
+  const toProduct = async () => cookProduct(await response.json());
+  const treatments = {
+    200: toProduct,
+    201:  toProduct,
+    400: () => response.json(),
+    404: () => response.text(),
+  }
   return {
     status,
-    body
+    body: await treatments[status]()
   }
 }
 
