@@ -1,7 +1,3 @@
-import { status as statusChecker } from "./utils"
-
-const { isOk, isCreated, isBadRequest, isNotFound } = statusChecker
-
 const URL = "https://microsoft.webhop.me:8080/api/products"
 
 async function fetchProducts(pagination) {
