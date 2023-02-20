@@ -33,11 +33,6 @@ export default function DataTable() {
 
   const smallScreen = useSmallScreenMediaQuery();
 
-  const mustShowError = error => {
-    setError(error);
-    setProductData({...productData, mustLoad: false});
-  }
-
   useEffect(() => {
     if (!productData.mustLoad) return;
 
@@ -51,6 +46,11 @@ export default function DataTable() {
         endsWith: () => net.getProductsEndingWith(pagination, value),
       }[operatorValue]()
     };
+
+    const mustShowError = error => {
+      setError(error);
+      setProductData({...productData, mustLoad: false});
+    }
 
     const noItemsIfProductsIsEmpty = products => {
       if (utils.isEmpty(products)) mustShowError("noItems")
