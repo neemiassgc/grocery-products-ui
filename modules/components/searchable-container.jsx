@@ -2,8 +2,8 @@ import InfoModal from "./info-modal"
 import SearchBar from "./searchbar"
 import ScannerModal from "./scanner-modal"
 import { getByBarcode } from "../net"
-import { isPossibleToScanForBarcodes, status as statusChecker } from "../utils"
-import { useEffect, useState } from "react"
+import { isPossibleToScanForBarcodes } from "../utils"
+import { useState } from "react"
 
 export default function SearchableContainer() {
   const [data, setData] = useState({
