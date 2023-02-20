@@ -283,8 +283,10 @@ function useSmallScreenMediaQuery() {
   const [smallScreen, setSmallScreen] = useState(false);
 
   useEffect(() => {
-    if (!smallScreen && window.innerWidth <= 768)
+    if (!smallScreen && window.innerWidth <= 768) {
       setSmallScreen(true);
+      return;
+    }
 
     const updateSize = e => {
       if (e.matches && !smallScreen)
