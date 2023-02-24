@@ -1,4 +1,4 @@
-const URL = "https://microsoft.webhop.me:8080/api/products"
+const URL = "https://solid-muse-378600.rj.r.appspot.com/api/products"
 
 async function fetchProducts(pagination) {
   return makeRequestQuery(pagination)
