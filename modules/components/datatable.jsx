@@ -9,7 +9,7 @@ import {
 } from '@mui/x-data-grid';
 import * as utils from "../utils"
 import { ImHappy, ImSad } from "react-icons/im"
-import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
+import { Chip, FormControlLabel, FormGroup, Switch, Box, Skeleton } from "@mui/material"
 import { SiFiles } from "react-icons/si"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
@@ -17,7 +17,7 @@ import { useSmallScreenMediaQuery } from "../hooks";
 
 export default function DataTable() {
   const [productData, setProductData] = useState({
-    products: null,
+    products: utils.productsPlaceHolder(),
     rowCount: 0,
     mustLoad: true,
   })
@@ -75,6 +75,11 @@ export default function DataTable() {
   const buildCols = () => {
     const valuePriceFormatter = ({ value }) => utils.priceFormatter(value);
     const valueDateformatter = ({ value }) => utils.dateFormatter(value);
+    const renderCellPlaceHolder = ({ value }, transformer) => {
+      if (productData.mustLoad)
+        return <Skeleton variant="rounded" animation="wave" className="w-full h-1/2"/>
+      return transformer ? transformer({ value }) : value;
+    };
 
     const columns = [
       {
@@ -83,7 +88,8 @@ export default function DataTable() {
         headerName: "Description",
         filterOperators: getGridStringOperators().filter(({ value }) =>
           ["contains", "startsWith", "endsWith"].includes(value)
-        )
+        ),
+        renderCell: renderCellPlaceHolder,
       },
       {
         field: "sequenceCode",
@@ -91,12 +97,14 @@ export default function DataTable() {
         type: "number",
         headerName: "Sequence Code",
         valueFormatter: null,
+        renderCell: renderCellPlaceHolder,
       },
       {
         field: "barcode",
         type: "string",
         headerName: "Barcode",
         filterable: false,
+        renderCell: renderCellPlaceHolder,
       },
       {
         field: "currentPrice",
@@ -104,14 +112,15 @@ export default function DataTable() {
         type: "number",
         headerName: "Current Price",
         valueFormatter: valuePriceFormatter,
-        cellClassName: _ => "text-blue-700 font-bold"
+        cellClassName: _ => "text-blue-700 font-bold",
+        renderCell: renderCellPlaceHolder,
       },
       {
         field: "currentPriceDate",
         filterable: false,
         type: "string",
         headerName: "Current Price Date",
-        valueFormatter: valueDateformatter,
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, valueDateformatter)
       },
       {
         field: "previousPrice",
@@ -120,13 +129,14 @@ export default function DataTable() {
         headerName: "Previous Price",
         valueFormatter: valuePriceFormatter,
         cellClassName: _ => "font-bold",
+        renderCell: renderCellPlaceHolder,
       },
       {
         field: "previousPriceDate",
         filterable: false,
         type: "string",
         headerName: "Previous Price Date",
-        valueFormatter: valueDateformatter,
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, valueDateformatter)
       },
       {
         field: "priceDifference",
@@ -134,6 +144,9 @@ export default function DataTable() {
         filterable: false,
         headerName: "Price difference",
         renderCell: ({ value }) => {
+          const placeHolder = renderCellPlaceHolder({ value })
+          if (typeof placeHolder === "object") return placeHolder;
+
           if (utils.isNullOrUndefined(value)) return null;
 
           const settings = {
@@ -162,7 +175,7 @@ export default function DataTable() {
     return columns;
   }
 
-  const mustLoadProducts = () => setProductData({...productData, products: null, mustLoad: true});
+  const mustLoadProducts = () => setProductData({...productData, products: utils.productsPlaceHolder(), mustLoad: true});
 
   const handleFilterModalChange = filterChanges => {
     const [values = {}] = filterChanges.items
@@ -212,7 +225,6 @@ export default function DataTable() {
       pagination={true}
       paginationMode="server"
       rowCount={productData.rowCount}
-      loading={productData.mustLoad}
       components={{
         Toolbar: CustomToolBar,
         NoRowsOverlay: ErrorOverlay,
