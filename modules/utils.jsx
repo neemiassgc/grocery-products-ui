@@ -90,3 +90,20 @@ export function isPossibleToScanForBarcodes() {
 
   return true;
 }
+
+export function productsPlaceHolder() {
+  const nullProducts = []
+  for (let i = 0; i < 6; i++) {
+    nullProducts.push({
+      description: null,
+      sequenceCode: null,
+      barcode: null,
+      currentPrice: null,
+      currentPriceDate: null,
+      previousPrice: null,
+      previousPriceDate: null,
+      priceDifference: null,
+    })
+  }
+  return nullProducts;
+}
