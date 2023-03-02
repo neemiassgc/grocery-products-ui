@@ -73,8 +73,8 @@ export default function DataTable() {
   }, [pagination, filter, productData]);
 
   const buildCols = () => {
-    const valuePriceFormatter = ({ value }) => utils.priceFormatter(value);
-    const valueDateformatter = ({ value }) => utils.dateFormatter(value);
+    const handlePriceFormatter = ({ value }) => utils.priceFormatter(value);
+    const handleDateFormatter = ({ value }) => utils.dateFormatter(value);
     const renderCellPlaceHolder = ({ value }, transformer) => {
       if (productData.mustLoad)
         return <Skeleton variant="rounded" animation="wave" className="w-full h-1/2"/>
@@ -111,7 +111,7 @@ export default function DataTable() {
         filterable: false,
         type: "number",
         headerName: "Current Price",
-        valueFormatter: valuePriceFormatter,
+        valueFormatter: handlePriceFormatter,
         cellClassName: _ => "text-blue-700 font-bold",
         renderCell: renderCellPlaceHolder,
       },
@@ -120,14 +120,14 @@ export default function DataTable() {
         filterable: false,
         type: "string",
         headerName: "Current Price Date",
-        renderCell: ({ value }) => renderCellPlaceHolder({ value }, valueDateformatter)
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, handleDateFormatter)
       },
       {
         field: "previousPrice",
         filterable: false,
         type: "number",
         headerName: "Previous Price",
-        valueFormatter: valuePriceFormatter,
+        valueFormatter: handlePriceFormatter,
         cellClassName: _ => "font-bold",
         renderCell: renderCellPlaceHolder,
       },
@@ -136,7 +136,7 @@ export default function DataTable() {
         filterable: false,
         type: "string",
         headerName: "Previous Price Date",
-        renderCell: ({ value }) => renderCellPlaceHolder({ value }, valueDateformatter)
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, handleDateFormatter)
       },
       {
         field: "priceDifference",
