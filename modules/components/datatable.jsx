@@ -13,6 +13,7 @@ import { Chip, FormControlLabel, FormGroup, Switch, Box } from "@mui/material"
 import { SiFiles } from "react-icons/si"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
+import { useSmallScreenMediaQuery } from "../hooks";
 
 export default function DataTable() {
   const [productData, setProductData] = useState({
@@ -277,31 +278,4 @@ function ServerSideSwitch(props) {
       </FormGroup>
     </Box>
   )
-}
-
-function useSmallScreenMediaQuery() {
-  const [smallScreen, setSmallScreen] = useState(false);
-
-  useEffect(() => {
-    if (!smallScreen && window.innerWidth <= 768) {
-      setSmallScreen(true);
-      return;
-    }
-
-    const updateSize = e => {
-      if (e.matches && !smallScreen)
-        setSmallScreen(true)
-      else if (!e.matches && smallScreen)
-        setSmallScreen(false)
-    };
-    let mediaQueryDetection = window.matchMedia("(max-width: 768px)");
-    mediaQueryDetection.addEventListener("change", updateSize)
-
-    return () => {
-      if (mediaQueryDetection)
-        mediaQueryDetection.removeEventListener("change", updateSize)
-    }
-  }, [smallScreen]);
-
-  return smallScreen;
 }
