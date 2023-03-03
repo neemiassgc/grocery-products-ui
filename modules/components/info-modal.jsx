@@ -10,6 +10,7 @@ import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import CircularProgress from '@mui/material/CircularProgress';
+import Skeleton from '@mui/material/Skeleton';
 import Backdrop from '@mui/material/Backdrop';
 import { MdDescription } from "react-icons/md"
 import { AiOutlineBarcode } from "react-icons/ai"
@@ -21,6 +22,15 @@ import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
 export default function InfoModal(props) {
+  const blockContent = <>
+    <DialogHeader status={props.status}/>
+    <DialogContent dividers={props.status !== "not_found"}>
+      <MainContent {...props} />
+    </DialogContent>
+    <DialogActions>
+      <Button className="float-right" onClick={props.onCloseClick}>Close</Button>
+    </DialogActions>
+  </>
 
   return (
     <>
@@ -30,21 +40,26 @@ export default function InfoModal(props) {
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}
-        open={props.status !== "loading"}
+        open={true}
         className="bg-transparent"
       >
         {
-          <DialogHeader status={props.status}/>
+          props.status === "loading" ? <PlaceHolder/> : blockContent
         }
-        <DialogContent dividers={props.status !== "not_found"}>
-        {
-          <MainContent {...props} />
-        }
-        </DialogContent>
-        <DialogActions>
-          <Button className="float-right" onClick={props.onCloseClick}>Close</Button>
-        </DialogActions>
       </Dialog>
+    </>
+  )
+}
+
+function PlaceHolder(props) {
+  return (
+    <>
+      <DialogTitle>
+        <Skeleton variant="rounded" animation="wave" className="w-full h-24"/>
+      </DialogTitle>
+      <DialogContent>
+        <Skeleton variant="rounded" animation="wave" className="w-full h-48"/>
+      </DialogContent>
     </>
   )
 }
