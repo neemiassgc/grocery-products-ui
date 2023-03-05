@@ -34,9 +34,6 @@ export default function InfoModal(props) {
 
   return (
     <>
-      <Backdrop className="z-10" open={props.status === "loading"}>
-        <CircularProgress/>
-      </Backdrop>
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}
@@ -51,15 +48,20 @@ export default function InfoModal(props) {
   )
 }
 
-function PlaceHolder(props) {
+function PlaceHolder() {
   return (
     <>
       <DialogTitle>
-        <Skeleton variant="rounded" animation="wave" className="w-full h-24"/>
+        <Skeleton variant="rounded" animation="wave" className="w-full" height={60}/>
       </DialogTitle>
       <DialogContent>
-        <Skeleton variant="rounded" animation="wave" className="w-full h-48"/>
+        <Skeleton variant="rounded" animation="wave" className="w-full" height={400}/>
       </DialogContent>
+      <DialogActions>
+        <Skeleton variant="rounded" animation="wave">
+          <Button className="float-right">Close</Button>
+        </Skeleton>
+      </DialogActions>
     </>
   )
 }
