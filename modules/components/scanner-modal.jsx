@@ -40,18 +40,18 @@ export default function ScannerModal(props) {
   }
 
   const startScanning = async () => {
-    let baseMillis = Date.now();
+    let baseMilliseconds = Date.now();
     const barcodeDetector = new BarcodeDetector({ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] });
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
-        if (Date.now() - baseMillis >= 500) {
+        if (Date.now() - baseMilliseconds >= 500) {
           const bitmap = await createImageBitmap(videoFrame)
           const [barcode] = await barcodeDetector.detect(bitmap)
           if (barcode) {
             disposeResources();
             props.findProduct(barcode.rawValue);
           }
-          baseMillis = Date.now();
+          baseMilliseconds = Date.now();
         }
 
         controller.enqueue(videoFrame)
