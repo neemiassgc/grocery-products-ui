@@ -9,9 +9,7 @@ import AlertTitle from "@mui/material/AlertTitle"
 import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
-import CircularProgress from '@mui/material/CircularProgress';
 import Skeleton from '@mui/material/Skeleton';
-import Backdrop from '@mui/material/Backdrop';
 import { MdDescription } from "react-icons/md"
 import { AiOutlineBarcode } from "react-icons/ai"
 import { SiCoderwall } from "react-icons/si"
