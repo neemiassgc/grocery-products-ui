@@ -50,7 +50,7 @@ export default function DataTable() {
 
     const mustShowError = error => {
       setError(error);
-      setProductData({...productData, mustLoad: false});
+      setProductData({...productData, products: [], mustLoad: false});
     }
 
     const noItemsIfProductsIsEmpty = products => {
