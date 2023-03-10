@@ -19,6 +19,12 @@ import { priceFormatter } from "../utils"
 import { RiSignalWifiErrorFill } from "react-icons/ri"
 import { IoCloudOffline } from "react-icons/io5"
 
+/*
+  There's a bug that needs to be fixed.
+  When there're not any products to be returned (that means that an empty array is returned)
+  DataTable component should show an error icon in response to that, but it doesn't show anything
+*/
+
 export default function InfoModal(props) {
   const blockContent = <>
     <DialogHeader status={props.status}/>
