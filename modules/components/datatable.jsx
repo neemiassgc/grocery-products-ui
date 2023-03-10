@@ -113,7 +113,7 @@ export default function DataTable() {
         headerName: "Current Price",
         valueFormatter: handlePriceFormatter,
         cellClassName: _ => "text-blue-700 font-bold",
-        renderCell: renderCellPlaceHolder,
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, handlePriceFormatter),
       },
       {
         field: "currentPriceDate",
@@ -129,7 +129,7 @@ export default function DataTable() {
         headerName: "Previous Price",
         valueFormatter: handlePriceFormatter,
         cellClassName: _ => "font-bold",
-        renderCell: renderCellPlaceHolder,
+        renderCell: ({ value }) => renderCellPlaceHolder({ value }, handlePriceFormatter),
       },
       {
         field: "previousPriceDate",
