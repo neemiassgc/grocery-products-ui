@@ -29,7 +29,7 @@ async function fetchByBarcode(barcode) {
 }
 
 async function fetchWithTimeout(resource, options = {}) {
-  const { timeout = 5000 } = options;
+  const { timeout = 10000 } = options;
   
   const controller = new AbortController();
   const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
