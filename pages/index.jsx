@@ -22,7 +22,7 @@ function App() {
   </>
 }
 
-function PageLoading({component}) {
+function PageLoading({children}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,9 +33,17 @@ function PageLoading({component}) {
     {
       loading ?
       <div className="w-screen h-screen flex justify-center items-center">
-        <CircularProgress color="success" size={200}/>
-      </div> : component
+        <Spinner/>
+      </div> : children
     }
+  </>
+}
+
+function Spinner() {
+  return <>
+    <div class="loadingio-spinner-interwind-52guuq97q95"><div class="ldio-x06kdpoz29j">
+    <div><div><div><div></div></div></div><div><div><div></div></div></div></div>
+    </div></div>
   </>
 }
 
