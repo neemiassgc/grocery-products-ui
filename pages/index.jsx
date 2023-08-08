@@ -2,7 +2,7 @@ import Head from "next/head"
 import DataTable from "../modules/components/datatable"
 import SearchableContainer from "../modules/components/searchable-container"
 import { useEffect, useState } from "react"
-import CircularProgress from "@mui/material/CircularProgress"
+import { warmup } from "../modules/net"
 
 function App() {
   return <>
@@ -26,7 +26,7 @@ function PageLoading({children}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      setTimeout(() => setLoading(false), 5000)
+      warmup(() => setLoading(false), () => alert("timeout error"))
   }, [])
 
   return <>
