@@ -3,6 +3,7 @@ import DataTable from "../modules/components/datatable"
 import SearchableContainer from "../modules/components/searchable-container"
 import { useEffect, useState } from "react"
 import { warmup } from "../modules/net"
+import { BiErrorCircle } from "react-icons/bi"
 
 function App() {
   return <>
@@ -27,15 +28,28 @@ function PageLoading({children}) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-      warmup(() => setLoading(false), () => alert("timeout error"))
+      warmup(() => setLoading(false), () => {
+        setError(true);
+        setLoading(false);
+      })
   }, [])
+
+  const loader = <div className="w-screen h-screen flex justify-center items-center">
+    <Spinner/>
+  </div>
+
+  const errorWarning = <div className="w-screen h-screen flex justify-center items-center">
+    <div className="flex-col just">
+      <span className="text-lg">It was not possible to connect to the server</span>
+      <div className="w-full">
+        <BiErrorCircle className="w-28 h-28 text-red-600 m-auto"/>
+      </div>
+    </div>
+  </div>
 
   return <>
     {
-      loading ?
-      <div className="w-screen h-screen flex justify-center items-center">
-        <Spinner/>
-      </div> : children
+      loading ? loader : error ? errorWarning : children
     }
   </>
 }
