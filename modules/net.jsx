@@ -1,4 +1,5 @@
-const URL = "https://solid-muse-378600.rj.r.appspot.com/api/products"
+const HOST = "https://solid-muse-378600.rj.r.appspot.com"
+const RESOURCE = "/api/products";
 
 async function fetchProducts(pagination) {
   return makeRequestQuery(pagination)
@@ -17,7 +18,7 @@ async function fetchProductsEndingWith(pagination, endsWith) {
 }
 
 async function makeRequestQuery({ page, pageSize }, filterParam) {
-  return (await fetchWithTimeout(`${URL}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
+  return (await fetchWithTimeout(`${HOST+RESOURCE}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
 }
 
 async function fetchPricesByLink(link) {
@@ -25,7 +26,7 @@ async function fetchPricesByLink(link) {
 }
 
 async function fetchByBarcode(barcode) {
-  return fetchWithTimeout(`${URL}/${barcode}`);
+  return fetchWithTimeout(`${HOST+RESOURCE}/${barcode}`);
 }
 
 async function fetchWithTimeout(resource, options = {}) {
@@ -131,6 +132,6 @@ async function cookProducts(rawProducts) {
 }
 
 export function warmup(success, error) {
-  fetchWithTimeout(URL+'/warmup', {timeout: 15000})
+  fetchWithTimeout(HOST+'/warmup', {timeout: 15000})
     .then(success).catch(error);
 }
