@@ -129,3 +129,8 @@ async function cookProducts(rawProducts) {
 
   return productListToReturn;
 }
+
+export function warmup(success, error) {
+  fetchWithTimeout(URL+'/warmup', {timeout: 15000})
+    .then(success).catch(error);
+}
