@@ -24,6 +24,7 @@ function App() {
 
 function PageLoading({children}) {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
       warmup(() => setLoading(false), () => alert("timeout error"))
@@ -41,9 +42,7 @@ function PageLoading({children}) {
 
 function Spinner() {
   return <>
-    <div class="loadingio-spinner-interwind-52guuq97q95"><div class="ldio-x06kdpoz29j">
-    <div><div><div><div></div></div></div><div><div><div></div></div></div></div>
-    </div></div>
+    <span className="loader"></span>
   </>
 }
 
