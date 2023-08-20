@@ -1,4 +1,4 @@
-const HOST = "https://solid-muse-378600.rj.r.appspot.com"
+const HOST = "http://192.168.100.106:9000"
 const RESOURCE = "/api/products";
 
 async function fetchProducts(pagination) {
@@ -134,4 +134,11 @@ async function cookProducts(rawProducts) {
 export function warmup(success, error) {
   fetchWithTimeout(HOST+'/warmup', {timeout: 15000})
     .then(success).catch(error);
+}
+
+export function requestTokenWithCode(code, success, error) {
+  const authUrl = localStorage.getItem("root_auth_url");
+  const path = "/realms/security/protocol/openid-connect/token"
+  const params = `?grant_type=authorization_code&code=${code}&scope=grocerystoreapp&redirect_uri=http://localhost:3000`
+  fetch(authUrl+path+params, {method: "POST"}).then(req => req.json()).then(success).catch(error);
 }
