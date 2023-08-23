@@ -60,4 +60,13 @@ function Spinner() {
   </>
 }
 
+function containsCodeParam() {
+  const lineOfParams = window.location.href.split("?")[1];
+  const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
+  for (const param of setOfParams) {
+    const [key, __] = param.split("=");
+    if (key === "code") return true;
+  }
+  return false;
+}
 export default App
