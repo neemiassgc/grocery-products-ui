@@ -31,6 +31,11 @@ async function fetchByBarcode(barcode) {
 
 async function fetchWithTimeout(resource, options = {}) {
   const { timeout = 10000 } = options;
+
+  options.headers = {
+    ...options.headers,
+    Authorization: "bearer "+localStorage.getItem("access_token")
+  }
   
   const controller = new AbortController();
   const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
