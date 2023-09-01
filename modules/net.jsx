@@ -30,21 +30,30 @@ async function fetchByBarcode(barcode) {
 }
 
 async function fetchWithTimeout(resource, options = {}) {
-  const { timeout = 10000 } = options;
-
-  options.headers = {
-    ...options.headers,
-    Authorization: "bearer "+localStorage.getItem("access_token")
+  const { withAuth = false } = options
+  if (withAuth) {
+    options.headers = {
+      ...options.headers,
+      Authorization: "bearer "+localStorage.getItem("access_token")
+    }
   }
   
-  const controller = new AbortController();
+  const { timeout = 10000 } = options;
   const setTimeoutId = setTimeout(_ => controller.abort(), timeout);
+  const controller = new AbortController();
   const response = await fetch(resource, {
     ...options,
     signal: controller.signal  
   })
   clearTimeout(setTimeoutId);
-  return response;
+  
+  return new Promise(async (resolve, reject) => {
+    if (response.ok) {
+      resolve(response);
+      return;
+    }
+    reject(await response.json())
+  });
 }
 
 async function cookProduct(rawProduct) {
