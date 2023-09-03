@@ -18,15 +18,19 @@ async function fetchProductsEndingWith(pagination, endsWith) {
 }
 
 async function makeRequestQuery({ page, pageSize }, filterParam) {
-  return (await fetchWithTimeout(`${HOST+RESOURCE}?pag=${page}-${pageSize}${filterParam || ""}`)).json()
+  const req = await fetchWithTimeout(
+    `${HOST+RESOURCE}?pag=${page}-${pageSize}${filterParam || ""}`,
+    { withAuth: true }
+  )
+  return req.json()
 }
 
 async function fetchPricesByLink(link) {
-  return (await fetchWithTimeout(`${link}`)).json()
+  return (await fetchWithTimeout(`${link}`), { withAuth: true }).json()
 }
 
 async function fetchByBarcode(barcode) {
-  return fetchWithTimeout(`${HOST+RESOURCE}/${barcode}`);
+  return fetchWithTimeout(`${HOST+RESOURCE}/${barcode}`, { withAuth: true });
 }
 
 async function fetchWithTimeout(resource, options = {}) {
