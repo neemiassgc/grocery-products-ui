@@ -61,6 +61,24 @@ function Spinner() {
 }
 
 function containsCodeParam() {
+function stateValidationForCsrfProtection() {
+  return new Promise((resolve, reject) => {
+    if (isNotThereStateParam()) {
+      reject("State value does not exits");
+      return;
+    }
+
+    const storedUUID = storage.getUUID();
+    if (!storedUUID) {
+      reject("State value not generated yet");
+      return;
+    }
+
+    const state = extractStateFromUri();
+    if (state === storedUUID) resolve();
+    else reject("State value is not valid");
+  });
+}
   const lineOfParams = window.location.href.split("?")[1];
   const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
   for (const param of setOfParams) {
@@ -69,4 +87,5 @@ function containsCodeParam() {
   }
   return false;
 }
+
 export default App
