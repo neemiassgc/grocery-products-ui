@@ -79,6 +79,10 @@ function stateValidationForCsrfProtection() {
     else reject("State value is not valid");
   });
 }
+
+function isThereErrorParam() {
+  return extractErrorFromUri() !== null
+}
   const lineOfParams = window.location.href.split("?")[1];
   const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
   for (const param of setOfParams) {
