@@ -83,6 +83,10 @@ function stateValidationForCsrfProtection() {
 function isThereErrorParam() {
   return extractErrorFromUri() !== null
 }
+
+function extractErrorFromUri() {
+  return extractParamFromUri("error")
+}
   const lineOfParams = window.location.href.split("?")[1];
   const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
   for (const param of setOfParams) {
