@@ -2,8 +2,12 @@ import Head from "next/head"
 import DataTable from "../modules/components/datatable"
 import SearchableContainer from "../modules/components/searchable-container"
 import { useEffect, useState } from "react"
-import { warmup } from "../modules/net"
-import { BiErrorCircle } from "react-icons/bi"
+import { hitResourceServer } from "../modules/net"
+import { BiErrorCircle } from "react-icons/bi";
+import { requestAccessTokenUsingCode } from "../modules/net"
+import { requestAccessTokenUsingRefreshToken } from "../modules/net"
+import { createUUID } from "../modules/utils"
+import * as storage from "../modules/storage"
 
 function App() {
   return <>
@@ -26,12 +30,86 @@ function App() {
 function PageLoading({children}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-      warmup(() => setLoading(false), () => {
-        setError(true);
-        setLoading(false);
-      })
+    const accessToken = storage.getAccessToken();
+
+    if (!accessToken) {
+      if (isThereErrorParam()) {
+        const warningsMap = {
+          access_denied: "Access Denied",
+          invalid_scope: "Invalid scopes"
+        }
+        const errorValue = extractErrorFromUri();
+        setErrorMessage(warningsMap[errorValue]);
+        setError(true)
+        setLoading(false)
+      }
+      else if (isNotThereCodeParam()) {
+        const stateUUID = createUUID();
+        storage.saveUUID(stateUUID);
+        
+        const authUrl = storage.getRootAuthUrl();
+        const path = "/realms/security/protocol/openid-connect/auth";
+        const params = "?response_type=code&client_id=grocerystoreapp&scope=grocerystoreapp&state="+stateUUID+"&=redirect_uri="+window.location.href;
+        window.location.href = authUrl+path+params
+      }
+      else {
+        stateValidationForCsrfProtection()
+        .then(() => {
+          const code = extractAuthCodeFromUri();
+          requestAccessTokenUsingCode(code)
+            .then(jsonObj => {
+              storage.saveAccessToken(jsonObj.access_token);
+              storage.saveRefreshToken(jsonObj.refresh_token);
+              hitResourceServer()
+                .then(() => setLoading(false))
+                .catch(error => {
+                  setError(true);
+                  setLoading(false);
+                  setErrorMessage(error);
+                })
+            })
+            .catch(errorObj => {
+              console.log(errorObj)
+              setError(true);
+              setLoading(false);
+              setErrorMessage(errorObj.error_description);
+            })
+        })
+        .catch(errorMessage => {
+          setError(true);
+          setLoading(false);
+          setErrorMessage(errorMessage);
+        })
+      }
+    }
+    else {
+      hitResourceServer()
+        .then(() => setLoading(false))
+        .catch((err) => {
+          if (err instanceof TypeError) {
+            setError(true);
+            setLoading(false);
+            setErrorMessage(`${err.name}: ${err.message}`);
+            return;
+          }
+          requestAccessTokenUsingRefreshToken()
+            .then(response => {
+              console.log("saving refresh token")
+              storage.saveAccessToken(response.access_token);
+              storage.saveRefreshToken(response.refresh_token);
+              window.location.reload();
+            })
+            .catch(error => {
+              storage.saveAccessToken(null)
+              setError(true);
+              setLoading(false);
+              setErrorMessage(error);
+            })
+        })
+    }
   }, [])
 
   const loader = <div className="w-screen h-screen flex justify-center items-center">
