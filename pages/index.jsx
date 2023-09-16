@@ -10,6 +10,10 @@ import { createUUID } from "../modules/utils"
 import * as storage from "../modules/storage"
 
 function App() {
+  useEffect(() => {
+    storage.saveRootAuthUrl();
+  }, [])
+
   return <>
       <Head>
         <title>Grocery products ui</title>
