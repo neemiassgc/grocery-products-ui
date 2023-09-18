@@ -164,6 +164,9 @@ function stateValidationForCsrfProtection() {
 
 function isThereErrorParam() {
   return extractErrorFromUri() !== null
+
+function isThereErrorQueryParam() {
+  return extractErrorFromUri() !== null;
 }
 
 function extractErrorFromUri() {
