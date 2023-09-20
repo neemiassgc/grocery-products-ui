@@ -173,6 +173,22 @@ function extractErrorFromUri() {
   return extractParamFromUri("error")
 }
 
+function isNotThereCodeQueryParam() {
+  return extractAuthCodeFromUri() === null;
+}
+
+function extractAuthCodeFromUri() {
+  return extractParamFromUri("code");
+}
+
+function isNotThereStateParam() {
+  return extractStateFromUri() === null;
+}
+
+function extractStateFromUri() {
+  return extractParamFromUri("state")
+}
+
 function extractParamFromUri(paramToExtract) {
   const lineOfParams = window.location.href.split("?")[1];
   const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
