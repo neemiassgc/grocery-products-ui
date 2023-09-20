@@ -162,8 +162,13 @@ function stateValidationForCsrfProtection() {
   });
 }
 
-function isThereErrorParam() {
-  return extractErrorFromUri() !== null
+function isThereValidAccessToken() {
+  return new Promise((res, rej) => {
+    const accessToken = storage.getAccessToken();
+    if (accessToken) res();
+    else rej();
+  });
+}
 
 function isThereErrorQueryParam() {
   return extractErrorFromUri() !== null;
