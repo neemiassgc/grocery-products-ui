@@ -145,6 +145,14 @@ function Spinner() {
 function containsCodeParam() {
 function stateValidationForCsrfProtection() {
 
+function extractWwwAuthenticateHeader(entries) {
+  for (const [header, value] of entries) {
+    if (header === "www-authenticate")
+      return value;
+  }
+  return null;
+}
+
 function verifyStateQueryParam() {
   return new Promise((resolve, reject) => {
     if (isNotThereStateParam()) {
