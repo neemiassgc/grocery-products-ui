@@ -172,13 +172,16 @@ function isThereErrorQueryParam() {
 function extractErrorFromUri() {
   return extractParamFromUri("error")
 }
+
+function extractParamFromUri(paramToExtract) {
   const lineOfParams = window.location.href.split("?")[1];
   const setOfParams = lineOfParams ? lineOfParams.split("&") : [];
   for (const param of setOfParams) {
-    const [key, __] = param.split("=");
-    if (key === "code") return true;
+    const [key, value] = param.split("=");
+    if (key === paramToExtract)
+      return value.length === 0 ? null : value;
   }
-  return false;
+  return  null;
 }
 
 export default App
