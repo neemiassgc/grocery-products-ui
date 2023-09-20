@@ -142,8 +142,9 @@ function Spinner() {
   </>
 }
 
-function containsCodeParam() {
-function stateValidationForCsrfProtection() {
+function wwwAuthenticateHeaderDoesNotExit(entries) {
+  return extractWwwAuthenticateHeader(entries) === null;
+}
 
 function extractErrorDataFromWwwAuthenticateHeader(entries) {
   const wwwAuthenticateHeader = extractWwwAuthenticateHeader(entries);
