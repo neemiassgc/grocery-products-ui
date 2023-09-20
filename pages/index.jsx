@@ -144,6 +144,8 @@ function Spinner() {
 
 function containsCodeParam() {
 function stateValidationForCsrfProtection() {
+
+function verifyStateQueryParam() {
   return new Promise((resolve, reject) => {
     if (isNotThereStateParam()) {
       reject("State value does not exits");
