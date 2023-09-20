@@ -145,6 +145,14 @@ function Spinner() {
 function containsCodeParam() {
 function stateValidationForCsrfProtection() {
 
+function extractErrorDataFromWwwAuthenticateHeader(entries) {
+  const wwwAuthenticateHeader = extractWwwAuthenticateHeader(entries);
+  const pairOfData = wwwAuthenticateHeader.split(",");
+  const typeOfError = pairOfData[0].split("=")[1].replaceAll("\"", "");
+  const errorMessage = pairOfData[1].split("=")[1].replaceAll("\"", "");
+  return [typeOfError, errorMessage];
+}
+
 function extractWwwAuthenticateHeader(entries) {
   for (const [header, value] of entries) {
     if (header === "www-authenticate")
