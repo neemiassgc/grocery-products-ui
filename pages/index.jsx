@@ -122,7 +122,7 @@ function PageLoading({children}) {
 
   const errorWarning = <div className="w-screen h-screen flex justify-center items-center">
     <div className="flex-col just">
-      <span className="text-lg">It was not possible to connect to the server</span>
+      <span className="text-lg">{errorMessage?.length === 0 ? "It was not possible to connect to the server" : errorMessage}</span>
       <div className="w-full">
         <BiErrorCircle className="w-28 h-28 text-red-600 m-auto"/>
       </div>
