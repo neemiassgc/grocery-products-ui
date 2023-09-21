@@ -56,7 +56,7 @@ async function fetchWithTimeout(resource, options = {}) {
       resolve(response);
       return;
     }
-    reject(await response.json())
+    reject(response)
   });
 }
 
