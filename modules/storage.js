@@ -3,12 +3,19 @@ export function saveAccessToken(token) {
 }
 
 export function getAccessToken() {
-  const accessToken = localStorage.getItem("access_token");
-  return accessToken === "undefined" || !accessToken ? null : accessToken;
+  return localStorage.getItem("access_token");
+}
+
+export function removeAccessToken() {
+  localStorage.removeItem("access_token");
 }
 
 export function saveRefreshToken(refreshToken) {
   localStorage.setItem("refresh_token", refreshToken);
+}
+
+export function removeRefreshToken() {
+  localStorage.removeItem("refresh_token");
 }
 
 export function saveRootAuthUrl() {
@@ -17,8 +24,7 @@ export function saveRootAuthUrl() {
 }
 
 export function getRootAuthUrl() {
-  const rootAuthUrl = localStorage.getItem("root_auth_url")
-  return rootAuthUrl === "undefined" || !rootAuthUrl ? null : rootAuthUrl;
+  return localStorage.getItem("root_auth_url");
 }
 
 export function saveUUID(uuid) {
@@ -26,6 +32,9 @@ export function saveUUID(uuid) {
 }
 
 export function getUUID() {
-  const uuid = localStorage.getItem("uuid");
-  return uuid === "undefined" || !uuid ? null : uuid;
+  return localStorage.getItem("uuid");
+}
+
+export function removeUUID() {
+  localStorage.removeItem("uuid");
 }
