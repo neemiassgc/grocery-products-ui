@@ -28,7 +28,7 @@ async function makeRequestQuery({ page, pageSize }, filterParam) {
 }
 
 async function fetchPricesByLink(link) {
-  return (await fetchWithTimeout(`${link}`), { withAuth: true }).json()
+  return (await fetchWithTimeout(`${link}`, { withAuth: true })).json()
 }
 
 async function fetchByBarcode(barcode) {
