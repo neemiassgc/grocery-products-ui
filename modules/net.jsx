@@ -173,4 +173,24 @@ export async function requestAccessTokenUsingCode(code) {
   });
   return req.json();
 }
+
+export async function requestAccessTokenUsingRefreshToken(success, error) {
+  const authUrl = localStorage.getItem("root_auth_url");
+  const path = "/realms/security/protocol/openid-connect/token"
+
+  const body = {
+    grant_type: "refresh_token",
+    client_id: "grocerystoreapp",
+    scope: "grocerystoreapp",
+    refresh_token: localStorage.getItem("refresh_token")
+  }
+
+  const req = await fetchWithTimeout(authUrl+path, {
+    body: new URLSearchParams(body), 
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  });
+  return req.json();
 }
