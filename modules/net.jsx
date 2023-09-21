@@ -1,6 +1,6 @@
 import * as storage from "./storage"
 
-const HOST = "http://192.168.100.106:9000"
+const HOST = "http://192.168.0.100:9000"
 const RESOURCE = "/api/products";
 
 async function fetchProducts(pagination) {
@@ -63,7 +63,7 @@ async function fetchWithTimeout(resource, options = {}) {
 }
 
 async function cookProduct(rawProduct) {
-  const linkToFetchPrices = rawProduct.links[0].href.replace("http", "https");
+  const linkToFetchPrices = rawProduct.links[0].href.replace("http", "http");
   const { description, sequenceCode, barcode } = rawProduct
   const priceList = cookPrices(await fetchPricesByLink(linkToFetchPrices));
   const {
@@ -156,38 +156,31 @@ export async function hitResourceServer() {
 }
 
 export async function requestAccessTokenUsingCode(code) {
-  const authUrl = storage.getRootAuthUrl();
-  const path = "/realms/security/protocol/openid-connect/token"
   const body = {
     "grant_type": "authorization_code",
     code,
     scope: "grocerystoreapp",
     client_id: "grocerystoreapp",
     redirect_uri: "http://localhost:3000"
-
   }
-  const req = await fetchWithTimeout(authUrl + path, {
-    body: new URLSearchParams(body),
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  });
-  return req.json();
+  return requestToken(body);
 }
 
-export async function requestAccessTokenUsingRefreshToken(success, error) {
-  const authUrl = storage.getRootAuthUrl();
-  const path = "/realms/security/protocol/openid-connect/token"
-
+export async function requestAccessTokenUsingRefreshToken() {
   const body = {
     grant_type: "refresh_token",
     client_id: "grocerystoreapp",
     scope: "grocerystoreapp",
     refresh_token: storage.getRefreshToken()
   }
+  return requestToken(body);
+}
 
-  const req = await fetchWithTimeout(authUrl+path, {
+async function requestToken(body) {
+  const authUrl = storage.getRootAuthUrl();
+  const path = "/realms/security/protocol/openid-connect/token"
+
+  const req = await fetchWithTimeout(authUrl + path, {
     body: new URLSearchParams(body), 
     method: "POST",
     headers: {
