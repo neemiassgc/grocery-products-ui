@@ -153,9 +153,24 @@ export async function hitResourceServer() {
   return fetchWithTimeout(HOST+'/hit', {timeout: 15000, withAuth: true})
 }
 
-export function requestTokenWithCode(code, success, error) {
+export async function requestAccessTokenUsingCode(code) {
   const authUrl = localStorage.getItem("root_auth_url");
   const path = "/realms/security/protocol/openid-connect/token"
-  const params = `?grant_type=authorization_code&code=${code}&scope=grocerystoreapp&redirect_uri=http://localhost:3000`
-  fetch(authUrl+path+params, {method: "POST"}).then(req => req.json()).then(success).catch(error);
+  const body = {
+    "grant_type": "authorization_code",
+    code,
+    scope: "grocerystoreapp",
+    client_id: "grocerystoreapp",
+    redirect_uri: "http://localhost:3000"
+
+  }
+  const req = await fetchWithTimeout(authUrl + path, {
+    body: new URLSearchParams(body),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  });
+  return req.json();
+}
 }
