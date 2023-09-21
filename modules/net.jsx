@@ -149,9 +149,8 @@ async function cookProducts(rawProducts) {
   return productListToReturn;
 }
 
-export function warmup(success, error) {
-  fetchWithTimeout(HOST+'/warmup', {timeout: 15000})
-    .then(success).catch(error);
+export async function hitResourceServer() {
+  return fetchWithTimeout(HOST+'/hit', {timeout: 15000, withAuth: true})
 }
 
 export function requestTokenWithCode(code, success, error) {
