@@ -1,3 +1,5 @@
+import * as storage from "./storage"
+
 const HOST = "http://192.168.100.106:9000"
 const RESOURCE = "/api/products";
 
@@ -38,7 +40,7 @@ async function fetchWithTimeout(resource, options = {}) {
   if (withAuth) {
     options.headers = {
       ...options.headers,
-      Authorization: "bearer "+localStorage.getItem("access_token")
+      Authorization: "bearer "+storage.getAccessToken()
     }
   }
   
@@ -154,7 +156,7 @@ export async function hitResourceServer() {
 }
 
 export async function requestAccessTokenUsingCode(code) {
-  const authUrl = localStorage.getItem("root_auth_url");
+  const authUrl = storage.getRootAuthUrl();
   const path = "/realms/security/protocol/openid-connect/token"
   const body = {
     "grant_type": "authorization_code",
@@ -175,14 +177,14 @@ export async function requestAccessTokenUsingCode(code) {
 }
 
 export async function requestAccessTokenUsingRefreshToken(success, error) {
-  const authUrl = localStorage.getItem("root_auth_url");
+  const authUrl = storage.getRootAuthUrl();
   const path = "/realms/security/protocol/openid-connect/token"
 
   const body = {
     grant_type: "refresh_token",
     client_id: "grocerystoreapp",
     scope: "grocerystoreapp",
-    refresh_token: localStorage.getItem("refresh_token")
+    refresh_token: storage.getRefreshToken()
   }
 
   const req = await fetchWithTimeout(authUrl+path, {
