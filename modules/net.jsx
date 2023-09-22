@@ -161,7 +161,7 @@ export async function requestAccessTokenUsingCode(code) {
     code,
     scope: "grocerystoreapp",
     client_id: "grocerystoreapp",
-    redirect_uri: "http://localhost:3000"
+    redirect_uri: window.location.origin
   }
   return requestToken(body);
 }

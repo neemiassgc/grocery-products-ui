@@ -98,8 +98,9 @@ export function useOauth2Flow() {
             client_id: "grocerystoreapp",
             scope: "grocerystoreapp",
             state: stateUUID,
-            redirect_uri: window.location.href
+            redirect_uri: window.location.origin
           })
+          console.log(params);
           window.location.href = authUrl + path + params
          }
          else {
