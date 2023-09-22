@@ -114,7 +114,10 @@ export function useOauth2Flow() {
                     .then(() => setLoading(false))
                     .catch(showErrorScreenWithData)
                 })
-                .catch(({error, error_description}) => setErrorPageWithMessage(`${error}: ${error_description}`));
+                .catch(async responseObj => {
+                  const {error: errorType, error_description} = await responseObj.json();
+                  setErrorPageWithMessage(`${errorType}: ${error_description}`);
+                });
             })
             .catch(() => setErrorPageWithMessage("It was not possible to validate integrity"))
          }
