@@ -10,6 +10,10 @@ export function removeAccessToken() {
   localStorage.removeItem("access_token");
 }
 
+export function getRefreshToken() {
+  return localStorage.getItem("refresh_token");
+}
+
 export function saveRefreshToken(refreshToken) {
   localStorage.setItem("refresh_token", refreshToken);
 }
