@@ -93,8 +93,14 @@ export function useOauth2Flow() {
           
           const authUrl = storage.getRootAuthUrl();
           const path = "/realms/security/protocol/openid-connect/auth";
-          const params = "?response_type=code&client_id=grocerystoreapp&scope=grocerystoreapp&state="+stateUUID+"&=redirect_uri="+window.location.href;
-          window.location.href = authUrl+path+params
+          const params = createQueryParams({
+            response_type: "code",
+            client_id: "grocerystoreapp",
+            scope: "grocerystoreapp",
+            state: stateUUID,
+            redirect_uri: window.location.href
+          })
+          window.location.href = authUrl + path + params
          }
          else {
           verifyStateQueryParam()
@@ -202,4 +208,11 @@ function extractParamFromUri(paramToExtract) {
       return value.length === 0 ? null : value;
   }
   return  null;
+}
+
+function createQueryParams(obj) {
+  const params = [];
+  for (let param in obj)
+    params.push(`${param}=${obj[param]}`)
+  return "?"+params.join("&");
 }
