@@ -24,7 +24,7 @@ export function removeRefreshToken() {
 
 export function saveRootAuthUrl() {
   if (!getRootAuthUrl())
-    localStorage.setItem("root_auth_url", "http://localhost:8080")
+    localStorage.setItem("root_auth_url", "https://keycloak-txd4pfjqva-uc.a.run.app")
 }
 
 export function getRootAuthUrl() {
