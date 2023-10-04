@@ -92,7 +92,7 @@ export function useOauth2Flow() {
           storage.saveUUID(stateUUID);
           
           const authUrl = storage.getRootAuthUrl();
-          const path = "/realms/security/protocol/openid-connect/auth";
+          const path = "/realms/main/protocol/openid-connect/auth";
           const params = createQueryParams({
             response_type: "code",
             client_id: "grocerystoreapp",

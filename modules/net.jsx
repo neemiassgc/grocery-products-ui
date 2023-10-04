@@ -178,7 +178,7 @@ export async function requestAccessTokenUsingRefreshToken() {
 
 async function requestToken(body) {
   const authUrl = storage.getRootAuthUrl();
-  const path = "/realms/security/protocol/openid-connect/token"
+  const path = "/realms/main/protocol/openid-connect/token"
 
   const req = await fetchWithTimeout(authUrl + path, {
     body: new URLSearchParams(body), 
