@@ -100,7 +100,6 @@ export function useOauth2Flow() {
             state: stateUUID,
             redirect_uri: window.location.origin
           })
-          console.log(params);
           window.location.href = authUrl + path + params
          }
          else {
