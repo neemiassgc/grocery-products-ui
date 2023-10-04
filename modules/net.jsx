@@ -1,6 +1,6 @@
 import * as storage from "./storage"
 
-const HOST = "http://192.168.0.100:9000"
+const HOST = "https://solid-muse-378600.rj.r.appspot.com"
 const RESOURCE = "/api/products";
 
 async function fetchProducts(pagination) {
