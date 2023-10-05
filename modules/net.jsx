@@ -63,7 +63,7 @@ async function fetchWithTimeout(resource, options = {}) {
 }
 
 async function cookProduct(rawProduct) {
-  const linkToFetchPrices = rawProduct.links[0].href.replace("http", "http");
+  const linkToFetchPrices = rawProduct.links[0].href.replace("http", "https");
   const { description, sequenceCode, barcode } = rawProduct
   const priceList = cookPrices(await fetchPricesByLink(linkToFetchPrices));
   const {
